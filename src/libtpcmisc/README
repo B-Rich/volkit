@@ -1,0 +1,58 @@
+/**
+\mainpage libtpcmisc 2.1.4 (c) 2004-2013 by Turku PET Centre, University of Turku
+\section readme Readme
+<PRE>
+
+libtpcmisc 2.1.4 (c) 2004-2013 by Turku PET Centre, University of Turku
+
+Build Jun 17 2013 19:20:46
+
+
+PET Miscellaneous library
+-------------------------------------------------------------------------------
+
+Contents
+-------------------------------------------------------------------------------
+
+include/     - Includes all the header files for the .c files
+Makefile     - The makefile
+README       - This file.
+
+** .c files **
+
+backup.c     -  File backup and copying.
+branch.c     -  Functions related to branching factor correction.
+datetime.c   -  Functions for processing date and time.
+decpoint.c   -  Reading floating point value from string with decimal comma.
+halflife.c   -  Procedures for isotopes and correction of physical decay.
+idcrypt.c    -  String encryption/decryption.
+intex.c      -  Expanding string expressions of integers to an array of ints.
+ift.c        -  Functions for basic processing of IFT data structure.
+iftfile.c    -  Functions for basic processing of IFT data structure.
+iftsrch.c    -  Search functions for IFT contents.
+libtpcmisc.c -  Program for printing the Readme, History and build information,
+                and for testing the library functions.
+libtpcmiscv.c-  Information for this library.
+memory_handler.c - Memory handling functions.
+petc99.c     -  ISO C99 functions that are not yet widely available in
+                common compilers.
+petunits.c   -  Functions for working with PET data units.
+rname.c      -  Functions for processing region names.
+quots.c      -  Functions for processing strings with quotation marks.
+studynr.c    -  Functions for processing PET study number.
+substitutions.c - Functions substituting others for ANSI compatibility.
+swap.c       -  Byte swapping between little and big endian platforms.
+
+Using the library
+-------------------------------------------------------------------------------
+
+The program that uses the library should include the .h file it needs.
+Example:
+    \#include <libtpcmisc.h>
+
+    gcc myprog.c -ltpcmisc -lm
+
+
+
+</PRE> 
+ */

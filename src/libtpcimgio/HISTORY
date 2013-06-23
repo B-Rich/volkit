@@ -1,0 +1,219 @@
+/**
+\page History
+\section history History
+<pre>
+2005-01-04 1.0.0 V Oikonen, C Laakkonen, R Klén, J Johansson
+  Former libpet, the common PET C library, has been divided up in smaller
+  sublibraries that each handle a specific task, including this library,
+  libtpcimgio.
+2005-03-03 1.0.0 Jarkko Johansson 
+  imgproc.[c/h] moved to libtpcimgp library
+2005-04-05 1.0.1 (krs) Roman Krais
+  interfile.c added (for reading interfile headers)
+2005-04-25 1.1.0 Jarkko Johansson
+  History and Readme files included in new print functions:
+  libtpcimgio_print_readme(FILE *fp);
+  libtpcimgio_print_history(FILE *fp);
+  libtpcimgio_print_dreadme(FILE *fp);
+  libtpcimgio_print_dhistory(FILE *fp);
+  libtpcimgio_print_build(FILE *fp);
+  in file libtpcimgio.c. Update the the Readme and History
+  there.
+  Compiled in Windows with MinGW.
+2005-05-04 1.1.0 JJ
+  Minor changes in file sifio.c.
+2005-08-01 1.1.1 CL/JJ
+  Changed image loading/writing functions fname to const,
+  and extern int VOL_TEST to int VOL_TEST.
+2005-10-10 1.1.2 CL
+  imgWriteAnalyze() now writes only 1 frame at a time,
+  conserving memory.
+2005-11-21 1.1.3 VO
+  lambda2factor() now calculates correctly when removing
+  decay correction considering frame lengths.
+2005-12-12 1.1.4 VO
+  imgReadAnalyze() sets img.isotopeHalflife, if isotope is found in SIF.
+2006-10-31 1.1.5 VO
+  Added function imgUnitId().
+  Fixed a timezone bug with ECAT7 files.
+2006-12-28 1.1.6 VO
+  Changes in identification of isotope codes.
+2007-02-02 1.2.0 VO
+  Additions in IMG structure, and subsequent changes in i/o functions.
+  Isotope and halflife related functions are relocated into libtpcmisc.
+  This library is now independent of libtpcimgp.
+  IMG min and max search functions are relocated here.
+  User_process_code is read/written with ECAT7 and ECAT6.3 files.
+  Patient_id is read/written with ECAT7 and ECAT6.3 files.
+  Study_description is read/written with ECAT7 and ECAT6.3 files.
+  X, y and z resolution is read/written with ECAT7 images.
+  Prompts and randoms (delayed) are read/written with ECAT7 and
+  ECAT6.3 sinograms and read from SIF with Analyze 7.5.
+  Changes in identifying and processing calibration units.
+2007-02-11 1.2.1 VO
+  Addition in IMG structure.
+  Deleted imgmsg.h. Set IMG.statmsg using imgSetStatus().
+2007-02-27 1.2.2 VO
+  Bug corrections.
+2007-03-13 1.2.3 VO
+  Added ECAT matrix list functions and error messages.
+  ECAT 6.3 header print format changed.
+2007-03-21 1.2.4 VO
+  Changes to make easier to write ECAT7 2D files.
+2007-03-25 1.2.5 VO
+  Addition of functions for reading and writing ECAT and Analyze
+  format one frame at a time.
+2007-04-03 1.3.0 VO
+  Added support for ECAT7 polar maps.
+  Information for polar map added to IMG struct.
+2007-07-17 1.3.1 Harri Merisaari
+  Modified for optional ANSI compatibility.
+2007-09-10 1.3.2 VO
+  Bug correction in setting error messages.
+  Bug correction in reading some too long header text fields.
+2007-09-10 1.3.3 VO
+  Return value of localtime() is always checked.
+2007-09-11 1.3.4 VO
+  Corrected a bug affecting versions 1.3.1 -1.3.3:
+  Analyze and ECAT files could have been mixed if in same folder.
+2007-09-12 1.3.5 VO
+  Corrected a bug affecting frame-by-frame reading of
+  ECAT7 2D image files.
+2008-07-07 1.3.6 VO
+  Image decay correction functions return error if frame times
+  are missing.
+  Assumes that Analyze 7.5 images are corrected for decay when
+  that information is not found in header file.
+2008-07-11 1.3.7 VO
+  Added function sifModerate().
+2008-07-14 1.3.8 VO
+  Added function imgAllocateWithHeader().
+2008-07-24 1.3.9 VO
+  Added functions ecat7EditMHeader(), ecat7EditSHeader(),
+  ecat7EditVHeader(), imgSetUnit(), and ecat7PrintSubheader().
+2008-09-02 1.4.0 VO
+  Default ECAT backup extension changed to .bak.
+2008-10-03 1.4.1 VO
+  Accepts certain Analyze formats with 32 bit pixel values.
+2008-10-09 1.4.2 VO
+  Accepts more Analyze formats with 32 bit pixel values (PVElab).
+2008-11-06 1.4.3 VO
+  Bug correction in reading ECAT 6.3 files.
+2009-02-17 1.5.0 VO
+  Added definitions for Siemens Inveon in img.h.
+  Added micropet.c and .h for reading Siemens Inveon images.
+2009-02-25 1.5.1 VO
+  Changes in micropet.c and .h to allow reading CT images.
+2009-04-06 1.5.2 VO
+  Changes in sif.c to allow SIF without prompts and randoms.
+2009-09-28 1.5.3 VO
+  Change in micropet.c reading pixel z size.
+2009-12-01 1.5.4 VO
+  Added function imgSmoothMax().
+2009-12-10 1.5.5 VO
+  Tiny update in img_ana.c.
+2010-02-12 1.5.6 VO
+  Time zone is corrected in imgSetEcat7MHeader().
+2010-05-11 1.5.7 VO
+  imgUnitFromEcat7() tries more to identify units.
+2010-08-19 1.5.8 VO
+  ECAT7 main header field patient_birth_date is read correctly
+  whether is is in documented YYYYMMDD format or as seconds from
+  start of years 1970.
+2011-01-11 1.5.9 VO
+  Bug fixes in reading micropet images.
+2011-02-04 1.5.10 VO
+  Label unitless was previously not written in main header
+  when IMG data is written in ECAT7 format.
+2011-08-12 1.5.11 VO
+  Supports reading MicroPET images with header version 001.701
+  (previously only 001.830).
+2011-08-13 1.5.12 VO
+  MicroPET frame times (sec) are read as floats.
+  Frame times are saved in SIF with one decimal when necessary.
+2011-08-17 1.5.13 VO
+  Changed exp_date format in Analyze header to prevent overflow.
+2011-09-13 2.0.0 VO
+  Changes to compile, install and distribute in 64-bit systems.
+2012-02-04 2.0.1 VO
+  Branching fraction is included in IMG struct.
+2012-02-04 2.0.2 VO
+  anaExistsNew() added to analyze.c.
+  Some of micropet.c contents moved into new file img_upet.c.
+2012-02-17 2.0.3 VO
+  Calibration factor and optional IFT struct is included in IMG struct.
+  imgInfo() prints more fields.
+2012-02-24 2.0.4 VO
+  Partial support for reading microPET image.
+  Function imgFormatDetermine() added to imgfile.c.
+  Modality included in IMG struct.
+  Functions imgGetMicropetHeader(), imgReadMicropetHeader(),
+  imgReadMicropetFrame(), imgReadMicropetFirstFrame(), and
+  imgReadMicropet() added to img_upet.c.
+  Function upetReadImagedata() added to micropet.c.
+  interfileIsHeader() and interfileExists() added to interfile.c.
+  imgBranchingCorrection() added to imgdecay.c.
+2012-02-24 2.0.5 VO
+  Bugs fixed in analyze.c and imgfile.c; update in imgReadAnalyze().
+2012-05-09 2.0.6 VO
+  More unit representations identified in imgunit.c.
+  Removed unused variables in several source files.
+2012-08-20 2.0.7 VO
+  Bugs fixed in vol.c.
+2012-09-21 2.0.8 VO
+  Defined IMG_DC_UNKNOWN, IMG_DC_CORRECTED, and IMG_DC_NONCORRECTED
+  in img.h, and applied these in all functions in this library.  Fixed setting of whether data are corrected for physical decay or not
+  in reading single frame of ECAT images.
+2012-09-24 2.0.9 VO
+  Bug fix in reading 3D sinogram frame times.
+2012-09-24 2.0.10 VO
+  Bug fixed in imgfile.c.
+2012-10-03 2.0.11 VO
+  Added functions img2sif() and sif2img() in img_ana.c and imgfile.h.
+  imgWriteAnalyze() tries to save SIF.
+2012-10-13 2.0.12 VO
+  Changes in imgInfo().
+2012-10-19 2.0.13 VO
+  Added functions in img.c, vol.c, and imgmax.c.
+2012-10-23 2.0.14 VO
+  Changed interface of volAvg() and volMax().
+2012-10-27 2.0.15 VO
+  Changed interface of imgSmoothMax().
+2012-12-04 2.0.16 VO
+  Added functions in imgmax.c.
+2013-03-07 2.0.17 VO
+  Added function imgDup() in img.c and .h.
+2013-03-18 2.1.0 VO
+  Added nifti.c, nifti.h and img_nii.c with preliminary and simplistic
+  NIfTI-1 IO.
+  Added new fields to IMG struct.
+  License updated to GNU LGPL 3.
+2013-03-22 2.1.1 VO
+  Tiny changes in analyze.c and addition in nifti.h.
+  Added niftiWriteHeader() in nifti.c.
+2013-03-26 2.1.2 VO
+  Added niftiCreateFNames() and niftiRemove() in nifti.c.
+  Bug fixes in niftiExists() and niftiWriteHeader().
+  Added imgSetNiftiHeader() and imgWriteNiftiFrame() in img_nii.c.
+  imgReadNiftiFrame() does not flip the image.
+  imgGetNiftiHeader() sets _fileFormat, not in imgReadNiftiHeader().
+2013-04-02 2.1.3 VO
+  Added imgWriteNifti().
+  Added more orientation and transformation fields to IMG struct.
+  imgRead(), imgWrite(), imgReadFrame(), imgReadHeader(),
+  imgFormatDetermine(), and imgFormatFromFName() support NIfTI-1.
+  imgReadNiftiFrame() sets IMG plane numbers.
+  Moved imgmatch.c from libtpcimgp to this library.
+2013-04-03 2.1.4 VO
+  Fixed a serious bug in reading NIfTI.
+2013-04-04 2.1.5 VO
+  Added two functions in img.c.
+  Updated img2sif() and sif2img().
+  imgWriteNifti() and imgWriteAnalyze() create count data in a new SIF.
+  Added sifExistentCounts() in weight.c
+2013-06-20 2.1.6 VO
+  imgWriteFrame() writes NIfTI-1, but still not Analyze.
+
+
+</pre> 
+ */

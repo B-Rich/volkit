@@ -1,0 +1,15 @@
+/**
+\page todo TODO
+\section todo TODO 
+<PRE>
+
+- add ring_difference and axial_compression in IMG struct,
+  and read/write it in ECAT7 3D sinograms.
+- check why storage_order (3D scan) is changed from 0 to 1, maybe
+  should be included in IMG struct too?
+- Remove local unit definitions and use CUNIT_ and TUNIT_ definitions,
+  currently in libtpccurveio, but later only in libtpcmisc.
+- Add support to saving NIfTI as short ints (currently only floats).
+
+</PRE>
+*/

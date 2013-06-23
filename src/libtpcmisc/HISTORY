@@ -1,0 +1,118 @@
+/**
+\page History
+\section history History
+<PRE>
+
+2005-01-04 1.0.0 Vesa Oikonen, Calle Laakkonen, Riku Klén, Jarkko Johansson
+  Former libpet, the common PET C library, has been divided up in smaller
+  sublibraries that each handle a specific task.
+  This library includes miscellaneous functions utilised in PET data processing.
+2005-04-21 1.0.1 JJ
+  Changes in files libtpcmiscv.c and .h:
+  Functions libtpcmisc_print_readme(), libtpcmisc_print_history(),
+  libtpcmisc_print_dreadme() and libtpcmisc_print_dhistory()
+  are used for getting the Readme and History messages for the libtpcmisc,
+  with and without Doxygen style tags. Remember to update the
+  functions to get correct Readme and History messages!
+  Function libtpcmisc_print_build(), is used for getting the build
+  information.
+2005-04-26 1.1.0 JJ
+  Compiled with MinGW.
+  Merged with libift.
+2006-03-16 1.1.1 VO
+  Correction in iftread().
+2006-06-03 1.1.2 VO
+  Added decpoint.c and decpoint.h.
+2006-07-21 1.1.3 VO
+  Added global variables in iftfile.c.
+2006-07-26 1.1.4 VO
+  studynr.c and studynr.h:
+  Included functions studynr_match(), studynr_validity_check(),
+  studynr_rm_zeroes(), and studynr_to_lowercase().
+  Function studynr_from_fname() rewritten because of new definitions for
+  study numbers.
+2006-10-02 1.1.5 VO
+  Corrected a bug in studynr_validity_check().
+2006-10-12 1.1.6 VO
+  Corrected a bug in studynr_validity_check().
+2006-10-23 1.1.7 VO
+  iftRead() does not search for equation sign inside quotation marks.
+2007-02-02 1.2.0 VO
+  Decay correction and isotope code related functions are located in
+  this library instead of libtpcimgio.
+  New functions for identifying isotopes are added.
+2007-03-30 1.2.1 Kaisa Liukko
+  Added memory_handler.c which is used by lse and lsi (libtpcmodel).
+  Added isotope I-124 into halflife.c and halflife.h.
+2007-07-17 1.3.0 Harri Merisaari
+  Added substitutions for ANSI compatibility option
+  configure scripts yet).
+2008-07-11 1.3.1 VO
+  Small updates in header files to help in compiling other software.
+2008-07-14 1.3.2 VO
+  Added function backupExistingFile().
+2008-10-10 1.3.3 VO
+  Added function dec_nr().
+2009-06-09 1.3.4 VO
+  Added function atof_with_check().
+2010-04-12 1.4.0 VO
+  petunits.c and petunits.h moved here from libtpccurveio.
+2010-04-26 1.4.1 VO
+  Added functions studynr_from_fname2(), studynr_validity_check2(),
+  and studynr_in_fname() in studynr.c.
+2010-05-18 1.4.2 VO
+  Change in iftRead().
+  Added datetime.c and datetime.h.
+2010-05-19 1.4.3 VO
+  Added functions isdate2(), isdate3() and get_datetime().
+  Additional parameter in isdatetime().
+2010-05-19 1.4.4 VO
+  Change in iftRead().
+2010-07-01 1.4.5 VO
+  Added strcasestr() in substitutions.c and .h.
+  Added cunitFromFilename() in petunits.c and .h.
+2010-08-19 1.4.6 VO
+  Added function time_to_tm() and isdate4() in datetime.c and .h.
+2010-10-27 1.4.7 VO
+  Added function fileCopy() in backup.c and .h.
+2010-12-14 1.4.8 VO
+  Added function get_time() and bug fix in get_datetime().
+2011-07-01 1.4.9 VO
+  Additional units in petunits.c and .h.
+2011-09-13 2.0.0 VO
+  Changes to compile, install and distribute in 64-bit systems.
+2012-01-31 2.0.1 VO
+  branch.h moved from libtpcmodel to this libtpcmisc.
+  Added branching factor for Cu-64 in branch.h.
+  Corrected halflife for Cu-64.
+2012-02-16 2.0.2 VO
+  iftWriteItem() supports IFT type 4 (space separator).
+  New functions added in iftsrch.c and iftfile.c.
+2012-02-17 2.0.3 VO
+  Added function iftdup().
+  Other small changes in IFT processing and ift.h.
+2012-02-23 2.0.4 VO
+  Added branch.c with branchingFraction().
+2012-02-24 2.0.5 VO
+  Additional units in petunits.c and petunits.h.
+2012-03-05 2.0.6 VO
+  iftWriteItem() supports IFT types 5,6, and 7 (tab, comma, semicolon).
+  Additions and changes in decpoint.c and .h.
+2012-03-17 2.0.7 VO
+  Bug fix in studynr.c.
+2012-06-08 2.0.8 VO
+  Added function rnameRmDots() in studynr.c.
+2012-09-28 2.1.0 VO
+  Created rname.c and rname.h, into which region name related contents
+  were moved from studynr.c and studynr.h.
+  Added function rnameCatenate() in rname.c.
+  Added defined value for region name subfield lengths in rname.h.
+2013-04-16 2.1.3 VO
+  Changes in includes.
+2013-07-17 2.1.4 VO
+  Added function strnCopyClean() to quots.c.
+  Additional units in petunits.c and petunits.h.
+
+
+</PRE> 
+ */

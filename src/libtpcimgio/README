@@ -1,0 +1,80 @@
+/**
+\mainpage libtpcimgio 2.1.6 (c) 2005-2013 by Turku PET Centre, University of Turku
+\section readme Readme
+<pre>
+
+libtpcimgio 2.1.6 (c) 2005-2013 by Turku PET Centre, University of Turku
+
+Build Jun 20 2013 16:14:14
+
+
+PET Image IO library
+--------------------------------------------------------------------------
+
+Turku PET Centre
+
+Libtpcimgio is distributed under the GNU Lesser General Public Licence
+http://www.gnu.org/licenses/lgpl.html
+More information on open source licences: http://www.opensource.org/
+
+Description
+--------------------------------------------------------------------------
+
+The libtpcimgio library is a collection of commonly used C files in
+Turku PET Centre for image file input and output procedures.
+Libtpcimgio library supports Ecat 6.x, Ecat 7.x and partly Analyze 7.5,
+NIfTI-1, microPET, and Interfile formats.
+
+List of files
+--------------------------------------------------------------------------
+
+include/      - Includes all the header files for the .c files
+Makefile      - The makefile
+** .c files **
+analyze.c     - Reading and writing Analyze 7.5 image files.
+ecat63ml.c    - Procedures for ECAT 6.3 matrix list.
+ecat63p.c     - Printing ECAT 6.3 headers.
+ecat63r.c     - Reading ECAT 6.3 files.
+ecat63w.c     - Writing ECAT 6.3 files.
+ecat7ml.c     - Procedures for ECAT 7.x matrix list.
+ecat7p.c      - Printing ECAT 7.x headers.
+ecat7h.c      - Edit ECAT 7.x headers.
+ecat7r.c      - Reading ECAT 7.x files.
+ecat7w.c      - Writing ECAT 7.x files.
+img.c         - Procedures for 4D image data, common to all image formats.
+img_ana.c     - Procedures for reading/writing Analyze 7.5 to/from IMG.
+img_e63.c     - Procedures for reading/writing ECAT 6.3 to/from IMG.
+img_e7.c      - Procedures for reading/writing ECAT 7 to/from IMG.
+imgmatch.c    - Procedures for comparing IMG contents.
+img_nii.c     - Procedures for reading/writing NIfTI-1 to/from IMG.
+img_sif.c     - Copying information between IMG and SIF structs.
+img_upet.c    - Procedures for reading/writing microPET to/from IMG.
+imgdecay.c    - Decay correction, isotope codes, and half-lives.
+imgfile.c     - Main procedures for IMG read/write.
+imgmax.c      - Procedures for searching IMG min and max value.
+imgunit.c     - Procedures for working with IMG calibration unit.
+interfile.c   - Reading Interfile headers.
+micropet.c    - Reading Inveon microPET image files.
+nifti.c       - Reading and writing NIfTI-1 PET images.
+sif.c         - Routines for Scan Information Files (SIF).
+sifio.c       - Functions for reading and writing SIF format files.
+vol.c         - Procedures for 3D image volume data (no time information).
+weight.c      - Functions for setting weight factors based on SIF.
+libtpcimgio.c - Program for printing Readme and History information, and
+                for testing the library functions.
+libtpcimgiov.c - Version information for this library.
+
+Using the library
+--------------------------------------------------------------------------
+
+The program that uses the library should include the .h file it needs.
+Example to include them all:
+    \#include <imgio.h>
+
+libtpcimgio depends on libtpcmisc.
+Example:
+  gcc myprog.c -ltpcimgio -ltpcmisc
+
+
+</pre> 
+ */
