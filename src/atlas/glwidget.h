@@ -12,9 +12,16 @@ public:
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
 
+    void setData(int w, int h, void *data);
+
 protected:
     void initializeGL();
     void paintGL();
+
+private:
+    bool dataSet;
+    int dataWidth, dataHeight;
+    void *dataPtr;
 };
 
 #endif

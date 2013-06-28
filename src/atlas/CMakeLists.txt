@@ -7,10 +7,12 @@ IF(QT4_FOUND AND OPENGL_FOUND)
         )
 
     ADD_EXECUTABLE(atlas
+        img.cpp v.cpp
         glwidget.cpp window.cpp atlas.cpp
         )
 
     TARGET_LINK_LIBRARIES(atlas
+        tpcimgio tpcmisc
         ${QT_LIBRARIES} ${OPENGL_LIBRARIES}
         )
 ELSE()
