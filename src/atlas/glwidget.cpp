@@ -9,7 +9,9 @@
 
 GLWidget::GLWidget(QWidget *parent)
     : QGLWidget(parent),
-      dataSet(false)
+      dataSet(false),
+      updateState(false),
+      dataZoom(1.0)
 {
 }
 
@@ -37,6 +39,16 @@ void GLWidget::setData(int w, int h, void *data)
     repaint();
 }
 
+void GLWidget::setDataZoom(float zoom)
+{
+    if (zoom != dataZoom)
+    {
+        dataZoom = zoom;
+        updateState = true;
+        repaint();
+    }
+}
+
 void GLWidget::initializeGL()
 {
     glEnable(GL_BLEND);
@@ -54,7 +66,12 @@ void GLWidget::paintGL()
     glClear(GL_COLOR_BUFFER_BIT);
     if (dataSet)
     {
-        glRasterPos2i(0, dataHeight);
+        if (updateState)
+        {
+            glRasterPos2i(0, int(dataZoom * float(dataHeight)));
+            glPixelZoom(dataZoom, dataZoom);
+            updateState = false;
+        }
         glDrawPixels(dataWidth, dataHeight, GL_RGBA, GL_UNSIGNED_BYTE, dataPtr);
     }
 }

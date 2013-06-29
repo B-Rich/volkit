@@ -75,7 +75,12 @@ int Window::loadColormap(const char *fn)
 
 void Window::readImgData()
 {
-    imgBase->getRGBA32Data(imgData, imgLowLimit, imgHighLimit, &colorMap);
+    imgBase->getHorizontalData(
+        imgData,
+        imgLowLimit,
+        imgHighLimit,
+        &colorMap
+    );
     glWidget->setData(
         imgBase->getDimx(), imgBase->getDimy(),
         &imgData[imgSlice * imgBase->getDimx() * imgBase->getDimy()]
@@ -111,5 +116,10 @@ int Window::readImg(
     }
 
     return result;
+}
+
+void Window::setImgZoom(float zoom)
+{
+    glWidget->setDataZoom(zoom);
 }
 

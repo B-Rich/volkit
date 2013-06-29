@@ -205,7 +205,7 @@ float Img::getMax()
   return max;
 }
 
-void Img::getRGBA32Data(
+void Img::getHorizontalData(
   uint32_t *buf,
   float lowLimit,
   float highLimit,

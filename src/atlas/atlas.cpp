@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
         std::cout << "Error - Unable to read frame " << frame << std::endl;
         return 1;
     }
+    window.setImgZoom(1.8);
 
     if (argc > 2)
     {

@@ -195,7 +195,7 @@ public:
   int getDimz();
   float getMax();
 
-  void getRGBA32Data(
+  void getHorizontalData(
     uint32_t *buf,
     float lowLimit,
     float highLimit,

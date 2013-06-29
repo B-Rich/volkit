@@ -28,12 +28,15 @@ public:
     Window();
 
     int loadColormap(const char *fn);
+
     int readImg(Img *img,
         float lowLimit,
         float highLimit,
         int slice = 0,
         int frame = 0
         );
+
+    void setImgZoom(float zoom);
 
 protected:
     void readImgData();
