@@ -19,6 +19,7 @@ class Window : public QMainWindow
 
 public slots:
     void fileOpen();
+    void fileColormap();
     void fileExit();
 
     void setSlice(int slice);
@@ -48,6 +49,7 @@ private:
 
     QMenu *fileMenu;
     QAction *fileOpenAct;
+    QAction *fileColormapAct;
     QAction *fileExitAct;
 
     QWidget *workWidget;

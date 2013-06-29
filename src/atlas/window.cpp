@@ -47,6 +47,9 @@ void Window::createActions()
     fileOpenAct = new QAction(tr("&Open"), this);
     connect(fileOpenAct, SIGNAL(triggered()), this, SLOT(fileOpen()));
 
+    fileColormapAct = new QAction(tr("&Colormap"), this);
+    connect(fileColormapAct, SIGNAL(triggered()), this, SLOT(fileColormap()));
+
     fileExitAct = new QAction(tr("&Exit"), this);
     connect(fileExitAct, SIGNAL(triggered()), this, SLOT(fileExit()));
 }
@@ -55,12 +58,31 @@ void Window::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(fileOpenAct);
+    fileMenu->addAction(fileColormapAct);
     fileMenu->addSeparator();
     fileMenu->addAction(fileExitAct);
 }
 
 void Window::fileOpen()
 {
+    QString fn =
+        QFileDialog::getOpenFileName(this, tr("Open File..."),
+            QString(), tr("Ecat7 (*.v);;All Files (*)"));
+    if (!fn.isEmpty())
+    {
+        std::cout << "Open: " << fn.toStdString().c_str() << std::endl;
+    }
+}
+
+void Window::fileColormap()
+{
+    QString fn =
+        QFileDialog::getOpenFileName(this, tr("Load Colormap..."),
+            QString(), tr("Colormap (*.cmap);;All Files (*)"));
+    if (!fn.isEmpty())
+    {
+        loadColormap(fn.toStdString().c_str());
+    }
 }
 
 void Window::fileExit()
