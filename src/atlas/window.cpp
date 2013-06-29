@@ -12,11 +12,29 @@ Window::Window() :
 {
     glWidget = new GLWidget;
 
+    slider = new QSlider(Qt::Vertical);
+    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(setSlice(int)));
+    connect(this, SIGNAL(sliceChanged(int)), slider, SLOT(setValue(int)));
+
     QHBoxLayout *mainLayout = new QHBoxLayout;
     mainLayout->addWidget(glWidget);
+    mainLayout->addWidget(slider);
     setLayout(mainLayout);
 
+    slider->setValue(0);
     setWindowTitle(tr("Atlas"));
+}
+
+void Window::setSlice(int slice)
+{
+    if (slice != imgSlice)
+    {
+        imgSlice = slice;
+        glWidget->setData(
+            imgBase->getDimx(), imgBase->getDimy(),
+            &imgData[imgSlice * imgBase->getDimx() * imgBase->getDimy()]
+        );
+    }
 }
 
 int Window::loadColormap(const char *fn)
@@ -47,6 +65,9 @@ void Window::setImg(Img *img, float lowLimit, float highLimit, int slice)
     imgSlice = slice;
     imgLowLimit = lowLimit;
     imgHighLimit = highLimit;
+    slider->setRange(0, imgBase->getDimz() - 1);
+    slider->setSingleStep(1);
+    slider->setValue(60);
     readImgData();
     imgLoaded = true;
 }

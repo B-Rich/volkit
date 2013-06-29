@@ -1,14 +1,22 @@
 IF(QT4_FOUND AND OPENGL_FOUND)
-    SET(QT_USE_QTOPENGL TRUE)
-    INCLUDE(${QT_USE_FILE})
-
     INCLUDE_DIRECTORIES(${ATLAS_SOURCE_DIR}/../include/tpc
         ${QT_INCLUDES} ${OPENGL_INCLUDE_DIR}
         )
 
-    ADD_EXECUTABLE(atlas
+    SET(atlas_SOURCES
         img.cpp v.cpp colormap.cpp
         glwidget.cpp window.cpp atlas.cpp
+    )
+    SET(atlas_HEADERS window.h)
+
+    QT4_WRAP_CPP(atlas_HEADERS_MOC ${atlas_HEADERS})
+    SET(QT_USE_QTOPENGL TRUE)
+    INCLUDE(${QT_USE_FILE})
+    ADD_DEFINITIONS(${QT_DEFINITIONS})
+
+    ADD_EXECUTABLE(atlas
+        ${atlas_SOURCES}
+        ${atlas_HEADERS_MOC}
         )
 
     TARGET_LINK_LIBRARIES(atlas

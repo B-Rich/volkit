@@ -7,9 +7,18 @@
 #include "img.h"
 
 class GLWidget;
+class QSlider;
 
 class Window : public QWidget
 {
+    Q_OBJECT
+
+
+public slots:
+    void setSlice(int slice);
+
+signals:
+    void sliceChanged(int slice);
 
 public:
     Window();
@@ -22,6 +31,7 @@ protected:
 
 private:
     GLWidget *glWidget;
+    QSlider *slider;
 
     ColorMap colorMap;
 
