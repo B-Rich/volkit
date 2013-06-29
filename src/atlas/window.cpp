@@ -118,8 +118,3 @@ int Window::readImg(
     return result;
 }
 
-void Window::setImgZoom(float zoom)
-{
-    glWidget->setDataZoom(zoom);
-}
-

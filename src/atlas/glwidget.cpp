@@ -10,8 +10,9 @@
 GLWidget::GLWidget(QWidget *parent)
     : QGLWidget(parent),
       dataSet(false),
-      updateState(false),
-      dataZoom(1.0)
+      updateState(true),
+      xDataZoom(1.0),
+      yDataZoom(1.0)
 {
 }
 
@@ -39,16 +40,6 @@ void GLWidget::setData(int w, int h, void *data)
     repaint();
 }
 
-void GLWidget::setDataZoom(float zoom)
-{
-    if (zoom != dataZoom)
-    {
-        dataZoom = zoom;
-        updateState = true;
-        repaint();
-    }
-}
-
 void GLWidget::initializeGL()
 {
     glEnable(GL_BLEND);
@@ -68,11 +59,24 @@ void GLWidget::paintGL()
     {
         if (updateState)
         {
-            glRasterPos2i(0, int(dataZoom * float(dataHeight)));
-            glPixelZoom(dataZoom, dataZoom);
+            glRasterPos2i(0, int(yDataZoom * float(dataHeight)));
+            glPixelZoom(xDataZoom, yDataZoom);
             updateState = false;
         }
         glDrawPixels(dataWidth, dataHeight, GL_RGBA, GL_UNSIGNED_BYTE, dataPtr);
     }
+}
+
+void GLWidget::resizeGL(int width, int height)
+{
+    glViewport(0, 0, width, height); 
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, width, height, 0, 0, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    xDataZoom = float(width) / float(dataWidth);
+    yDataZoom = float(height) / float(dataHeight);
+    updateState = true;
 }
 

@@ -13,11 +13,11 @@ public:
     QSize sizeHint() const;
 
     void setData(int w, int h, void *data);
-    void setDataZoom(float zoom);
 
 protected:
     void initializeGL();
     void paintGL();
+    void resizeGL(int width, int height);
 
 private:
     bool dataSet;
@@ -25,7 +25,7 @@ private:
     void *dataPtr;
 
     bool updateState;
-    float dataZoom;
+    float xDataZoom, yDataZoom;
 };
 
 #endif

@@ -36,8 +36,6 @@ public:
         int frame = 0
         );
 
-    void setImgZoom(float zoom);
-
 protected:
     void readImgData();
 
