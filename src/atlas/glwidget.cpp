@@ -9,7 +9,9 @@
 
 GLWidget::GLWidget(QWidget *parent)
     : QGLWidget(parent),
-      dataSet(false)
+      dataSet(false),
+      dataWidth(256),
+      dataHeight(256)
 {
 }
 
@@ -20,12 +22,12 @@ GLWidget::~GLWidget()
 
 QSize GLWidget::minimumSizeHint() const
 {
-    return QSize(256, 256);
+    return QSize(dataWidth, dataHeight);
 }
 
 QSize GLWidget::sizeHint() const
 {
-    return QSize(300, 300);
+    return QSize(dataWidth, dataHeight);
 }
 
 void GLWidget::setData(int w, int h, void *data)

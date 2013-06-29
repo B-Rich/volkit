@@ -19,26 +19,35 @@ Window::Window() :
     setWindowTitle(tr("Atlas"));
 }
 
+int Window::loadColormap(const char *fn)
+{
+    int  result = colorMap.loadColormap(fn);
+    if ((result == 0) &&imgLoaded)
+    {
+        readImgData();
+    }
+
+    return result;
+}
+
+void Window::readImgData()
+{
+    imgBase->getRGBAData(imgData, imgLowLimit, imgHighLimit, &colorMap);
+    glWidget->setData(
+        imgBase->getDimx(), imgBase->getDimy(),
+        &imgData[imgSlice * imgBase->getDimx() * imgBase->getDimy()]
+        );
+}
+
 void Window::setImg(Img *img, float lowLimit, float highLimit, int slice)
 {
     imgBase = img;
     imgData =
         new unsigned long[img->getDimx() * img->getDimy() * img->getDimz()];
-    img->getRGBAData(imgData, lowLimit, highLimit, &colorMap);
-    currSlice = slice;
+    imgSlice = slice;
+    imgLowLimit = lowLimit;
+    imgHighLimit = highLimit;
+    readImgData();
     imgLoaded = true;
-}
-
-void Window::paintEvent(QPaintEvent *e)
-{
-    if (imgLoaded)
-    {
-        glWidget->setData(
-            imgBase->getDimx(), imgBase->getDimy(),
-            &imgData[currSlice * imgBase->getDimx() * imgBase->getDimy()]
-            );
-    }
-
-    QWidget::paintEvent(e);
 }
 

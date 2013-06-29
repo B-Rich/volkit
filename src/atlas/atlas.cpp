@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (v->read(12) > 0)
+    if (v->read(12) != 0)
     {
         std::cout << "Error - Unable to read frame 12" << std::endl;
         return 0;
@@ -24,6 +24,14 @@ int main(int argc, char *argv[])
 
     Window window;
     window.setImg(v, 0.0, 65000.0, 60);
+    if (argc > 2)
+    {
+        if (window.loadColormap(argv[2]) != 0)
+        {
+            std::cout << "Warning - Unable to open colormap "
+                      << argv[2] << std::endl;
+        }
+    }
     window.show();
 
     return app.exec();

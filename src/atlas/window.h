@@ -14,8 +14,11 @@ class Window : public QWidget
 public:
     Window();
 
+    int loadColormap(const char *fn);
     void setImg(Img *img, float lowLimit, float highLimit, int slice = 0);
-    void paintEvent(QPaintEvent *e);
+
+protected:
+    void readImgData();
 
 private:
     GLWidget *glWidget;
@@ -24,8 +27,10 @@ private:
 
     bool imgLoaded;
     Img *imgBase;
-    int currSlice;
     unsigned long *imgData;
+
+    int imgSlice;
+    float imgLowLimit, imgHighLimit;
 };
 
 #endif
