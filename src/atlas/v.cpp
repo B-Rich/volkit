@@ -407,7 +407,7 @@ void V::setFileFormat()
   }
 }
 
-int V::open(char *fname)
+int V::open(const char *fname)
 {
   if(fname == NULL) {
     statmsg = imgmsg[1];

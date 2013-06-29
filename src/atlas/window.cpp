@@ -12,16 +12,26 @@ Window::Window() :
 {
     glWidget = new GLWidget;
 
-    slider = new QSlider(Qt::Vertical);
-    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(setSlice(int)));
-    connect(this, SIGNAL(sliceChanged(int)), slider, SLOT(setValue(int)));
+    sliceScroll = new QScrollBar(Qt::Vertical);
+    connect(sliceScroll, SIGNAL(valueChanged(int)), this, SLOT(setSlice(int)));
+    connect(this, SIGNAL(sliceChanged(int)), sliceScroll, SLOT(setValue(int)));
 
-    QHBoxLayout *mainLayout = new QHBoxLayout;
-    mainLayout->addWidget(glWidget);
-    mainLayout->addWidget(slider);
+    frameScroll = new QScrollBar(Qt::Horizontal);
+    connect(frameScroll, SIGNAL(valueChanged(int)), this, SLOT(setFrame(int)));
+    connect(this, SIGNAL(frameChanged(int)), sliceScroll, SLOT(setValue(int)));
+
+    QHBoxLayout *horLayout = new QHBoxLayout;
+    horLayout->addWidget(glWidget);
+    horLayout->addWidget(sliceScroll);
+
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addLayout(horLayout);
+    mainLayout->addWidget(frameScroll);
     setLayout(mainLayout);
 
-    slider->setValue(0);
+    sliceScroll->setValue(0);
+    frameScroll->setValue(0);
+
     setWindowTitle(tr("Atlas"));
 }
 
@@ -30,13 +40,28 @@ void Window::setSlice(int slice)
     if (slice != imgSlice)
     {
         imgSlice = slice;
-        glWidget->setData(
-            imgBase->getDimx(), imgBase->getDimy(),
-            &imgData[imgSlice * imgBase->getDimx() * imgBase->getDimy()]
-        );
+        if (imgLoaded)
+        {
+            glWidget->setData(
+                imgBase->getDimx(), imgBase->getDimy(),
+                &imgData[imgSlice * imgBase->getDimx() * imgBase->getDimy()]
+                );
+        }
     }
 }
 
+void Window::setFrame(int frame)
+{
+    if (frame != imgFrame)
+    {
+        imgFrame = frame;
+        if (imgLoaded)
+        {
+           imgBase->read(frame);
+           readImgData();
+        }
+    }
+}
 int Window::loadColormap(const char *fn)
 {
     int  result = colorMap.loadColormap(fn);
@@ -50,25 +75,41 @@ int Window::loadColormap(const char *fn)
 
 void Window::readImgData()
 {
-    imgBase->getRGBAData(imgData, imgLowLimit, imgHighLimit, &colorMap);
+    imgBase->getRGBA32Data(imgData, imgLowLimit, imgHighLimit, &colorMap);
     glWidget->setData(
         imgBase->getDimx(), imgBase->getDimy(),
         &imgData[imgSlice * imgBase->getDimx() * imgBase->getDimy()]
         );
 }
 
-void Window::setImg(Img *img, float lowLimit, float highLimit, int slice)
+int Window::readImg(
+    Img *img,
+    float lowLimit,
+    float highLimit,
+    int slice,
+    int frame
+    )
 {
-    imgBase = img;
-    imgData =
-        new unsigned long[img->getDimx() * img->getDimy() * img->getDimz()];
-    imgSlice = slice;
-    imgLowLimit = lowLimit;
-    imgHighLimit = highLimit;
-    slider->setRange(0, imgBase->getDimz() - 1);
-    slider->setSingleStep(1);
-    slider->setValue(60);
-    readImgData();
-    imgLoaded = true;
+    int result;
+
+    result = img->read(frame);
+    if (result == 0)
+    {
+        imgBase = img;
+        imgData =
+            new uint32_t[img->getDimx() * img->getDimy() * img->getDimz()];
+        imgSlice = slice;
+        imgFrame = frame;
+        imgLowLimit = lowLimit;
+        imgHighLimit = highLimit;
+        sliceScroll->setRange(0, imgBase->getDimz() - 1);
+        sliceScroll->setValue(imgSlice);
+        frameScroll->setRange(0, imgBase->getFrameNr() - 1);
+        frameScroll->setValue(imgFrame);
+        readImgData();
+        imgLoaded = true;
+    }
+
+    return result;
 }
 

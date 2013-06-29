@@ -3,11 +3,13 @@
 
 #include <QWidget>
 
+#include <stdint.h>
+
 #include "colormap.h"
 #include "img.h"
 
 class GLWidget;
-class QSlider;
+class QScrollBar;
 
 class Window : public QWidget
 {
@@ -16,30 +18,39 @@ class Window : public QWidget
 
 public slots:
     void setSlice(int slice);
+    void setFrame(int frame);
 
 signals:
     void sliceChanged(int slice);
+    void frameChanged(int frame);
 
 public:
     Window();
 
     int loadColormap(const char *fn);
-    void setImg(Img *img, float lowLimit, float highLimit, int slice = 0);
+    int readImg(Img *img,
+        float lowLimit,
+        float highLimit,
+        int slice = 0,
+        int frame = 0
+        );
 
 protected:
     void readImgData();
 
 private:
     GLWidget *glWidget;
-    QSlider *slider;
+    QScrollBar *sliceScroll;
+    QScrollBar *frameScroll;
 
     ColorMap colorMap;
 
     bool imgLoaded;
     Img *imgBase;
-    unsigned long *imgData;
+    uint32_t *imgData;
 
     int imgSlice;
+    int imgFrame;
     float imgLowLimit, imgHighLimit;
 };
 

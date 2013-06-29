@@ -1,6 +1,9 @@
 #ifndef IMG_H
 #define IMG_H
 
+#include <stdint.h>
+#include "colormap.h"
+
 #define MAX_STUDYNR_LEN	80
 
 /** Definitions for img status */
@@ -28,8 +31,6 @@
 #define SCANNER_ADVANCE 12096
 #define SCANNER_HRPLUS 3
 #define SCANNER_HRRT 4
-
-#include "colormap.h"
 
 class Img {
 
@@ -184,21 +185,29 @@ public:
   Img();
   ~Img();
 
-  void dealloc();
-  int alloc(int planes, int rows, int columns);
+  virtual int open(const char *fname, int t) { return -1; }
+  virtual void close() { }
+  virtual int read(int t) { return -1; }
+  virtual int getFrameNr() { return 0; }
 
-  float getMax();
-  void getRGBAData(
-    unsigned long *buf,
-    float lowLimit,
-    float highLimit,
-    ColorMap *cmap,
-    unsigned char alpha = 255
-  );
   int getDimx();
   int getDimy();
   int getDimz();
+  float getMax();
+
+  void getRGBA32Data(
+    uint32_t *buf,
+    float lowLimit,
+    float highLimit,
+    ColorMap *cmap,
+    uint8_t alpha = 255
+  );
+
   char *getStatusMessage();
+
+protected:
+  void dealloc();
+  int alloc(int planes, int rows, int columns);
 };
   
 #endif

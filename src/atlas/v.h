@@ -33,7 +33,7 @@ public:
   V(char *fname, int t);
   ~V();
 
-  int open(char *fname);
+  int open(const char *fname);
   void close();
   int read(int t);
 

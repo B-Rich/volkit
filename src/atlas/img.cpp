@@ -205,15 +205,15 @@ float Img::getMax()
   return max;
 }
 
-void Img::getRGBAData(
-  unsigned long *buf,
+void Img::getRGBA32Data(
+  uint32_t *buf,
   float lowLimit,
   float highLimit,
   ColorMap *cmap,
-  unsigned char alpha
+  uint8_t alpha
   )
 {
-  unsigned char *img = (unsigned char *) buf;
+  uint8_t *img = (uint8_t *) buf;
   float k = 1.0 / (highLimit - lowLimit);
   float numColors = float(cmap->getNumColors() - 1);
 
