@@ -2,6 +2,7 @@
 #define WINDOW_H
 
 #include <QWidget>
+#include <QMainWindow>
 
 #include <stdint.h>
 
@@ -9,14 +10,17 @@
 #include "img.h"
 
 class GLWidget;
+class QMenu;
 class QScrollBar;
 
-class Window : public QWidget
+class Window : public QMainWindow
 {
     Q_OBJECT
 
-
 public slots:
+    void fileOpen();
+    void fileExit();
+
     void setSlice(int slice);
     void setFrame(int frame);
 
@@ -36,10 +40,17 @@ public:
         int frame = 0
         );
 
-protected:
+private:
+    void createActions();
+    void createMenus();
+
     void readImgData();
 
-private:
+    QMenu *fileMenu;
+    QAction *fileOpenAct;
+    QAction *fileExitAct;
+
+    QWidget *workWidget;
     GLWidget *glWidget;
     QScrollBar *sliceScroll;
     QScrollBar *frameScroll;

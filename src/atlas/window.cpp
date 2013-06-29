@@ -1,7 +1,7 @@
 #include <QtGui>
 
 #include <iostream>
-#include <string.h>
+#include <stdlib.h>
 
 #include "glwidget.h"
 #include "window.h"
@@ -10,29 +10,62 @@ Window::Window() :
     colorMap(),
     imgLoaded(false)
 {
+    workWidget = new QWidget;
+    setCentralWidget(workWidget);
+
     glWidget = new GLWidget;
 
     sliceScroll = new QScrollBar(Qt::Vertical);
     connect(sliceScroll, SIGNAL(valueChanged(int)), this, SLOT(setSlice(int)));
     connect(this, SIGNAL(sliceChanged(int)), sliceScroll, SLOT(setValue(int)));
 
-    frameScroll = new QScrollBar(Qt::Horizontal);
-    connect(frameScroll, SIGNAL(valueChanged(int)), this, SLOT(setFrame(int)));
-    connect(this, SIGNAL(frameChanged(int)), sliceScroll, SLOT(setValue(int)));
-
     QHBoxLayout *horLayout = new QHBoxLayout;
     horLayout->addWidget(glWidget);
     horLayout->addWidget(sliceScroll);
 
+    frameScroll = new QScrollBar(Qt::Horizontal);
+    connect(frameScroll, SIGNAL(valueChanged(int)), this, SLOT(setFrame(int)));
+    connect(this, SIGNAL(frameChanged(int)), sliceScroll, SLOT(setValue(int)));
+
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addLayout(horLayout);
     mainLayout->addWidget(frameScroll);
-    setLayout(mainLayout);
+
+    workWidget->setLayout(mainLayout);
 
     sliceScroll->setValue(0);
     frameScroll->setValue(0);
 
+    createActions();
+    createMenus();
+
     setWindowTitle(tr("Atlas"));
+}
+
+void Window::createActions()
+{
+    fileOpenAct = new QAction(tr("&Open"), this);
+    connect(fileOpenAct, SIGNAL(triggered()), this, SLOT(fileOpen()));
+
+    fileExitAct = new QAction(tr("&Exit"), this);
+    connect(fileExitAct, SIGNAL(triggered()), this, SLOT(fileExit()));
+}
+
+void Window::createMenus()
+{
+    fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu->addAction(fileOpenAct);
+    fileMenu->addSeparator();
+    fileMenu->addAction(fileExitAct);
+}
+
+void Window::fileOpen()
+{
+}
+
+void Window::fileExit()
+{
+    exit(0);
 }
 
 void Window::setSlice(int slice)
