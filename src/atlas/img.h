@@ -29,6 +29,8 @@
 #define SCANNER_HRPLUS 3
 #define SCANNER_HRRT 4
 
+#include "colormap.h"
+
 class Img {
 
   /*
@@ -186,8 +188,13 @@ public:
   int alloc(int planes, int rows, int columns);
 
   float getMax();
-  long* getRGBAData(long *buf, float lowLimit, float highLimit);
-  long* getLongData32(long *buf);
+  void getRGBAData(
+    unsigned long *buf,
+    float lowLimit,
+    float highLimit,
+    ColorMap *cmap,
+    unsigned char alpha = 255
+  );
   int getDimx();
   int getDimy();
   int getDimz();

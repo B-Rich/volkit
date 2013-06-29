@@ -3,6 +3,7 @@
 
 #include <QWidget>
 
+#include "colormap.h"
 #include "img.h"
 
 class GLWidget;
@@ -19,10 +20,12 @@ public:
 private:
     GLWidget *glWidget;
 
+    ColorMap colorMap;
+
     bool imgLoaded;
     Img *imgBase;
     int currSlice;
-    long *imgData;
+    unsigned long *imgData;
 };
 
 #endif

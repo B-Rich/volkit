@@ -7,6 +7,7 @@
 #include "window.h"
 
 Window::Window() :
+    colorMap(),
     imgLoaded(false)
 {
     glWidget = new GLWidget;
@@ -21,8 +22,9 @@ Window::Window() :
 void Window::setImg(Img *img, float lowLimit, float highLimit, int slice)
 {
     imgBase = img;
-    imgData = new long[img->getDimx() * img->getDimy() * img->getDimz()];
-    img->getRGBAData(imgData, lowLimit, highLimit);
+    imgData =
+        new unsigned long[img->getDimx() * img->getDimy() * img->getDimz()];
+    img->getRGBAData(imgData, lowLimit, highLimit, &colorMap);
     currSlice = slice;
     imgLoaded = true;
 }

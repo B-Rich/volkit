@@ -205,10 +205,17 @@ float Img::getMax()
   return max;
 }
 
-long* Img::getRGBAData(long *buf, float lowLimit, float highLimit)
+void Img::getRGBAData(
+  unsigned long *buf,
+  float lowLimit,
+  float highLimit,
+  ColorMap *cmap,
+  unsigned char alpha
+  )
 {
-  char *img = (char *) buf;
+  unsigned char *img = (unsigned char *) buf;
   float k = 1.0 / (highLimit - lowLimit);
+  float numColors = float(cmap->getNumColors() - 1);
 
   for (int zi = 0; zi < dimz; zi++) {
 
@@ -230,42 +237,17 @@ long* Img::getRGBAData(long *buf, float lowLimit, float highLimit)
             result = 0.0;
         }
 
-        char out = (char) (255.0 * result);
-        *img++ = out;
-        *img++ = out;
-        *img++ = out;
-        *img++ = 255;
+        int out = int(numColors * result);
+        *img = cmap->getRed(out); img++;
+        *img = cmap->getGreen(out); img++;
+        *img = cmap->getBlue(out); img++;
+        *img = alpha; img++;
 
       } /* End for xi */
 
     } /* End for yi */
 
   } /* End for zi */
-
-  return buf;
-}
-
-long* Img::getLongData32(long *buf)
-{
-  int xi, yi, zi;
-  long val;
-
-  for (zi = 0; zi < dimz; zi++) {
-
-    for (yi = 0; yi < dimy; yi++) {
-
-      for (xi = 0; xi < dimx; xi++) {
-
-        val = (long) m[zi][yi][xi];
-        *buf++ = val;
-
-      } /* End for xi */
-
-    } /* End for yi */
-
-  } /* End for zi */
-
-  return buf;
 }
 
 int Img::getDimx()

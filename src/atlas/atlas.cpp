@@ -8,6 +8,7 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+
     V *v = new V;
     if (v->open(argv[1]) > 0)
     {
@@ -22,7 +23,6 @@ int main(int argc, char *argv[])
     }
 
     Window window;
-
     window.setImg(v, 0.0, 65000.0, 60);
     window.show();
 

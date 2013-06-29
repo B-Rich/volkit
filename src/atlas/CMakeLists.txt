@@ -7,7 +7,7 @@ IF(QT4_FOUND AND OPENGL_FOUND)
         )
 
     ADD_EXECUTABLE(atlas
-        img.cpp v.cpp
+        img.cpp v.cpp colormap.cpp
         glwidget.cpp window.cpp atlas.cpp
         )
 
