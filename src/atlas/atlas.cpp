@@ -16,15 +16,14 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    Window window;
     int frame = v->getFrameNr() / 2;
-    if (v->read(frame) != 0)
+    if (window.readImg(v, 0.0, 65000.0, v->getDimz() / 2, frame) != 0)
     {
-        std::cout << "Error - Unable to read frame 12" << std::endl;
-        return 0;
+        std::cout << "Error - Unable to read frame " << frame << std::endl;
+        return 1;
     }
 
-    Window window;
-    window.readImg(v, 0.0, 65000.0, v->getDimz() / 2, frame);
     if (argc > 2)
     {
         if (window.loadColormap(argv[2]) != 0)
