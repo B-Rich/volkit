@@ -17,9 +17,11 @@ public:
 protected:
     void initializeGL();
     void paintGL();
-    void resizeGL(int width, int height);
+    void resizeGL(int w, int h);
 
 private:
+    void calculateDataZoom(int w, int h);
+
     bool dataSet;
     int dataWidth, dataHeight;
     void *dataPtr;

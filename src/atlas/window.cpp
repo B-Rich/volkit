@@ -9,7 +9,9 @@
 
 Window::Window() :
     colorMap(),
-    imgLoaded(false)
+    imgLoaded(false),
+    imgLowLimit(0.0),
+    imgHighLimit(65000.0)
 {
     workWidget = new QWidget;
     setCentralWidget(workWidget);
@@ -71,7 +73,7 @@ void Window::fileOpen()
             QString(), tr("Ecat7 (*.v);;All Files (*)"));
     if (!fn.isEmpty())
     {
-        std::cout << "Open: " << fn.toStdString().c_str() << std::endl;
+        loadImg(fn.toStdString().c_str(), imgLowLimit, imgHighLimit);
     }
 }
 
@@ -126,7 +128,7 @@ void Window::readImgData()
         imgLowLimit,
         imgHighLimit,
         &colorMap
-    );
+        );
     glWidget->setData(
         imgBase->getDimx(), imgBase->getDimy(),
         &imgData[imgSlice * imgBase->getDimx() * imgBase->getDimy()]

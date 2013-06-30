@@ -31,12 +31,20 @@ QSize GLWidget::sizeHint() const
     return QSize(512, 512);
 }
 
+void GLWidget::calculateDataZoom(int w, int h)
+{
+    xDataZoom = float(w) / float(dataWidth);
+    yDataZoom = float(h) / float(dataHeight);
+    updateState = true;
+}
+
 void GLWidget::setData(int w, int h, void *data)
 {
     dataWidth = w;
     dataHeight = h;
     dataPtr = data;
     dataSet = true;
+    calculateDataZoom(width(), height());
     repaint();
 }
 
@@ -67,16 +75,14 @@ void GLWidget::paintGL()
     }
 }
 
-void GLWidget::resizeGL(int width, int height)
+void GLWidget::resizeGL(int w, int h)
 {
-    glViewport(0, 0, width, height); 
+    glViewport(0, 0, w, h); 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, width, height, 0, 0, 1);
+    glOrtho(0, w, h, 0, 0, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    xDataZoom = float(width) / float(dataWidth);
-    yDataZoom = float(height) / float(dataHeight);
-    updateState = true;
+    calculateDataZoom(w, h);
 }
 
