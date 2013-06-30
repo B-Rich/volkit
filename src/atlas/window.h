@@ -32,14 +32,23 @@ signals:
 public:
     Window();
 
-    int loadColormap(const char *fn);
-
-    int readImg(Img *img,
+    int loadImg(
+        const char *fn,
         float lowLimit,
         float highLimit,
-        int slice = 0,
-        int frame = 0
+        int slice = -1,
+        int frame = -1
         );
+
+    int readImg(
+        Img *img,
+        float lowLimit,
+        float highLimit,
+        int slice = -1,
+        int frame = -1 
+        );
+
+    int loadColormap(const char *fn);
 
 private:
     void createActions();

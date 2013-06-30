@@ -9,18 +9,17 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    V *v = new V;
-    if (v->open(argv[1]) > 0)
+    if (argc <= 1)
     {
-        std::cout << "Error - Unable to open image " << argv[1] << std::endl;
+        std::cerr << "Usage is: " << argv[0]
+                  << " <filename> [colormap]" << std::endl;
         return 1;
     }
 
     Window window;
-    int frame = v->getFrameNr() / 2;
-    if (window.readImg(v, 0.0, 65000.0, v->getDimz() / 2, frame) != 0)
+    if (window.loadImg(argv[1], 0.0, 65000.0) != 0)
     {
-        std::cout << "Error - Unable to read frame " << frame << std::endl;
+        std::cerr << "Error - Unable to open image " << argv[1] << std::endl;
         return 1;
     }
 
