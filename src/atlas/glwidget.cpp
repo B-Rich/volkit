@@ -48,6 +48,12 @@ void GLWidget::setData(int w, int h, void *data)
     repaint();
 }
 
+void GLWidget::unsetData()
+{
+    dataSet = false;
+    repaint();
+}
+
 void GLWidget::initializeGL()
 {
     glEnable(GL_BLEND);

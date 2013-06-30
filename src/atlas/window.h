@@ -19,6 +19,7 @@ class Window : public QMainWindow
 
 public slots:
     void fileOpen();
+    void fileClose();
     void fileColormap();
     void fileExit();
 
@@ -40,14 +41,6 @@ public:
         int frame = -1
         );
 
-    int readImg(
-        Img *img,
-        float lowLimit,
-        float highLimit,
-        int slice = -1,
-        int frame = -1 
-        );
-
     int loadColormap(const char *fn);
 
 private:
@@ -55,9 +48,18 @@ private:
     void createMenus();
 
     void readImgData();
+    int readImg(
+        Img *img,
+        float lowLimit,
+        float highLimit,
+        int slice = -1,
+        int frame = -1 
+        );
+    void closeImg();
 
     QMenu *fileMenu;
     QAction *fileOpenAct;
+    QAction *fileCloseAct;
     QAction *fileColormapAct;
     QAction *fileExitAct;
 

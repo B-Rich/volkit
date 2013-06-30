@@ -50,6 +50,9 @@ void Window::createActions()
     fileOpenAct = new QAction(tr("&Open"), this);
     connect(fileOpenAct, SIGNAL(triggered()), this, SLOT(fileOpen()));
 
+    fileCloseAct = new QAction(tr("&Close"), this);
+    connect(fileCloseAct, SIGNAL(triggered()), this, SLOT(fileClose()));
+
     fileColormapAct = new QAction(tr("&Colormap"), this);
     connect(fileColormapAct, SIGNAL(triggered()), this, SLOT(fileColormap()));
 
@@ -61,6 +64,8 @@ void Window::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(fileOpenAct);
+    fileMenu->addAction(fileCloseAct);
+    fileMenu->addSeparator();
     fileMenu->addAction(fileColormapAct);
     fileMenu->addSeparator();
     fileMenu->addAction(fileExitAct);
@@ -73,7 +78,20 @@ void Window::fileOpen()
             QString(), tr("Ecat7 (*.v);;All Files (*)"));
     if (!fn.isEmpty())
     {
+        if (imgLoaded)
+        {
+            closeImg();
+        }
         loadImg(fn.toStdString().c_str(), imgLowLimit, imgHighLimit);
+    }
+}
+
+void Window::fileClose()
+{
+    if (imgLoaded)
+    {
+        closeImg();
+        glWidget->unsetData();
     }
 }
 
@@ -129,6 +147,7 @@ void Window::readImgData()
         imgHighLimit,
         &colorMap
         );
+
     glWidget->setData(
         imgBase->getDimx(), imgBase->getDimy(),
         &imgData[imgSlice * imgBase->getDimx() * imgBase->getDimy()]
@@ -207,6 +226,19 @@ int Window::readImg(
     }
 
     return result;
+}
+
+void Window::closeImg()
+{
+    if (imgLoaded)
+    {
+        imgLoaded = false;
+        delete imgData;
+        imgData = 0;
+        imgBase->close();
+        delete imgBase;
+        imgBase = 0;
+    }
 }
 
 int Window::loadColormap(const char *fn)

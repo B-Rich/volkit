@@ -13,6 +13,7 @@ public:
     QSize sizeHint() const;
 
     void setData(int w, int h, void *data);
+    void unsetData();
 
 protected:
     void initializeGL();
