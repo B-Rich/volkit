@@ -7,8 +7,10 @@ IF(QT4_FOUND AND OPENGL_FOUND)
         glwidget.cpp window.cpp atlas.cpp
     )
     SET(atlas_HEADERS window.h)
+    SET(atlas_RESOURCES application.qrc)
 
     QT4_WRAP_CPP(atlas_HEADERS_MOC ${atlas_HEADERS})
+    QT4_ADD_RESOURCES(atlas_RESOURCES_RCC ${atlas_RESOURCES})
     SET(QT_USE_QTOPENGL TRUE)
     INCLUDE(${QT_USE_FILE})
     ADD_DEFINITIONS(${QT_DEFINITIONS})
@@ -16,6 +18,7 @@ IF(QT4_FOUND AND OPENGL_FOUND)
     ADD_EXECUTABLE(atlas
         ${atlas_SOURCES}
         ${atlas_HEADERS_MOC}
+        ${atlas_RESOURCES_RCC}
         )
 
     TARGET_LINK_LIBRARIES(atlas

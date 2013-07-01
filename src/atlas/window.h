@@ -11,6 +11,7 @@
 
 class GLWidget;
 class QMenu;
+class QToolBar;
 class QScrollBar;
 
 class Window : public QMainWindow
@@ -23,6 +24,10 @@ public slots:
     void fileColormap();
     void fileExit();
 
+    void toolsSelect();
+    void toolsPolygon();
+    void toolsSample();
+
     void setSlice(int slice);
     void setFrame(int frame);
 
@@ -31,6 +36,8 @@ signals:
     void frameChanged(int frame);
 
 public:
+    enum Tool { TOOL_SELECT, TOOL_POLYGON, TOOL_SAMPLE };
+
     Window();
 
     void setLimits(float low, float high);
@@ -46,6 +53,7 @@ public:
 private:
     void createActions();
     void createMenus();
+    void createToolBars();
 
     void readImgData();
     int readImg(
@@ -60,6 +68,11 @@ private:
     QAction *fileCloseAct;
     QAction *fileColormapAct;
     QAction *fileExitAct;
+
+    QToolBar *toolsToolBar;
+    QAction *toolsSelectAct;
+    QAction *toolsPolygonAct;
+    QAction *toolsSampleAct;
 
     QWidget *workWidget;
     GLWidget *glWidget;

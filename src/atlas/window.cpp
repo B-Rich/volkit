@@ -39,34 +39,10 @@ Window::Window() :
 
     createActions();
     createMenus();
+    createToolBars();
+    statusBar()->showMessage(tr("Ready"));
 
     setWindowTitle(tr("Atlas"));
-}
-
-void Window::createActions()
-{
-    fileOpenAct = new QAction(tr("&Open"), this);
-    connect(fileOpenAct, SIGNAL(triggered()), this, SLOT(fileOpen()));
-
-    fileCloseAct = new QAction(tr("&Close"), this);
-    connect(fileCloseAct, SIGNAL(triggered()), this, SLOT(fileClose()));
-
-    fileColormapAct = new QAction(tr("&Colormap"), this);
-    connect(fileColormapAct, SIGNAL(triggered()), this, SLOT(fileColormap()));
-
-    fileExitAct = new QAction(tr("&Exit"), this);
-    connect(fileExitAct, SIGNAL(triggered()), this, SLOT(fileExit()));
-}
-
-void Window::createMenus()
-{
-    fileMenu = menuBar()->addMenu(tr("&File"));
-    fileMenu->addAction(fileOpenAct);
-    fileMenu->addAction(fileCloseAct);
-    fileMenu->addSeparator();
-    fileMenu->addAction(fileColormapAct);
-    fileMenu->addSeparator();
-    fileMenu->addAction(fileExitAct);
 }
 
 void Window::fileOpen()
@@ -80,7 +56,16 @@ void Window::fileOpen()
         {
             closeImg();
         }
-        loadImg(fn.toStdString().c_str());
+
+        int result = loadImg(fn.toStdString().c_str());
+        if (result == 0)
+        {
+            statusBar()->showMessage(tr("Loaded image: ") + fn);
+        }
+        else
+        {
+            statusBar()->showMessage(tr("Unable to load image: ") + fn);
+        }
     }
 }
 
@@ -100,13 +85,94 @@ void Window::fileColormap()
             QString(), tr("Colormap (*.cmap);;All Files (*)"));
     if (!fn.isEmpty())
     {
-        loadColormap(fn.toStdString().c_str());
+        int result = loadColormap(fn.toStdString().c_str());
+        if (result == 0)
+        {
+            statusBar()->showMessage(tr("Loaded colormap: ") + fn);
+        }
+        else
+        {
+            statusBar()->showMessage(tr("Unable to load colormap: ") + fn);
+        }
     }
 }
 
 void Window::fileExit()
 {
     exit(0);
+}
+
+void Window::toolsSelect()
+{
+    statusBar()->showMessage(tr("Click on object to select"));
+}
+
+void Window::toolsPolygon()
+{
+    statusBar()->showMessage(tr("Draw polygon"));
+}
+
+void Window::toolsSample()
+{
+    statusBar()->showMessage(tr("Select point to sample"));
+}
+
+void Window::createActions()
+{
+    fileOpenAct = new QAction(tr("&Open"), this);
+    connect(fileOpenAct, SIGNAL(triggered()), this, SLOT(fileOpen()));
+
+    fileCloseAct = new QAction(tr("&Close"), this);
+    connect(fileCloseAct, SIGNAL(triggered()), this, SLOT(fileClose()));
+
+    fileColormapAct = new QAction(tr("&Colormap"), this);
+    connect(fileColormapAct, SIGNAL(triggered()), this, SLOT(fileColormap()));
+
+    fileExitAct = new QAction(tr("&Exit"), this);
+    connect(fileExitAct, SIGNAL(triggered()), this, SLOT(fileExit()));
+
+    toolsSelectAct = new QAction(
+        QIcon(":/icons/select.png"),
+        tr("Select"),
+        this
+        );
+    toolsSelectAct->setStatusTip(tr("Select object"));
+    connect(toolsSelectAct, SIGNAL(triggered()), this, SLOT(toolsSelect()));
+
+    toolsPolygonAct = new QAction(
+        QIcon(":/icons/polygon.png"),
+        tr("Polygon"),
+        this
+        );
+    toolsPolygonAct->setStatusTip(tr("Draw polygon"));
+    connect(toolsPolygonAct, SIGNAL(triggered()), this, SLOT(toolsPolygon()));
+
+    toolsSampleAct = new QAction(
+        QIcon(":/icons/sample.png"),
+        tr("Sample"),
+        this
+        );
+    toolsSampleAct->setStatusTip(tr("Sample image values"));
+    connect(toolsSampleAct, SIGNAL(triggered()), this, SLOT(toolsSample()));
+}
+
+void Window::createMenus()
+{
+    fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu->addAction(fileOpenAct);
+    fileMenu->addAction(fileCloseAct);
+    fileMenu->addSeparator();
+    fileMenu->addAction(fileColormapAct);
+    fileMenu->addSeparator();
+    fileMenu->addAction(fileExitAct);
+}
+
+void Window::createToolBars()
+{
+    toolsToolBar = addToolBar(tr("Tools"));
+    toolsToolBar->addAction(toolsSelectAct);
+    toolsToolBar->addAction(toolsPolygonAct);
+    toolsToolBar->addAction(toolsSampleAct);
 }
 
 void Window::setSlice(int slice)

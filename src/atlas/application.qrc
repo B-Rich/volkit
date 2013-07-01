@@ -1,0 +1,8 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>icons/select.png</file>
+    <file>icons/polygon.png</file>
+    <file>icons/sample.png</file>
+</qresource>
+</RCC>
+
