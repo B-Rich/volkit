@@ -205,10 +205,14 @@ float Img::getMax()
   return max;
 }
 
+void Img::setLimits(float low, float high)
+{
+    lowLimit = low;
+    highLimit = high;
+}
+
 void Img::getHorizontalData(
   uint32_t *buf,
-  float lowLimit,
-  float highLimit,
   ColorMap *cmap,
   uint8_t alpha
   )

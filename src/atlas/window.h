@@ -33,10 +33,10 @@ signals:
 public:
     Window();
 
+    void setLimits(float low, float high);
+
     int loadImg(
         const char *fn,
-        float lowLimit,
-        float highLimit,
         int slice = -1,
         int frame = -1
         );
@@ -50,8 +50,6 @@ private:
     void readImgData();
     int readImg(
         Img *img,
-        float lowLimit,
-        float highLimit,
         int slice = -1,
         int frame = -1 
         );
@@ -76,7 +74,6 @@ private:
 
     int imgSlice;
     int imgFrame;
-    float imgLowLimit, imgHighLimit;
 };
 
 #endif

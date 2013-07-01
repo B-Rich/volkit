@@ -9,9 +9,7 @@
 
 Window::Window() :
     colorMap(),
-    imgLoaded(false),
-    imgLowLimit(0.0),
-    imgHighLimit(65000.0)
+    imgLoaded(false)
 {
     workWidget = new QWidget;
     setCentralWidget(workWidget);
@@ -82,7 +80,7 @@ void Window::fileOpen()
         {
             closeImg();
         }
-        loadImg(fn.toStdString().c_str(), imgLowLimit, imgHighLimit);
+        loadImg(fn.toStdString().c_str());
     }
 }
 
@@ -143,8 +141,6 @@ void Window::readImgData()
 {
     imgBase->getHorizontalData(
         imgData,
-        imgLowLimit,
-        imgHighLimit,
         &colorMap
         );
 
@@ -156,8 +152,6 @@ void Window::readImgData()
 
 int Window::loadImg(
     const char *fn,
-    float lowLimit,
-    float highLimit,
     int slice,
     int frame
     )
@@ -167,7 +161,8 @@ int Window::loadImg(
 
     if (result == 0)
     {
-        result = readImg(img, lowLimit, highLimit, slice, frame);
+        img->setLimits(0.0, 65000.0);
+        result = readImg(img, slice, frame);
     }
 
     return result;
@@ -175,15 +170,10 @@ int Window::loadImg(
 
 int Window::readImg(
     Img *img,
-    float lowLimit,
-    float highLimit,
     int slice,
     int frame
     )
 {
-    imgLowLimit = lowLimit;
-    imgHighLimit = highLimit;
-
     if (slice < 0)
     {
         imgSlice = img->getDimz() / 2;

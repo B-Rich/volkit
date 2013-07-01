@@ -175,6 +175,8 @@ protected:
 
   /** Decay correction factor for each frame; included in pixel values */
   float decayCorrFactor;
+
+  float lowLimit, highLimit;
                               
   /*
    * Public interface
@@ -195,10 +197,10 @@ public:
   int getDimz();
   float getMax();
 
+  void setLimits(float low, float high);
+
   void getHorizontalData(
     uint32_t *buf,
-    float lowLimit,
-    float highLimit,
     ColorMap *cmap,
     uint8_t alpha = 255
   );
