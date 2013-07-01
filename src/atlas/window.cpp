@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stdlib.h>
 
-#include "v.h"
+#include "img/v.h"
 #include "glwidget.h"
 #include "window.h"
 

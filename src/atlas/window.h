@@ -6,8 +6,8 @@
 
 #include <stdint.h>
 
-#include "colormap.h"
-#include "img.h"
+#include "img/colormap.h"
+#include "img/img.h"
 
 class GLWidget;
 class QMenu;

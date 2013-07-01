@@ -11,7 +11,7 @@ extern "C" {
 #include "swap.h"
 }
 
-#include "img.h"
+#include "img/img.h"
 
 char *Img::statusMessage[] = {
   /*  0 */ "ok",

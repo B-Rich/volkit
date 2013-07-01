@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "colormap.h"
+#include "img/colormap.h"
 
 ColorMap::ColorMap(float weight)
 {

@@ -10,8 +10,8 @@ extern "C" {
 #include "swap.h"
 }
 
-#include "img.h"
-#include "v.h"
+#include "img/img.h"
+#include "img/v.h"
 
 char *V::imgmsg[] = {
   /*  0 */ "ok",

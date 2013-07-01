@@ -4,7 +4,6 @@ IF(QT4_FOUND AND OPENGL_FOUND)
         )
 
     SET(atlas_SOURCES
-        img.cpp v.cpp colormap.cpp
         glwidget.cpp window.cpp atlas.cpp
     )
     SET(atlas_HEADERS window.h)
@@ -20,7 +19,7 @@ IF(QT4_FOUND AND OPENGL_FOUND)
         )
 
     TARGET_LINK_LIBRARIES(atlas
-        tpcimgio tpcmisc
+        img tpcimgio tpcmisc
         ${QT_LIBRARIES} ${OPENGL_LIBRARIES}
         )
 ELSE()

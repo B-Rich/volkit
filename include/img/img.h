@@ -2,7 +2,7 @@
 #define IMG_H
 
 #include <stdint.h>
-#include "colormap.h"
+#include "img/colormap.h"
 
 #define MAX_STUDYNR_LEN	80
 
