@@ -7,8 +7,9 @@
 
 #include "glwidget.h"
 
-GLWidget::GLWidget(QWidget *parent)
-    : QGLWidget(parent),
+GLWidget::GLWidget(ToolBox *tool, QWidget *parent)
+    : currTool(tool),
+      QGLWidget(parent),
       dataSet(false),
       updateState(true),
       xDataZoom(1.0),
@@ -29,6 +30,25 @@ QSize GLWidget::minimumSizeHint() const
 QSize GLWidget::sizeHint() const
 {
     return QSize(512, 512);
+}
+
+void GLWidget::mousePressEvent(QMouseEvent* event)
+{
+    currTool->setState(TOOL_START);
+    currTool->setPos(event->pos().x(), event->pos().y());
+}
+
+void GLWidget::mouseMoveEvent(QMouseEvent* event)
+{
+    currTool->setState(TOOL_DEFINE);
+    currTool->setPos(event->pos().x(), event->pos().y());
+    repaint();
+}
+
+void GLWidget::mouseReleaseEvent(QMouseEvent* event)
+{
+    currTool->setState(TOOL_END);
+    currTool->setPos(event->pos().x(), event->pos().y());
 }
 
 void GLWidget::calculateDataZoom(int w, int h)
@@ -78,6 +98,18 @@ void GLWidget::paintGL()
             updateState = false;
         }
         glDrawPixels(dataWidth, dataHeight, GL_RGBA, GL_UNSIGNED_BYTE, dataPtr);
+    }
+
+    if (currTool->getType() == TOOLBOX_POLYGON &&
+        currTool->getState() == TOOL_DEFINE)
+    {
+        QPoint start, end;
+        currTool->getCurrLine(&start, &end);
+        glBegin(GL_LINES);
+            glColor3f(1.0, 1.0, 1.0);
+            glVertex2i(start.x(), start.y());
+            glVertex2i(end.x(), end.y());
+        glEnd();
     }
 }
 

@@ -8,6 +8,7 @@
 
 #include "img/colormap.h"
 #include "img/img.h"
+#include "toolbox.h"
 
 class GLWidget;
 class QMenu;
@@ -36,8 +37,6 @@ signals:
     void frameChanged(int frame);
 
 public:
-    enum Tool { TOOL_SELECT, TOOL_POLYGON, TOOL_SAMPLE };
-
     Window();
 
     void setLimits(float low, float high);
@@ -87,6 +86,8 @@ private:
 
     int imgSlice;
     int imgFrame;
+
+    ToolBox *selectedTool;
 };
 
 #endif

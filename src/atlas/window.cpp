@@ -14,7 +14,8 @@ Window::Window() :
     workWidget = new QWidget;
     setCentralWidget(workWidget);
 
-    glWidget = new GLWidget;
+    selectedTool = new ToolBox;
+    glWidget = new GLWidget(selectedTool);
 
     sliceScroll = new QScrollBar(Qt::Vertical);
     connect(sliceScroll, SIGNAL(valueChanged(int)), this, SLOT(setSlice(int)));
@@ -104,16 +105,19 @@ void Window::fileExit()
 
 void Window::toolsSelect()
 {
+    selectedTool->setType(TOOLBOX_SELECT);
     statusBar()->showMessage(tr("Click on object to select"));
 }
 
 void Window::toolsPolygon()
 {
+    selectedTool->setType(TOOLBOX_POLYGON);
     statusBar()->showMessage(tr("Draw polygon"));
 }
 
 void Window::toolsSample()
 {
+    selectedTool->setType(TOOLBOX_SAMPLE);
     statusBar()->showMessage(tr("Select point to sample"));
 }
 

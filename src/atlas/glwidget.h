@@ -3,14 +3,19 @@
 
 #include <QGLWidget>
 
+#include "toolbox.h"
+
 class GLWidget : public QGLWidget
 {
 public:
-    GLWidget(QWidget *parent = 0);
+    GLWidget(ToolBox *tool, QWidget *parent = 0);
     ~GLWidget();
 
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
+    void mousePressEvent(QMouseEvent* event);
+    void mouseMoveEvent(QMouseEvent* event);
+    void mouseReleaseEvent(QMouseEvent* event);
 
     void setData(int w, int h, void *data);
     void unsetData();
@@ -22,6 +27,8 @@ protected:
 
 private:
     void calculateDataZoom(int w, int h);
+
+    ToolBox *currTool;
 
     bool dataSet;
     int dataWidth, dataHeight;
