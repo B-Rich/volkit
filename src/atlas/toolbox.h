@@ -2,6 +2,7 @@
 #define TOOLBOX_H
 
 #include <QLine>
+#include <QPolygon>
 
 enum ToolType
 {
@@ -32,6 +33,7 @@ public:
     ToolType getType() { return toolType; }
     ToolState getState() { return toolState; }
     void getCurrLine(QLine &line);
+    QPolygon getPolygon() { return *currPolygon; }
 
 private:
     ToolType toolType;
@@ -39,6 +41,9 @@ private:
     int xInitPos, yInitPos;
     int xCurrPos, yCurrPos;
     int xLastPos, yLastPos;
+
+    bool polygonDefined;
+    QPolygon *currPolygon;
 };
 
 #endif

@@ -49,6 +49,7 @@ void GLWidget::mouseReleaseEvent(QMouseEvent* event)
 {
     currTool->setState(TOOL_END);
     currTool->setPos(event->pos().x(), event->pos().y());
+    repaint();
 }
 
 void GLWidget::calculateDataZoom(int w, int h)
@@ -100,16 +101,27 @@ void GLWidget::paintGL()
         glDrawPixels(dataWidth, dataHeight, GL_RGBA, GL_UNSIGNED_BYTE, dataPtr);
     }
 
-    if (currTool->getType() == TOOLBOX_POLYGON &&
-        currTool->getState() == TOOL_DEFINE)
+    if (currTool->getType() == TOOLBOX_POLYGON)
     {
-        QLine line;
-        currTool->getCurrLine(line);
-        glBegin(GL_LINES);
-            glColor3f(1.0, 1.0, 1.0);
-            glVertex2i(line.x1(), line.y1());
-            glVertex2i(line.x2(), line.y2());
+        glColor3f(1.0, 1.0, 1.0);
+        QPolygon polygon = currTool->getPolygon();
+        glBegin(GL_LINE_STRIP);
+        for (int i = 0; i < polygon.size(); i++)
+        {
+            QPoint p = polygon.at(i);
+            glVertex2i(p.x(), p.y());
+        }
         glEnd();
+
+        if (currTool->getState() == TOOL_DEFINE)
+        {
+            QLine line;
+            currTool->getCurrLine(line);
+            glBegin(GL_LINES);
+                glVertex2i(line.x1(), line.y1());
+                glVertex2i(line.x2(), line.y2());
+            glEnd();
+        }
     }
 }
 
