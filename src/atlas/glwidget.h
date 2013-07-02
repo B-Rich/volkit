@@ -13,9 +13,10 @@ public:
 
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
-    void mousePressEvent(QMouseEvent* event);
-    void mouseMoveEvent(QMouseEvent* event);
-    void mouseReleaseEvent(QMouseEvent* event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
 
     void setData(int w, int h, void *data);
     void unsetData();

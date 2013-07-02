@@ -15,6 +15,7 @@ GLWidget::GLWidget(ToolBox *tool, QWidget *parent)
       xDataZoom(1.0),
       yDataZoom(1.0)
 {
+    setMouseTracking(true);
 }
 
 GLWidget::~GLWidget()
@@ -32,24 +33,43 @@ QSize GLWidget::sizeHint() const
     return QSize(512, 512);
 }
 
-void GLWidget::mousePressEvent(QMouseEvent* event)
+void GLWidget::mousePressEvent(QMouseEvent *event)
 {
+    if (currTool->getState() == TOOL_DEFINE)
+    {
+        currTool->setState(TOOL_END);
+        currTool->setPos(event->pos().x(), event->pos().y());
+    }
     currTool->setState(TOOL_START);
     currTool->setPos(event->pos().x(), event->pos().y());
-}
-
-void GLWidget::mouseMoveEvent(QMouseEvent* event)
-{
     currTool->setState(TOOL_DEFINE);
-    currTool->setPos(event->pos().x(), event->pos().y());
-    repaint();
 }
 
-void GLWidget::mouseReleaseEvent(QMouseEvent* event)
+void GLWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    if (currTool->getState() == TOOL_DEFINE)
+    {
+        currTool->setPos(event->pos().x(), event->pos().y());
+        repaint();
+    }
+}
+
+void GLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     currTool->setState(TOOL_END);
     currTool->setPos(event->pos().x(), event->pos().y());
+    currTool->setState(TOOL_START);
+    currTool->setPos(event->pos().x(), event->pos().y());
+    currTool->setState(TOOL_DEFINE);
     repaint();
+}
+
+void GLWidget::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    currTool->setState(TOOL_END);
+    currTool->setPos(event->pos().x(), event->pos().y());
+    currTool->setState(TOOL_IDLE);
+    currTool->setType(TOOLBOX_SELECT);
 }
 
 void GLWidget::calculateDataZoom(int w, int h)
@@ -105,7 +125,7 @@ void GLWidget::paintGL()
     {
         glColor3f(1.0, 1.0, 1.0);
         QPolygon polygon = currTool->getPolygon();
-        glBegin(GL_LINE_STRIP);
+        glBegin(GL_LINES);
         for (int i = 0; i < polygon.size(); i++)
         {
             QPoint p = polygon.at(i);
