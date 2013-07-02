@@ -103,12 +103,12 @@ void GLWidget::paintGL()
     if (currTool->getType() == TOOLBOX_POLYGON &&
         currTool->getState() == TOOL_DEFINE)
     {
-        QPoint start, end;
-        currTool->getCurrLine(&start, &end);
+        QLine line;
+        currTool->getCurrLine(line);
         glBegin(GL_LINES);
             glColor3f(1.0, 1.0, 1.0);
-            glVertex2i(start.x(), start.y());
-            glVertex2i(end.x(), end.y());
+            glVertex2i(line.x1(), line.y1());
+            glVertex2i(line.x2(), line.y2());
         glEnd();
     }
 }

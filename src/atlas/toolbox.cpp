@@ -6,6 +6,33 @@ ToolBox::ToolBox()
 {
 }
 
+void ToolBox::setType(ToolType type)
+{
+    if (type != toolType)
+    {
+        toolState = TOOL_IDLE;
+        toolType = type;
+    }
+}
+
+void ToolBox::setState(ToolState state)
+{
+    if (state != toolState)
+    {
+        if (toolType == TOOLBOX_POLYGON &&
+            toolState == TOOL_END)
+        {
+            xLastPos = xCurrPos;
+            yLastPos = yCurrPos;
+            toolState = TOOL_CONTINUE;
+        }
+        else
+        {
+            toolState = state;
+        }
+    }
+}
+
 void ToolBox::setPos(int x, int y)
 {
     switch(toolState)
@@ -21,16 +48,18 @@ void ToolBox::setPos(int x, int y)
             yCurrPos = y;
             break;
 
+        case TOOL_CONTINUE:
+            xInitPos = xLastPos;
+            yInitPos = yLastPos;
+            break;
+
         default:
             break;
     }
 }
 
-void ToolBox::getCurrLine(QPoint *p0, QPoint *p1)
+void ToolBox::getCurrLine(QLine &line)
 {
-    p0->setX(xInitPos);
-    p0->setY(yInitPos);
-    p1->setX(xCurrPos);
-    p1->setY(yCurrPos);
+    line.setLine(xInitPos, yInitPos, xCurrPos, yCurrPos);
 }
 
