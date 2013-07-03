@@ -4,9 +4,45 @@
 
 ToolBox::ToolBox()
     : toolType(TOOLBOX_SELECT),
-      toolState(TOOL_IDLE),
+      toolState(STATE_IDLE),
       polygonDefined(false)
 {
+}
+
+void ToolBox::mouseDown(int x, int y)
+{
+    if (getState() == STATE_DEFINE)
+    {
+        setState(STATE_END);
+        setPos(x, y);
+    }
+    setState(STATE_START);
+    setPos(x, y);
+    setState(STATE_DEFINE);
+}
+
+void ToolBox::mouseMove(int x, int y)
+{
+    if (getState() == STATE_DEFINE)
+    {
+        setPos(x, y);
+    }
+}
+
+void ToolBox::mouseUp(int x, int y)
+{
+    setState(STATE_END);
+    setPos(x, y);
+    setState(STATE_START);
+    setPos(x, y);
+    setState(STATE_DEFINE);
+}
+
+void ToolBox::mouseDoubleClick(int x, int y)
+{
+    setState(STATE_END);
+    setPos(x, y);
+    setState(STATE_IDLE);
 }
 
 void ToolBox::setType(ToolType type)
@@ -17,7 +53,7 @@ void ToolBox::setType(ToolType type)
         {
             currPolygon = new QPolygon;
         }
-        toolState = TOOL_IDLE;
+        toolState = STATE_IDLE;
         toolType = type;
     }
 }
@@ -27,11 +63,11 @@ void ToolBox::setState(ToolState state)
     if (state != toolState)
     {
         if (toolType == TOOLBOX_POLYGON &&
-            toolState == TOOL_END)
+            toolState == STATE_END)
         {
             xLastPos = xCurrPos;
             yLastPos = yCurrPos;
-            toolState = TOOL_CONTINUE;
+            toolState = STATE_CONTINUE;
         }
         else
         {
@@ -44,17 +80,17 @@ void ToolBox::setPos(int x, int y)
 {
     switch(toolState)
     {
-        case TOOL_START:
+        case STATE_START:
             xInitPos = x;
             yInitPos = y;
             break;
 
-        case TOOL_DEFINE:
+        case STATE_DEFINE:
             xCurrPos = x;
             yCurrPos = y;
             break;
 
-        case TOOL_END:
+        case STATE_END:
             xCurrPos = x;
             yCurrPos = y;
             if (toolType == TOOLBOX_POLYGON)
@@ -64,7 +100,7 @@ void ToolBox::setPos(int x, int y)
             }
             break;
 
-        case TOOL_CONTINUE:
+        case STATE_CONTINUE:
             xInitPos = xLastPos;
             yInitPos = yLastPos;
             break;

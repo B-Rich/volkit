@@ -35,40 +35,24 @@ QSize GLWidget::sizeHint() const
 
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
-    if (currTool->getState() == TOOL_DEFINE)
-    {
-        currTool->setState(TOOL_END);
-        currTool->setPos(event->pos().x(), event->pos().y());
-    }
-    currTool->setState(TOOL_START);
-    currTool->setPos(event->pos().x(), event->pos().y());
-    currTool->setState(TOOL_DEFINE);
+    currTool->mouseDown(event->pos().x(), event->pos().y());
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    if (currTool->getState() == TOOL_DEFINE)
-    {
-        currTool->setPos(event->pos().x(), event->pos().y());
-        repaint();
-    }
+    currTool->mouseMove(event->pos().x(), event->pos().y());
+    repaint();
 }
 
 void GLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    currTool->setState(TOOL_END);
-    currTool->setPos(event->pos().x(), event->pos().y());
-    currTool->setState(TOOL_START);
-    currTool->setPos(event->pos().x(), event->pos().y());
-    currTool->setState(TOOL_DEFINE);
+    currTool->mouseMove(event->pos().x(), event->pos().y());
     repaint();
 }
 
 void GLWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    currTool->setState(TOOL_END);
-    currTool->setPos(event->pos().x(), event->pos().y());
-    currTool->setState(TOOL_IDLE);
+    currTool->mouseDoubleClick(event->pos().x(), event->pos().y());
     currTool->setType(TOOLBOX_SELECT);
 }
 
@@ -133,7 +117,7 @@ void GLWidget::paintGL()
         }
         glEnd();
 
-        if (currTool->getState() == TOOL_DEFINE)
+        if (currTool->getState() == Tool::STATE_DEFINE)
         {
             QLine line;
             currTool->getCurrLine(line);

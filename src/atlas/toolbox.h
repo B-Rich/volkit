@@ -4,6 +4,8 @@
 #include <QLine>
 #include <QPolygon>
 
+#include "tool.h"
+
 enum ToolType
 {
     TOOLBOX_SELECT,
@@ -11,6 +13,7 @@ enum ToolType
     TOOLBOX_SAMPLE
 };
 
+#if 0
 enum ToolState
 {
     TOOL_IDLE,
@@ -20,20 +23,29 @@ enum ToolState
     TOOL_CONTINUE,
     TOOL_DONE
 };
+#endif
 
-class ToolBox
+class ToolBox : Tool
 {
 public:
     ToolBox();
 
     void setType(ToolType type);
     void setState(ToolState state);
-    void setPos(int x, int y);
 
     ToolType getType() { return toolType; }
     ToolState getState() { return toolState; }
+
+    void mouseDown(int x, int y);
+    void mouseMove(int x, int y);
+    void mouseUp(int x, int y);
+    void mouseDoubleClick(int x, int y);
+
     void getCurrLine(QLine &line);
     QPolygon getPolygon() { return *currPolygon; }
+
+protected:
+    void setPos(int x, int y);
 
 private:
     ToolType toolType;
