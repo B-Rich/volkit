@@ -3,58 +3,59 @@
 
 #include <stdint.h>
 
-struct Color {
-  float val[3];
+struct Color3
+{
+    Color3() { }
+    Color3 (uint16_t red, uint16_t green, uint16_t blue)
+        : r(red / 65536.0),
+          g(green / 65536.0),
+          b(blue / 65536.0) { }
+
+    float r, g, b;
 };
 
-class ColorMap {
-
-  private:
-
-  Color *col;
-  int nColors;
-  float weight;
-  bool initialized;
-
-  public:
-
-  ColorMap(float weight = 255.0f);
-  ColorMap(const char *fn, float weight = 255.0f);
-
-  ~ColorMap() {
-    if (initialized) {
-      delete col;
-      initialized = false;
+class ColorMap
+{
+public:
+    ColorMap(float w = 255);
+    ~ColorMap()
+    {
+        if (initialized)
+        {
+            delete col;
+            initialized = false;
+        }
     }
-  }
 
-  int loadColormap(const char *fn);
+    int loadColormap(const char *fn);
+    int getNumColors() { return nColors; }
 
-  int getNumColors()
-  {
-    return nColors;
-  }
+    inline uint8_t r(int i)
+    {
+        if (!initialized) return 0;
+        if (i >= nColors || i < 0) return 0;
+        return (uint8_t) (col[i].r * weight);
+    }
 
-  inline uint8_t getRed(int i)
-  {
-    if (!initialized) return 0;
-    if (i >= nColors || i < 0) return 0;
-    return (uint8_t)(col[i].val[0] * weight);
-  }
+    inline uint8_t g(int i)
+    {
+        if (!initialized) return 0;
+        if (i >= nColors || i < 0) return 0;
+        return (uint8_t) (col[i].g * weight);
+    }
 
-  inline uint8_t getGreen(int i)
-  {
-    if (!initialized) return 0;
-    if (i >= nColors || i < 0) return 0;
-    return (uint8_t)(col[i].val[1] * weight);
-  }
+    inline uint8_t b(int i)
+    {
+        if (!initialized) return 0;
+        if (i >= nColors || i < 0) return 0;
+        return (uint8_t) (col[i].b * weight);
+    }
 
-  inline uint8_t getBlue(int i)
-  {
-    if (!initialized) return 0;
-    if (i >= nColors || i < 0) return 0;
-    return (uint8_t)(col[i].val[2] * weight);
-  }
+private:
+    Color3 *col;
+    int nColors;
+    float weight;
+    bool initialized;
 };
 
 #endif

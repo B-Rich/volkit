@@ -1,4 +1,8 @@
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <vector>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,92 +10,71 @@
 
 #include "img/colormap.h"
 
-ColorMap::ColorMap(float weight)
+ColorMap::ColorMap(float w)
 {
-  float di = 1.0f / 256.0f;
-  float val = 0.0f;
+    float di = 1.0 / 256.0;
+    float val = 0.0;
+    weight = w;
 
-  this->weight = weight;
+    nColors = 256;
+    col = new Color3[nColors];
+    for (int i = 0; i < nColors; i++)
+    {
+        col[i].r = val;
+        col[i].g = val;
+        col[i].b = val;
+        val += di;
+    }
 
-  nColors = 256;
-
-  col = new Color[nColors];
-
-  for (int i = 0; i < nColors; i++) {
-
-    col[i].val[0] = val;
-    col[i].val[1] = val;
-    col[i].val[2] = val;
-
-    val += di;
-  }
-
-  initialized = true;
-}
-
-ColorMap::ColorMap(const char *fn, float weight) {
-
-  this->weight = weight;
-
-  if (loadColormap (fn) == 0) {
     initialized = true;
-    return;
-  }
-
-  fprintf(stderr, "Colormap file: %s not found\n"
-        	  "Revert to default colormap\n", fn);
-
-  ColorMap(this->weight);
 }
 
-int ColorMap::loadColormap(const char *fn) {
+int ColorMap::loadColormap(const char *fn)
+{
+    int status = -1;
 
-  if (initialized) {
-    initialized = false;
-    delete col;
-  }
+    if (initialized)
+    {
+        initialized = false;
+        delete col;
+    }
 
-  FILE *fp;
+    std::vector<Color3> values;
+    std::ifstream file;
+    file.open(fn);
+    if (file.is_open())
+    {
+        std::string line;
+        std::stringstream ss;
+        while(file.good())
+        {
+            std::getline(file, line);
+            std::stringstream ss(line);
 
-  if ( (fp = fopen(fn, "r") ) == NULL) {
-    fprintf(stderr, "Unable to open file: %s\n", fn);
-    return 1;
-  }
+            uint16_t r, g, b;
+            ss >> r;
+            ss >> g;
+            ss >> b;
 
-  fscanf(fp, "%d\n", &nColors);
+            Color3 c(r, g, b);
+            values.push_back(c);
+        }
 
-#ifdef DEBUG
-  printf("Loading colormap with %d colors.\n", nColors);
-#endif
+        file.close();
 
-  col = new Color[nColors];
+        nColors = values.size();
+        col = new Color3[nColors];
+        for (int i = 0; i < nColors; i++)
+        {
+            col[i].r = values[i].r;
+            col[i].g = values[i].g;
+            col[i].b = values[i].b;
+        }
 
-  char s1[80], s2[80], s3[80];
-  float r,g,b;
+        status = 0;
+        initialized = true;
+    }
 
-  for (int i = 0; i < nColors; i++) {
-
-    fscanf(fp, "%s %s %s\n", s1, s2, s3);
-
-    r = atof(s1);
-    g = atof(s2);
-    b = atof(s3);
-
-    col[i].val[0] = r;
-    col[i].val[1] = g;
-    col[i].val[2] = b;
-
-#ifdef DEBUG
-    printf("%s, %s, %s:", s1, s2, s3);
-    printf("%f, %f, %f\n",r,g,b);
-#endif
-
-  }
-
-  fclose(fp);
-
-  initialized = true;
-
-  return 0;
+    return status;
 }
 

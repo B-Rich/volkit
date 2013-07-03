@@ -84,7 +84,7 @@ void Window::fileColormap()
 {
     QString fn =
         QFileDialog::getOpenFileName(this, tr("Load Colormap..."),
-            QString(), tr("Colormap (*.cmap);;All Files (*)"));
+            QString(), tr("Colormap (*.map);;All Files (*)"));
     if (!fn.isEmpty())
     {
         int result = loadColormap(fn.toStdString().c_str());

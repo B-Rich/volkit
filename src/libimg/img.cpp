@@ -242,9 +242,9 @@ void Img::getHorizontalData(
         }
 
         int out = int(numColors * result);
-        *img = cmap->getRed(out); img++;
-        *img = cmap->getGreen(out); img++;
-        *img = cmap->getBlue(out); img++;
+        *img = cmap->r(out); img++;
+        *img = cmap->g(out); img++;
+        *img = cmap->b(out); img++;
         *img = alpha; img++;
 
       } /* End for xi */
