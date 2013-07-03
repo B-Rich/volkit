@@ -102,6 +102,7 @@ int strcasecmp(char *s1, char *s2) {
 
 #define touppercase(c) (toupper(((unsigned char)(c))))
 
+#ifdef NO_STRCASESTR
 /** Case-insensitive version of strstr().
 \return Returns a pointer to the beginning of the first occurrence, or NULL
         if not found.
@@ -123,6 +124,7 @@ char *strcasestr(
   }
   return *e ? 0 : src;
 }
+#endif
 
 #endif
 
