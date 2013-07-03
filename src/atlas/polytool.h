@@ -1,9 +1,9 @@
 #ifndef POLYTOOL_H
 #define POLYTOOL_H
 
-#include <QLine>
-#include <QPolygon>
+#include <vector>
 
+#include "img/line2.h"
 #include "tool.h"
 
 class Polytool : public Tool
@@ -20,19 +20,16 @@ public:
     void mouseDoubleClick(int x, int y);
     void draw();
 
-    void getCurrLine(QLine &line);
-    QPolygon getPolygon() { return *currPolygon; }
-
 protected:
     void setPos(int x, int y);
 
 private:
-    int xInitPos, yInitPos;
-    int xCurrPos, yCurrPos;
-    int xLastPos, yLastPos;
+    Point2 initPos;
+    Point2 currPos;
+    Point2 lastPos;
 
     bool polygonDefined;
-    QPolygon *currPolygon;
+    std::vector<Point2*> polygon;
 };
 
 #endif

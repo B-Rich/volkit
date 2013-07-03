@@ -5,10 +5,9 @@
 #include "polytool.h"
 
 Polytool::Polytool()
-    : Tool(TYPE_SELECT, STATE_IDLE),
+    : Tool(TYPE_POLYGON, STATE_IDLE),
       polygonDefined(false)
 {
-    currPolygon = new QPolygon;
 }
 
 void Polytool::mouseDown(int x, int y)
@@ -54,8 +53,7 @@ void Polytool::setState(ToolState state)
         if (toolType == TYPE_POLYGON &&
             toolState == STATE_END)
         {
-            xLastPos = xCurrPos;
-            yLastPos = yCurrPos;
+            lastPos.set(currPos);
             toolState = STATE_CONTINUE;
         }
         else
@@ -70,25 +68,21 @@ void Polytool::setPos(int x, int y)
     switch(toolState)
     {
         case STATE_START:
-            xInitPos = x;
-            yInitPos = y;
+            set(initPos, x, y);
             break;
 
         case STATE_DEFINE:
-            xCurrPos = x;
-            yCurrPos = y;
+            set(currPos, x, y);
             break;
 
         case STATE_END:
-            xCurrPos = x;
-            yCurrPos = y;
-            (*currPolygon) << QPoint(xInitPos, yInitPos)
-                           << QPoint(xCurrPos, yCurrPos);
+            set(currPos, x, y);
+            polygon.push_back(new Point2(initPos));
+            polygon.push_back(new Point2(currPos));
             break;
 
         case STATE_CONTINUE:
-            xInitPos = xLastPos;
-            yInitPos = yLastPos;
+            initPos.set(lastPos);
             break;
 
         default:
@@ -96,34 +90,24 @@ void Polytool::setPos(int x, int y)
     }
 }
 
-void Polytool::getCurrLine(QLine &line)
-{
-    line.setLine(xInitPos, yInitPos, xCurrPos, yCurrPos);
-}
-
 void Polytool::draw()
 {
-    if (getType() == Tool::TYPE_POLYGON)
+    glColor3f(1.0, 1.0, 1.0);
+    glBegin(GL_LINES);
+    for (int i = 0; i < polygon.size(); i++)
     {
-        glColor3f(1.0, 1.0, 1.0);
-        QPolygon polygon = getPolygon();
-        glBegin(GL_LINES);
-        for (int i = 0; i < polygon.size(); i++)
-        {
-            QPoint p = polygon.at(i);
-            glVertex2i(p.x(), p.y());
-        }
-        glEnd();
+        Point2 *p = polygon[i];
+        glVertex2i(x(*p), y(*p));
+    }
+    glEnd();
 
-        if (getState() == Tool::STATE_DEFINE)
-        {
-            QLine line;
-            getCurrLine(line);
-            glBegin(GL_LINES);
-                glVertex2i(line.x1(), line.y1());
-                glVertex2i(line.x2(), line.y2());
-            glEnd();
-        }
+    if (getState() == Tool::STATE_DEFINE)
+    {
+        Line2 line(initPos, currPos);
+        glBegin(GL_LINES);
+            glVertex2i(x1(line), y1(line));
+            glVertex2i(x2(line), y2(line));
+        glEnd();
     }
 }
 

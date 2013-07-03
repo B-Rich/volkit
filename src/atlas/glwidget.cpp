@@ -61,6 +61,7 @@ void GLWidget::calculateDataZoom(int w, int h)
 {
     xDataZoom = float(w) / float(dataWidth);
     yDataZoom = float(h) / float(dataHeight);
+    currTool->setScale(float(w), float(h));
     updateState = true;
 }
 
