@@ -4,7 +4,7 @@ IF(QT4_FOUND AND OPENGL_FOUND)
         )
 
     SET(atlas_SOURCES
-        toolbox.cpp glwidget.cpp window.cpp atlas.cpp
+        polytool.cpp glwidget.cpp window.cpp atlas.cpp
     )
     SET(atlas_HEADERS window.h)
     SET(atlas_RESOURCES application.qrc)

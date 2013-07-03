@@ -8,7 +8,7 @@
 
 #include "img/colormap.h"
 #include "img/img.h"
-#include "toolbox.h"
+#include "tool.h"
 
 class GLWidget;
 class QMenu;
@@ -87,7 +87,7 @@ private:
     int imgSlice;
     int imgFrame;
 
-    ToolBox *selectedTool;
+    Tool *selectedTool;
 };
 
 #endif

@@ -5,6 +5,7 @@
 
 #include "img/v.h"
 #include "glwidget.h"
+#include "polytool.h"
 #include "window.h"
 
 Window::Window() :
@@ -14,7 +15,7 @@ Window::Window() :
     workWidget = new QWidget;
     setCentralWidget(workWidget);
 
-    selectedTool = new ToolBox;
+    selectedTool = new Polytool;
     glWidget = new GLWidget(selectedTool);
 
     sliceScroll = new QScrollBar(Qt::Vertical);
@@ -105,19 +106,19 @@ void Window::fileExit()
 
 void Window::toolsSelect()
 {
-    selectedTool->setType(TOOLBOX_SELECT);
+    selectedTool->setType(Tool::TYPE_SELECT);
     statusBar()->showMessage(tr("Click on object to select"));
 }
 
 void Window::toolsPolygon()
 {
-    selectedTool->setType(TOOLBOX_POLYGON);
+    selectedTool->setType(Tool::TYPE_POLYGON);
     statusBar()->showMessage(tr("Draw polygon"));
 }
 
 void Window::toolsSample()
 {
-    selectedTool->setType(TOOLBOX_SAMPLE);
+    selectedTool->setType(Tool::TYPE_SAMPLE);
     statusBar()->showMessage(tr("Select point to sample"));
 }
 

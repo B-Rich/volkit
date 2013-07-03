@@ -3,12 +3,12 @@
 
 #include <QGLWidget>
 
-#include "toolbox.h"
+#include "tool.h"
 
 class GLWidget : public QGLWidget
 {
 public:
-    GLWidget(ToolBox *tool, QWidget *parent = 0);
+    GLWidget(Tool *tool, QWidget *parent = 0);
     ~GLWidget();
 
     QSize minimumSizeHint() const;
@@ -29,7 +29,7 @@ protected:
 private:
     void calculateDataZoom(int w, int h);
 
-    ToolBox *currTool;
+    Tool *currTool;
 
     bool dataSet;
     int dataWidth, dataHeight;

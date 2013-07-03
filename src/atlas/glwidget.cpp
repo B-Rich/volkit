@@ -5,9 +5,10 @@
 #include <math.h>
 #include <string.h>
 
+#include "polytool.h"
 #include "glwidget.h"
 
-GLWidget::GLWidget(ToolBox *tool, QWidget *parent)
+GLWidget::GLWidget(Tool *tool, QWidget *parent)
     : currTool(tool),
       QGLWidget(parent),
       dataSet(false),
@@ -53,7 +54,7 @@ void GLWidget::mouseReleaseEvent(QMouseEvent *event)
 void GLWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
     currTool->mouseDoubleClick(event->pos().x(), event->pos().y());
-    currTool->setType(TOOLBOX_SELECT);
+    currTool->setType(Tool::TYPE_SELECT);
 }
 
 void GLWidget::calculateDataZoom(int w, int h)
@@ -104,29 +105,7 @@ void GLWidget::paintGL()
         }
         glDrawPixels(dataWidth, dataHeight, GL_RGBA, GL_UNSIGNED_BYTE, dataPtr);
     }
-
-    if (currTool->getType() == TOOLBOX_POLYGON)
-    {
-        glColor3f(1.0, 1.0, 1.0);
-        QPolygon polygon = currTool->getPolygon();
-        glBegin(GL_LINES);
-        for (int i = 0; i < polygon.size(); i++)
-        {
-            QPoint p = polygon.at(i);
-            glVertex2i(p.x(), p.y());
-        }
-        glEnd();
-
-        if (currTool->getState() == Tool::STATE_DEFINE)
-        {
-            QLine line;
-            currTool->getCurrLine(line);
-            glBegin(GL_LINES);
-                glVertex2i(line.x1(), line.y1());
-                glVertex2i(line.x2(), line.y2());
-            glEnd();
-        }
-    }
+    currTool->draw();
 }
 
 void GLWidget::resizeGL(int w, int h)

@@ -1,15 +1,17 @@
 #include <iostream>
 
-#include "toolbox.h"
+#include <GL/gl.h>
 
-ToolBox::ToolBox()
-    : toolType(TOOLBOX_SELECT),
-      toolState(STATE_IDLE),
+#include "polytool.h"
+
+Polytool::Polytool()
+    : Tool(TYPE_SELECT, STATE_IDLE),
       polygonDefined(false)
 {
+    currPolygon = new QPolygon;
 }
 
-void ToolBox::mouseDown(int x, int y)
+void Polytool::mouseDown(int x, int y)
 {
     if (getState() == STATE_DEFINE)
     {
@@ -21,7 +23,7 @@ void ToolBox::mouseDown(int x, int y)
     setState(STATE_DEFINE);
 }
 
-void ToolBox::mouseMove(int x, int y)
+void Polytool::mouseMove(int x, int y)
 {
     if (getState() == STATE_DEFINE)
     {
@@ -29,7 +31,7 @@ void ToolBox::mouseMove(int x, int y)
     }
 }
 
-void ToolBox::mouseUp(int x, int y)
+void Polytool::mouseUp(int x, int y)
 {
     setState(STATE_END);
     setPos(x, y);
@@ -38,31 +40,18 @@ void ToolBox::mouseUp(int x, int y)
     setState(STATE_DEFINE);
 }
 
-void ToolBox::mouseDoubleClick(int x, int y)
+void Polytool::mouseDoubleClick(int x, int y)
 {
     setState(STATE_END);
     setPos(x, y);
     setState(STATE_IDLE);
 }
 
-void ToolBox::setType(ToolType type)
-{
-    if (type != toolType)
-    {
-        if (type == TOOLBOX_POLYGON)
-        {
-            currPolygon = new QPolygon;
-        }
-        toolState = STATE_IDLE;
-        toolType = type;
-    }
-}
-
-void ToolBox::setState(ToolState state)
+void Polytool::setState(ToolState state)
 {
     if (state != toolState)
     {
-        if (toolType == TOOLBOX_POLYGON &&
+        if (toolType == TYPE_POLYGON &&
             toolState == STATE_END)
         {
             xLastPos = xCurrPos;
@@ -76,7 +65,7 @@ void ToolBox::setState(ToolState state)
     }
 }
 
-void ToolBox::setPos(int x, int y)
+void Polytool::setPos(int x, int y)
 {
     switch(toolState)
     {
@@ -93,11 +82,8 @@ void ToolBox::setPos(int x, int y)
         case STATE_END:
             xCurrPos = x;
             yCurrPos = y;
-            if (toolType == TOOLBOX_POLYGON)
-            {
-                (*currPolygon) << QPoint(xInitPos, yInitPos)
-                               << QPoint(xCurrPos, yCurrPos);
-            }
+            (*currPolygon) << QPoint(xInitPos, yInitPos)
+                           << QPoint(xCurrPos, yCurrPos);
             break;
 
         case STATE_CONTINUE:
@@ -110,8 +96,34 @@ void ToolBox::setPos(int x, int y)
     }
 }
 
-void ToolBox::getCurrLine(QLine &line)
+void Polytool::getCurrLine(QLine &line)
 {
     line.setLine(xInitPos, yInitPos, xCurrPos, yCurrPos);
+}
+
+void Polytool::draw()
+{
+    if (getType() == Tool::TYPE_POLYGON)
+    {
+        glColor3f(1.0, 1.0, 1.0);
+        QPolygon polygon = getPolygon();
+        glBegin(GL_LINES);
+        for (int i = 0; i < polygon.size(); i++)
+        {
+            QPoint p = polygon.at(i);
+            glVertex2i(p.x(), p.y());
+        }
+        glEnd();
+
+        if (getState() == Tool::STATE_DEFINE)
+        {
+            QLine line;
+            getCurrLine(line);
+            glBegin(GL_LINES);
+                glVertex2i(line.x1(), line.y1());
+                glVertex2i(line.x2(), line.y2());
+            glEnd();
+        }
+    }
 }
 
