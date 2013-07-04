@@ -299,6 +299,15 @@ int Window::readImg(
     return result;
 }
 
+void Window::setLimits(float low, float high)
+{
+    if (imgLoaded)
+    {
+        imgBase->setLimits(low, high);
+        readImgData();
+    }
+}
+
 void Window::closeImg()
 {
     if (imgLoaded)

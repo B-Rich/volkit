@@ -1,12 +1,13 @@
 #include <iostream>
+#include <stdlib.h>
 
 #include <QtGui>
 
 #include "window.h"
 #include "ranges.h"
 
-Ranges::Ranges(Window *parent)
-    : window(parent)
+Ranges::Ranges(QWidget *parent)
+    : parentWidget(parent)
 {
     QGridLayout *inputLayout = new QGridLayout;
     inputLayout->addWidget(new QLabel(tr("Low limit:")), 0, 0);
@@ -18,11 +19,11 @@ Ranges::Ranges(Window *parent)
     inputLayout->addWidget(highText, 1, 1);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout;
-    okButton = new QPushButton(tr("OK"));
-    buttonLayout->addWidget(okButton);
+    applyButton = new QPushButton(tr("Apply"));
+    buttonLayout->addWidget(applyButton);
 
-    cancelButton = new QPushButton(tr("Cancel"));
-    buttonLayout->addWidget(cancelButton);
+    closeButton = new QPushButton(tr("Close"));
+    buttonLayout->addWidget(closeButton);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addLayout(inputLayout);
@@ -39,24 +40,23 @@ Ranges::Ranges(Window *parent)
     setWindowTitle(tr("Ranges"));
 }
 
-void Ranges::handleOk()
+void Ranges::buttonApply()
 {
     QString low = lowText->text();
     QString high = highText->text();
-    std::cout << "Low: " << low.toStdString()
-              << " High: " << high.toStdString()
-              << std::endl;
-    hide();
+    Window *w = (Window *) parentWidget;
+    w->setLimits(atof(low.toStdString().c_str()),
+                 atof(high.toStdString().c_str()));
 }
 
-void Ranges::handleCancel()
+void Ranges::buttonClose()
 {
     hide();
 }
 
 void Ranges::createActions()
 {
-    connect(okButton, SIGNAL(released()), this, SLOT(handleOk()));
-    connect(cancelButton, SIGNAL(released()), this, SLOT(handleCancel()));
+    connect(applyButton, SIGNAL(released()), this, SLOT(buttonApply()));
+    connect(closeButton, SIGNAL(released()), this, SLOT(buttonClose()));
 }
 

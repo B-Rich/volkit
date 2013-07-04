@@ -40,7 +40,7 @@ private:
     bool updateState;
     float xDataZoom, yDataZoom;
 
-    QWidget *window;
+    QWidget *parentWidget;
 };
 
 #endif

@@ -62,6 +62,7 @@ private:
         int slice = -1,
         int frame = -1 
         );
+    void setLimit(float low, float high);
     void closeImg();
 
     QMenu *fileMenu;

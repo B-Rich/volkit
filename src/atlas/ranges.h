@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-class Window;
+class QWidget;
 class QLineEdit;
 class QPushButton;
 
@@ -12,21 +12,21 @@ class Ranges : public QWidget
     Q_OBJECT
 
 public:
-    Ranges(Window *parent);
+    Ranges(QWidget *parent);
 
 private slots:
-    void handleOk();
-    void handleCancel();
+    void buttonApply();
+    void buttonClose();
 
 private:
     void createActions();
 
     QLineEdit *lowText;
     QLineEdit *highText;
-    QPushButton *okButton;
-    QPushButton *cancelButton;
+    QPushButton *applyButton;
+    QPushButton *closeButton;
 
-    Window *window;
+    QWidget *parentWidget;
 };
 
 #endif
