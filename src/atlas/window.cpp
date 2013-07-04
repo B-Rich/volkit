@@ -48,7 +48,7 @@ Window::Window()
     setWindowTitle(tr("Atlas"));
 }
 
-void Window::fileOpen()
+void Window::imageOpen()
 {
     QString fn =
         QFileDialog::getOpenFileName(this, tr("Open File..."),
@@ -72,7 +72,7 @@ void Window::fileOpen()
     }
 }
 
-void Window::fileClose()
+void Window::imageClose()
 {
     if (imgLoaded)
     {
@@ -81,16 +81,40 @@ void Window::fileClose()
     }
 }
 
-void Window::fileRanges()
+void Window::imageHorizontal()
+{
+    imageHorizontalAct->setEnabled(false);
+    imageSagittalAct->setEnabled(true);
+    imageCoronalAct->setEnabled(true);
+    setOrientation(Img::ORIENTATION_HORIZONTAL);
+}
+
+void Window::imageSagittal()
+{
+    imageHorizontalAct->setEnabled(true);
+    imageSagittalAct->setEnabled(false);
+    imageCoronalAct->setEnabled(true);
+    setOrientation(Img::ORIENTATION_SAGITTAL);
+}
+
+void Window::imageCoronal()
+{
+    imageHorizontalAct->setEnabled(true);
+    imageSagittalAct->setEnabled(true);
+    imageCoronalAct->setEnabled(false);
+    setOrientation(Img::ORIENTATION_CORONAL);
+}
+
+void Window::imageRanges()
 {
     rangesDialog.show();
 }
 
-void Window::fileColormap()
+void Window::imageMap()
 {
     QString fn =
-        QFileDialog::getOpenFileName(this, tr("Load Colormap..."),
-            QString(), tr("Colormap (*.map);;All Files (*)"));
+        QFileDialog::getOpenFileName(this, tr("Load colormap..."),
+            QString(), tr("Map (*.map);;All Files (*)"));
     if (!fn.isEmpty())
     {
         int result = loadColormap(fn.toStdString().c_str());
@@ -105,7 +129,7 @@ void Window::fileColormap()
     }
 }
 
-void Window::fileExit()
+void Window::imageExit()
 {
     exit(0);
 }
@@ -130,20 +154,29 @@ void Window::toolsSample()
 
 void Window::createActions()
 {
-    fileOpenAct = new QAction(tr("&Open"), this);
-    connect(fileOpenAct, SIGNAL(triggered()), this, SLOT(fileOpen()));
+    imageOpenAct = new QAction(tr("&Open"), this);
+    connect(imageOpenAct, SIGNAL(triggered()), this, SLOT(imageOpen()));
 
-    fileCloseAct = new QAction(tr("&Close"), this);
-    connect(fileCloseAct, SIGNAL(triggered()), this, SLOT(fileClose()));
+    imageCloseAct = new QAction(tr("&Close"), this);
+    connect(imageCloseAct, SIGNAL(triggered()), this, SLOT(imageClose()));
 
-    fileRangesAct = new QAction(tr("&Ranges"), this);
-    connect(fileRangesAct, SIGNAL(triggered()), this, SLOT(fileRanges()));
+    imageHorizontalAct = new QAction(tr("&Horizontal"), this);
+    connect(imageHorizontalAct, SIGNAL(triggered()), this, SLOT(imageHorizontal()));
 
-    fileColormapAct = new QAction(tr("&Colormap"), this);
-    connect(fileColormapAct, SIGNAL(triggered()), this, SLOT(fileColormap()));
+    imageSagittalAct = new QAction(tr("&Sagittal"), this);
+    connect(imageSagittalAct, SIGNAL(triggered()), this, SLOT(imageSagittal()));
 
-    fileExitAct = new QAction(tr("&Exit"), this);
-    connect(fileExitAct, SIGNAL(triggered()), this, SLOT(fileExit()));
+    imageCoronalAct = new QAction(tr("&Coronal"), this);
+    connect(imageCoronalAct, SIGNAL(triggered()), this, SLOT(imageCoronal()));
+
+    imageRangesAct = new QAction(tr("&Ranges"), this);
+    connect(imageRangesAct, SIGNAL(triggered()), this, SLOT(imageRanges()));
+
+    imageMapAct = new QAction(tr("&Colormap"), this);
+    connect(imageMapAct, SIGNAL(triggered()), this, SLOT(imageMap()));
+
+    imageExitAct = new QAction(tr("&Exit"), this);
+    connect(imageExitAct, SIGNAL(triggered()), this, SLOT(imageExit()));
 
     toolsSelectAct = new QAction(
         QIcon(":/icons/select.png"),
@@ -172,14 +205,18 @@ void Window::createActions()
 
 void Window::createMenus()
 {
-    fileMenu = menuBar()->addMenu(tr("&File"));
-    fileMenu->addAction(fileOpenAct);
-    fileMenu->addAction(fileCloseAct);
-    fileMenu->addSeparator();
-    fileMenu->addAction(fileRangesAct);
-    fileMenu->addAction(fileColormapAct);
-    fileMenu->addSeparator();
-    fileMenu->addAction(fileExitAct);
+    imageMenu = menuBar()->addMenu(tr("&Image"));
+    imageMenu->addAction(imageOpenAct);
+    imageMenu->addAction(imageCloseAct);
+    imageMenu->addSeparator();
+    imageMenu->addAction(imageHorizontalAct);
+    imageMenu->addAction(imageSagittalAct);
+    imageMenu->addAction(imageCoronalAct);
+    imageMenu->addSeparator();
+    imageMenu->addAction(imageRangesAct);
+    imageMenu->addAction(imageMapAct);
+    imageMenu->addSeparator();
+    imageMenu->addAction(imageExitAct);
 }
 
 void Window::createToolBars()
@@ -198,8 +235,8 @@ void Window::setSlice(int slice)
         if (imgLoaded)
         {
             glWidget->setData(
-                imgBase->getDimx(), imgBase->getDimy(),
-                &imgData[imgSlice * imgBase->getDimx() * imgBase->getDimy()]
+                imgBase->getWidth(), imgBase->getHeight(),
+                &imgData[imgSlice * imgBase->getWidth() * imgBase->getHeight()]
                 );
         }
     }
@@ -220,14 +257,12 @@ void Window::setFrame(int frame)
 
 void Window::readImgData()
 {
-    imgBase->getHorizontalData(
-        imgData,
-        &colorMap
-        );
-
+    imgBase->getData(imgData, &colorMap);
+    sliceScroll->setRange(0, imgBase->getDepth() - 1);
+    sliceScroll->setValue(imgSlice);
     glWidget->setData(
-        imgBase->getDimx(), imgBase->getDimy(),
-        &imgData[imgSlice * imgBase->getDimx() * imgBase->getDimy()]
+        imgBase->getWidth(), imgBase->getHeight(),
+        &imgData[imgSlice * imgBase->getWidth() * imgBase->getHeight()]
         );
 }
 
@@ -242,6 +277,9 @@ int Window::loadImg(
     int result = img->open(fn);
     if (result == 0)
     {
+        imageHorizontalAct->setEnabled(false);
+        imageSagittalAct->setEnabled(true);
+        imageCoronalAct->setEnabled(true);
         img->setLimits(0.0, 65000.0);
         result = readImg(img, slice, frame);
     }
@@ -257,7 +295,7 @@ int Window::readImg(
 {
     if (slice < 0)
     {
-        imgSlice = img->getDimz() / 2;
+        imgSlice = img->getDepth() / 2;
     }
     else
     {
@@ -283,8 +321,6 @@ int Window::readImg(
             imgBase = img;
             readImgData();
 
-            sliceScroll->setRange(0, imgBase->getDimz() - 1);
-            sliceScroll->setValue(imgSlice);
             frameScroll->setRange(0, imgBase->getFrameNr() - 1);
             frameScroll->setValue(imgFrame);
 
@@ -297,6 +333,19 @@ int Window::readImg(
     }
 
     return result;
+}
+
+void Window::setOrientation(Img::Orientation o)
+{
+    if (imgLoaded)
+    {
+        imgBase->setOrientation(o);
+        if (imgSlice >= imgBase->getDepth())
+        {
+            imgSlice = imgBase->getDepth() - 1;
+        }
+        readImgData();
+    }
 }
 
 void Window::setLimits(float low, float high)

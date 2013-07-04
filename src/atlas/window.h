@@ -21,11 +21,14 @@ class Window : public QMainWindow
     Q_OBJECT
 
 public slots:
-    void fileOpen();
-    void fileClose();
-    void fileRanges();
-    void fileColormap();
-    void fileExit();
+    void imageOpen();
+    void imageClose();
+    void imageHorizontal();
+    void imageSagittal();
+    void imageCoronal();
+    void imageRanges();
+    void imageMap();
+    void imageExit();
 
     void toolsSelect();
     void toolsPolygon();
@@ -41,6 +44,7 @@ signals:
 public:
     Window();
 
+    void setOrientation(Img::Orientation o);
     void setLimits(float low, float high);
 
     int loadImg(
@@ -65,12 +69,15 @@ private:
     void setLimit(float low, float high);
     void closeImg();
 
-    QMenu *fileMenu;
-    QAction *fileOpenAct;
-    QAction *fileCloseAct;
-    QAction *fileRangesAct;
-    QAction *fileColormapAct;
-    QAction *fileExitAct;
+    QMenu *imageMenu;
+    QAction *imageOpenAct;
+    QAction *imageCloseAct;
+    QAction *imageHorizontalAct;
+    QAction *imageSagittalAct;
+    QAction *imageCoronalAct;
+    QAction *imageRangesAct;
+    QAction *imageMapAct;
+    QAction *imageExitAct;
 
     QToolBar *toolsToolBar;
     QAction *toolsSelectAct;

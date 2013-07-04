@@ -35,6 +35,13 @@
 class Img
 {
 public:
+    enum Orientation
+    {
+        ORIENTATION_HORIZONTAL,
+        ORIENTATION_SAGITTAL,
+        ORIENTATION_CORONAL
+    };
+
     Img();
     ~Img();
 
@@ -47,13 +54,18 @@ public:
     int getDimy() { return dimy; }
     int getDimz() { return dimz; }
 
-    void setLimits(float low, float high);
+    int getWidth();
+    int getHeight();
+    int getDepth();
 
-    void getHorizontalData(
+    void getData(
         uint32_t *buf,
         ColorMap *cmap,
         uint8_t alpha = 255
     );
+
+    void setOrientation(Orientation o) { imgOrientation = o; }
+    void setLimits(float low, float high);
 
     char *getStatusMessage() { return statmsg; }
 
@@ -148,10 +160,31 @@ protected:
     // Decay correction factor for each frame; included in pixel values
     float decayCorrFactor;
 
+    // Draw orientation
+    Orientation imgOrientation;
+
     // Upper and lower limit to include when converting to image data
     float lowLimit, highLimit;
 
 private:
+    void getHorizontalData(
+        uint32_t *buf,
+        ColorMap *cmap,
+        uint8_t alpha = 255
+    );
+
+    void getSagittalData(
+        uint32_t *buf,
+        ColorMap *cmap,
+        uint8_t alpha = 255
+    );
+
+    void getCoronalData(
+        uint32_t *buf,
+        ColorMap *cmap,
+        uint8_t alpha = 255
+    );
+
     // Status strings
     static char *statusMessage[];
 
