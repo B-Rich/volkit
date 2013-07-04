@@ -7,9 +7,9 @@ struct Color3
 {
     Color3() { }
     Color3 (uint16_t red, uint16_t green, uint16_t blue)
-        : r(red / 65536.0),
-          g(green / 65536.0),
-          b(blue / 65536.0) { }
+        : r(red / 65535.0),
+          g(green / 65535.0),
+          b(blue / 65535.0) { }
 
     float r, g, b;
 };
