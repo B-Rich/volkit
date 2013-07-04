@@ -14,7 +14,8 @@ GLWidget::GLWidget(Tool *tool, QWidget *parent)
       dataSet(false),
       updateState(true),
       xDataZoom(1.0),
-      yDataZoom(1.0)
+      yDataZoom(1.0),
+      window(parent)
 {
     setMouseTracking(true);
 }

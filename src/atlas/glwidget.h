@@ -5,10 +5,12 @@
 
 #include "tool.h"
 
+class QWidget;
+
 class GLWidget : public QGLWidget
 {
 public:
-    GLWidget(Tool *tool, QWidget *parent = 0);
+    GLWidget(Tool *tool, QWidget *parent);
     ~GLWidget();
 
     QSize minimumSizeHint() const;
@@ -37,6 +39,8 @@ private:
 
     bool updateState;
     float xDataZoom, yDataZoom;
+
+    QWidget *window;
 };
 
 #endif

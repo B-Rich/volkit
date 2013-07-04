@@ -8,15 +8,16 @@
 #include "polytool.h"
 #include "window.h"
 
-Window::Window() :
-    colorMap(),
-    imgLoaded(false)
+Window::Window()
+    : rangesDialog(this),
+      colorMap(),
+      imgLoaded(false)
 {
     workWidget = new QWidget;
     setCentralWidget(workWidget);
 
     selectedTool = new Polytool;
-    glWidget = new GLWidget(selectedTool);
+    glWidget = new GLWidget(selectedTool, this);
 
     sliceScroll = new QScrollBar(Qt::Vertical);
     connect(sliceScroll, SIGNAL(valueChanged(int)), this, SLOT(setSlice(int)));
@@ -80,6 +81,11 @@ void Window::fileClose()
     }
 }
 
+void Window::fileRanges()
+{
+    rangesDialog.show();
+}
+
 void Window::fileColormap()
 {
     QString fn =
@@ -130,6 +136,9 @@ void Window::createActions()
     fileCloseAct = new QAction(tr("&Close"), this);
     connect(fileCloseAct, SIGNAL(triggered()), this, SLOT(fileClose()));
 
+    fileRangesAct = new QAction(tr("&Ranges"), this);
+    connect(fileRangesAct, SIGNAL(triggered()), this, SLOT(fileRanges()));
+
     fileColormapAct = new QAction(tr("&Colormap"), this);
     connect(fileColormapAct, SIGNAL(triggered()), this, SLOT(fileColormap()));
 
@@ -167,6 +176,7 @@ void Window::createMenus()
     fileMenu->addAction(fileOpenAct);
     fileMenu->addAction(fileCloseAct);
     fileMenu->addSeparator();
+    fileMenu->addAction(fileRangesAct);
     fileMenu->addAction(fileColormapAct);
     fileMenu->addSeparator();
     fileMenu->addAction(fileExitAct);

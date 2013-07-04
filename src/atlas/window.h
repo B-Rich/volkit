@@ -1,19 +1,20 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <QWidget>
 #include <QMainWindow>
 
 #include <stdint.h>
 
 #include "img/colormap.h"
 #include "img/img.h"
+#include "ranges.h"
 #include "tool.h"
 
-class GLWidget;
+class QWidget;
 class QMenu;
 class QToolBar;
 class QScrollBar;
+class GLWidget;
 
 class Window : public QMainWindow
 {
@@ -22,6 +23,7 @@ class Window : public QMainWindow
 public slots:
     void fileOpen();
     void fileClose();
+    void fileRanges();
     void fileColormap();
     void fileExit();
 
@@ -65,6 +67,7 @@ private:
     QMenu *fileMenu;
     QAction *fileOpenAct;
     QAction *fileCloseAct;
+    QAction *fileRangesAct;
     QAction *fileColormapAct;
     QAction *fileExitAct;
 
@@ -87,6 +90,7 @@ private:
     int imgSlice;
     int imgFrame;
 
+    Ranges rangesDialog;
     Tool *selectedTool;
 };
 
