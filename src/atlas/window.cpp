@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stdlib.h>
 
-#include "img/v.h"
+#include "img/ecat7img.h"
 #include "glwidget.h"
 #include "polytool.h"
 #include "window.h"
@@ -237,9 +237,9 @@ int Window::loadImg(
     int frame
     )
 {
-    V *img = new V;
-    int result = img->open(fn);
+    Ecat7Img *img = new Ecat7Img;
 
+    int result = img->open(fn);
     if (result == 0)
     {
         img->setLimits(0.0, 65000.0);
