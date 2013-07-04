@@ -34,6 +34,29 @@ Ranges::Ranges(Window *parent)
     highText->setMaxLength(12);
     highText->setAlignment(Qt::AlignRight);
 
+    createActions();
+
     setWindowTitle(tr("Ranges"));
+}
+
+void Ranges::handleOk()
+{
+    QString low = lowText->text();
+    QString high = highText->text();
+    std::cout << "Low: " << low.toStdString()
+              << " High: " << high.toStdString()
+              << std::endl;
+    hide();
+}
+
+void Ranges::handleCancel()
+{
+    hide();
+}
+
+void Ranges::createActions()
+{
+    connect(okButton, SIGNAL(released()), this, SLOT(handleOk()));
+    connect(cancelButton, SIGNAL(released()), this, SLOT(handleCancel()));
 }
 

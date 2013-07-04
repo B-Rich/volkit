@@ -14,7 +14,13 @@ class Ranges : public QWidget
 public:
     Ranges(Window *parent);
 
+private slots:
+    void handleOk();
+    void handleCancel();
+
 private:
+    void createActions();
+
     QLineEdit *lowText;
     QLineEdit *highText;
     QPushButton *okButton;
