@@ -14,6 +14,8 @@ public:
 private:
     static const char *imgmsg[];
 
+    int dimx, dimy, dimz, frameNr, planeNr, pxlNr;
+
     VFF_mainheader main_header;
 
     int readMainHeader();
