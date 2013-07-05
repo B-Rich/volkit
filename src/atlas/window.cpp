@@ -110,11 +110,11 @@ void Window::imageRanges()
     rangesDialog.show();
 }
 
-void Window::imageMap()
+void Window::imageColormap()
 {
     QString fn =
         QFileDialog::getOpenFileName(this, tr("Load colormap..."),
-            QString(), tr("Map (*.map);;All Files (*)"));
+            QString(), tr("Colormap (*.map);;All Files (*)"));
     if (!fn.isEmpty())
     {
         int result = loadColormap(fn.toStdString().c_str());
@@ -172,8 +172,8 @@ void Window::createActions()
     imageRangesAct = new QAction(tr("&Ranges"), this);
     connect(imageRangesAct, SIGNAL(triggered()), this, SLOT(imageRanges()));
 
-    imageMapAct = new QAction(tr("&Colormap"), this);
-    connect(imageMapAct, SIGNAL(triggered()), this, SLOT(imageMap()));
+    imageColormapAct = new QAction(tr("Color&map"), this);
+    connect(imageColormapAct, SIGNAL(triggered()), this, SLOT(imageColormap()));
 
     imageExitAct = new QAction(tr("&Exit"), this);
     connect(imageExitAct, SIGNAL(triggered()), this, SLOT(imageExit()));
@@ -214,7 +214,7 @@ void Window::createMenus()
     imageMenu->addAction(imageCoronalAct);
     imageMenu->addSeparator();
     imageMenu->addAction(imageRangesAct);
-    imageMenu->addAction(imageMapAct);
+    imageMenu->addAction(imageColormapAct);
     imageMenu->addSeparator();
     imageMenu->addAction(imageExitAct);
 }

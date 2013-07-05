@@ -27,7 +27,7 @@ public slots:
     void imageSagittal();
     void imageCoronal();
     void imageRanges();
-    void imageMap();
+    void imageColormap();
     void imageExit();
 
     void toolsSelect();
@@ -76,7 +76,7 @@ private:
     QAction *imageSagittalAct;
     QAction *imageCoronalAct;
     QAction *imageRangesAct;
-    QAction *imageMapAct;
+    QAction *imageColormapAct;
     QAction *imageExitAct;
 
     QToolBar *toolsToolBar;
