@@ -13,7 +13,7 @@ extern "C" {
 #include "img/img.h"
 #include "img/ecat7img.h"
 
-char *Ecat7Img::imgmsg[] =
+const char *Ecat7Img::imgmsg[] =
 {
     "ok",                                // 0
     "fault in calling routine",          // 1
@@ -31,24 +31,7 @@ char *Ecat7Img::imgmsg[] =
 
 Ecat7Img::Ecat7Img()
 {
-    fileOpen = false;
     matlistLoaded = false;
-    imgAllocated = false;
-}
-
-Ecat7Img::Ecat7Img(const char *fname)
-{
-    Ecat7Img();
-    open(fname);
-}
-
-Ecat7Img::Ecat7Img(const char *fname, int t)
-{
-    Ecat7Img();
-    if (open(fname) == 0)
-    {
-        read(t);
-    }
 }
 
 Ecat7Img::~Ecat7Img()
@@ -442,7 +425,8 @@ int Ecat7Img::open(const char *fname)
     }
 
     // Open file for read
-    if( (fp = fopen(fname, "rb") ) == NULL)
+    fp = fopen(fname, "rb");
+    if (!fp)
     {
         statmsg = imgmsg[3];
         return 1;
@@ -483,7 +467,6 @@ int Ecat7Img::open(const char *fname)
         close();
         return 1;
     }
-    imgAllocated = true;
 
     // Copy information from mainheader
     headerToImg();
@@ -496,11 +479,8 @@ int Ecat7Img::open(const char *fname)
 
 void Ecat7Img::close()
 {
-    if (imgAllocated)
-    {
-        dealloc();
-        imgAllocated = false;
-    }
+    // dealloc checks if image is occupied
+    dealloc();
 
     if (matlistLoaded)
     {
@@ -526,7 +506,7 @@ int Ecat7Img::read(int t)
 
     float *fdata = 0, *fptr;
 
-    if (!fileOpen || !imgAllocated)
+    if (!fileOpen || status != IMG_STATUS_OCCUPIED)
     {
         statmsg = imgmsg[1];
         return 1;

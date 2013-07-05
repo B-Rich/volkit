@@ -7,17 +7,24 @@
 
 class Ecat7Img : public Img
 {
+public:
+    Ecat7Img();
+    ~Ecat7Img();
+
+    int open(const char *fname);
+    void close();
+    int read(int t);
+
+    int getFrameNr() { return frameNr; }
 
 private:
-    static char *imgmsg[];
-
-    FILE *fp;
+    static const char *imgmsg[];
 
     ECAT7_mainheader main_header;
     ECAT7_MATRIXLIST mlist;
 
     int dimx, dimy, dimz, frameNr, planeNr, pxlNr;
-    bool fileOpen, matlistLoaded, imgAllocated;
+    bool matlistLoaded;
 
     int readMainHeader();
     int readMatrixList();
@@ -26,18 +33,6 @@ private:
     void setFileFormat();
     void setImgUnit();
     void headerToImg();
-
-public:
-    Ecat7Img();
-    Ecat7Img(const char *fname);
-    Ecat7Img(const char *fname, int t);
-    ~Ecat7Img();
-
-    int open(const char *fname);
-    void close();
-    int read(int t);
-
-    int getFrameNr() { return frameNr; }
 };
 
 #endif

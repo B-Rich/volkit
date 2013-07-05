@@ -1,6 +1,7 @@
 #ifndef IMG_H
 #define IMG_H
 
+#include <stdio.h>
 #include <stdint.h>
 #include <time.h>
 #include "img/colormap.h"
@@ -68,18 +69,22 @@ public:
     void setOrientation(Orientation o) { imgOrientation = o; }
     void setLimits(float low, float high);
 
-    char *getStatusMessage() { return statmsg; }
+    const char *getStatusMessage() { return statmsg; }
 
 protected:
     // Memory management
     void dealloc();
     int alloc(int planes, int rows, int columns);
 
+    // File status
+    bool fileOpen;
+    FILE *fp;
+
     // Image status
     char status;
 
     // Pointer to statusMessage, describing current status
-    char *statmsg;
+    const char *statmsg;
 
     // units
     char unit;
@@ -187,7 +192,7 @@ private:
     );
 
     // Status strings
-    static char *statusMessage[];
+    static const char *statusMessage[];
 
     // Dimensions
     unsigned short int dimx;

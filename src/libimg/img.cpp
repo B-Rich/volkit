@@ -13,7 +13,7 @@ extern "C" {
 
 #include "img/img.h"
 
-char *Img::statusMessage[] =
+const char *Img::statusMessage[] =
 {
     "ok",                                // 0
     "fault in calling routine",          // 1
@@ -22,6 +22,8 @@ char *Img::statusMessage[] =
 
 Img::Img()
 {
+    fileOpen = false;
+    fp = 0;
     status = IMG_STATUS_INITIALIZED;
     statmsg = statusMessage[0];
     type = 0;
@@ -282,7 +284,7 @@ void Img::getHorizontalData(
 
     for (int zi = 0; zi < dimz; zi++)
     {
-        for (int yi = 0; yi < dimy; yi++)
+        for (int yi = dimy - 1; yi >= 0; yi--)
         {
             for (int xi = 0; xi < dimx; xi++)
             {

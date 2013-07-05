@@ -1,6 +1,11 @@
 #ifndef VFF_H
 #define VFF_H
 
+#include <stdio.h>
+
+/* Magic number */
+#define VFF_MAGICNR            "ncaa"
+
 /* Image type */
 #define VFF_TYPE_UNKNOWN       0
 #define VFF_TYPE_RASTER        1
@@ -16,9 +21,9 @@ typedef struct vff_frameheader
     float            end_time;
 } VFF_frameheader;
 
-typedef struct vff_header
+typedef struct vff_mainheader
 {
-    char             magic[5];
+    char             magic_number[5];
     unsigned short   rank;
     unsigned short   type;
     unsigned short   format;
@@ -40,9 +45,10 @@ typedef struct vff_header
     char             title[32];
     unsigned short   frames;
     VFF_frameheader  *frame;
-} VFF_header;
+} VFF_mainheader;
 
-int vffReadHeader(FILE *fp, VFF_header *h);
-void vffPrintHeader(VFF_header *h, FILE *fp);
+int vffReadMainheader(FILE *fp, VFF_mainheader *h);
+void vffPrintMainheader(VFF_mainheader *h, FILE *fp);
 
 #endif
+

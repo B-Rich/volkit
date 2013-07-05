@@ -2,7 +2,7 @@
 
 #include "vff/vff.h"
 
-void vffPrintHeader(VFF_header *h, FILE *fp)
+void vffPrintMainheader(VFF_mainheader *h, FILE *fp)
 {
     int i;
 

@@ -38,21 +38,21 @@ static int vffReadLine(FILE *fp, char *line)
     return i;
 }
 
-int vffReadHeader(FILE *fp, VFF_header *h)
+int vffReadMainheader(FILE *fp, VFF_mainheader *h)
 {
     char line[256], c;
     int i, i1, i2, i3;
     float f1, f2, f3;
 
     /* Read magic number */
-    if ((fread(h->magic, sizeof(char), 5, fp) < 5) ||
-        (strncmp(h->magic, "ncaa", 4)))
+    if ((fread(h->magic_number, sizeof(char), 5, fp) < 5) ||
+        (strncmp(h->magic_number, VFF_MAGICNR, 4)))
     {
         return 1;
     }
 
     /* Clear header */
-    memset(h, 0, sizeof(VFF_header));
+    memset(h, 0, sizeof(VFF_mainheader));
 
     c = fgetc(fp);
     while(c != '\f')
@@ -189,7 +189,7 @@ int vffReadHeader(FILE *fp, VFF_header *h)
 int main(int argc, char *argv[])
 {
     FILE *fp;
-    VFF_header header;
+    VFF_mainheader header;
     char *data;
     unsigned long size;
 
@@ -200,9 +200,9 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (vffReadHeader(fp, &header) == 0)
+    if (vffReadMainheader(fp, &header) == 0)
     {
-        vffPrintHeader(&header, stdout);
+        vffPrintMainheader(&header, stdout);
         data = (char *) malloc(header.rawsize);
         size = fread(data, 1, header.rawsize, fp);
         printf("Read %ld byte(s)\n", size);
