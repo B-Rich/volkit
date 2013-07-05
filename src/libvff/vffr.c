@@ -8,8 +8,6 @@
 
 #include "vff/vff.h"
 
-#define MAIN
-
 static int vffReadValue(FILE *fp, char *line)
 {
     int i = 0;
