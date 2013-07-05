@@ -23,12 +23,28 @@ static int vffReadValue(FILE *fp, char *line)
     return i;
 }
 
+static int vffReadLine(FILE *fp, char *line)
+{
+    int i = 0;
+    char c = fgetc(fp);
+
+    while (c != '\n')
+    {
+        line[i++] = c;
+        c = fgetc(fp);
+    }
+    line[i] = '\0';
+
+    return i;
+}
+
 int vffReadHeader(FILE *fp, VFF_header *h)
 {
     char line[256], c;
     int i, i1, i2, i3;
     float f1, f2, f3;
-   
+
+    /* Read magic number */
     if ((fread(h->magic, sizeof(char), 5, fp) < 5) ||
         (strncmp(h->magic, "ncaa", 4)))
     {
@@ -123,6 +139,30 @@ int vffReadHeader(FILE *fp, VFF_header *h)
         {
             vffReadValue(fp, line);
             strncpy(h->title, line, 32);
+        }
+        else if (!strcmp(line, "frames"))
+        {
+            vffReadLine(fp, line);
+            h->frames = atoi(line);
+            h->frame = (VFF_frameheader *) malloc(
+                sizeof(VFF_frameheader) * h->frames
+                );
+            if (h->frame == NULL)
+            {
+                return 1;
+            }
+            for (i = 0; i < h->frames; i++)
+            {
+                vffReadLine(fp, line);
+                sscanf(line, "%g %g %g", &f1, &f2, &f3);
+                h->frame[i].start_time = f1;
+                h->frame[i].mean_time  = f2;
+                h->frame[i].end_time   = f3;
+                if (strchr(line, ';'))
+                {
+                    break;
+                }
+            }
         }
 	else
         {

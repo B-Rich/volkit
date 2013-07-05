@@ -4,6 +4,8 @@
 
 void vffPrintHeader(VFF_header *h, FILE *fp)
 {
+    int i;
+
     fprintf(fp, "rank := %d\n", h->rank);
     fprintf(fp, "type := %d\n", h->type);
     fprintf(fp, "format := %d\n", h->format);
@@ -20,5 +22,15 @@ void vffPrintHeader(VFF_header *h, FILE *fp)
     fprintf(fp, "bands := %d\n", h->bands);
     fprintf(fp, "bits := %d\n", h->bits);
     fprintf(fp, "title := %s\n", h->title);
+    fprintf(fp, "frames := %d\n", h->frames);
+
+    for (i = 0; i < h->frames; i++)
+    {
+        fprintf(fp, "%d\t%g %g %g\n",
+                i,
+                h->frame[i].start_time,
+                h->frame[i].mean_time,
+                h->frame[i].end_time);
+    }
 }
 
