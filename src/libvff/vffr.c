@@ -26,14 +26,18 @@ static int vffReadValue(FILE *fp, char *line)
 int vffReadHeader(FILE *fp, VFF_header *h)
 {
     char line[256], c;
-    int i, val1, val2, val3;
+    int i, i1, i2, i3;
+    float f1, f2, f3;
    
     if ((fread(h->magic, sizeof(char), 5, fp) < 5) ||
         (strncmp(h->magic, "ncaa", 4)))
     {
         return 1;
     }
-   
+
+    /* Clear header */
+    memset(h, 0, sizeof(VFF_header));
+
     c = fgetc(fp);
     while(c != '\f')
     {
@@ -47,19 +51,78 @@ int vffReadHeader(FILE *fp, VFF_header *h)
         line[i] = '\0';
 
         /* Select key */
-        if (!strcmp(line, "size"))
+        if (!strcmp(line, "rank"))
         {
             vffReadValue(fp, line);
-            sscanf(line, "%d %d %d", &val1, &val2, &val3);
-            h->u_size = val1;
-            h->v_size = val2;
-            h->w_size = val3;
-         }
-         else if (!strcmp(line, "bits"))
-         {
+            h->rank = atoi(line);
+        }
+        else if (!strcmp(line, "type"))
+        {
             vffReadValue(fp, line);
-            sscanf(line, "%d", &val1);
-            h->bits = val1;
+            if (!strcmp(line, "raster"))
+            {
+                h->type = VFF_TYPE_RASTER;
+            }
+            else
+            {
+                h->type = VFF_TYPE_UNKNOWN;
+            }
+        }
+        else if (!strcmp(line, "format"))
+        {
+            vffReadValue(fp, line);
+            if (!strcmp(line, "slice"))
+            {
+                h->format = VFF_FORMAT_SLICE;
+            }
+            else
+            {
+                h->format = VFF_FORMAT_UNKNOWN;
+            }
+        }
+        else if (!strcmp(line, "size"))
+        {
+            vffReadValue(fp, line);
+            sscanf(line, "%d %d %d", &i1, &i2, &i3);
+            h->u_size = i1;
+            h->v_size = i2;
+            h->w_size = i3;
+        }
+        else if (!strcmp(line, "origin"))
+        {
+            vffReadValue(fp, line);
+            sscanf(line, "%g %g %g", &f1, &f2, &f3);
+            h->x0_origin = f1;
+            h->y0_origin = f2;
+            h->z0_origin = f3;
+        }
+        else if (!strcmp(line, "extent"))
+        {
+            vffReadValue(fp, line);
+            sscanf(line, "%g %g %g", &f1, &f2, &f3);
+            h->x1_extent = f1;
+            h->y1_extent = f2;
+            h->z1_extent = f3;
+        }
+        else if (!strcmp(line, "rawsize"))
+        {
+            vffReadValue(fp, line);
+            h->rawsize = atoi(line);
+        }
+        else if (!strcmp(line, "bands"))
+        {
+            vffReadValue(fp, line);
+            h->bands = atoi(line);
+        }
+        else if (!strcmp(line, "bits"))
+        {
+            vffReadValue(fp, line);
+            h->bits = atoi(line);
+        }
+        else if (!strcmp(line, "title"))
+        {
+            vffReadValue(fp, line);
+            strncpy(h->title, line, 32);
         }
 	else
         {
@@ -73,6 +136,12 @@ int vffReadHeader(FILE *fp, VFF_header *h)
     /* Consume formfeed */
     c = fgetc(fp);
 
+
+    if (!h->rawsize)
+    {
+        h->rawsize = h->u_size * h->v_size * h->w_size * h->bands * (h->bits / 8);
+    }
+
     return 0;
 }
 
@@ -81,6 +150,8 @@ int main(int argc, char *argv[])
 {
     FILE *fp;
     VFF_header header;
+    char *data;
+    unsigned long size;
 
     fp = fopen(argv[1], "r");
     if (fp == NULL)
@@ -91,9 +162,10 @@ int main(int argc, char *argv[])
 
     if (vffReadHeader(fp, &header) == 0)
     {
-        printf("Size: %d, %d, %d\n",
-               header.u_size, header.v_size, header.w_size);
-        printf("Bits: %d\n", header.bits);
+        vffPrintHeader(&header, stdout);
+        data = (char *) malloc(header.rawsize);
+        size = fread(data, 1, header.rawsize, fp);
+        printf("Read %ld byte(s)\n", size);
     }
     else
     {

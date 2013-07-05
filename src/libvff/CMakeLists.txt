@@ -1,4 +1,4 @@
 ADD_LIBRARY(vff
-    vffr.c
+    vffr.c vffp.c
     )
 

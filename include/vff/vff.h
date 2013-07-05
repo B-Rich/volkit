@@ -2,9 +2,11 @@
 #define VFF_H
 
 /* Image type */
+#define VFF_TYPE_UNKNOWN       0
 #define VFF_TYPE_RASTER        1
 
 /* Image format */
+#define VFF_FORMAT_UNKNOWN     0
 #define VFF_FORMAT_SLICE       1
 
 typedef struct vff_header
@@ -30,5 +32,8 @@ typedef struct vff_header
     unsigned short bits;
     unsigned char  title[32];
 } VFF_header;
+
+static int vffReadValue(FILE *fp, char *line);
+void vffPrintHeader(VFF_header *h, FILE *fp);
 
 #endif
