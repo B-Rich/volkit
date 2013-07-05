@@ -30,10 +30,10 @@ typedef struct vff_header
     unsigned long  rawsize;
     unsigned short bands;
     unsigned short bits;
-    unsigned char  title[32];
+    char           title[32];
 } VFF_header;
 
-static int vffReadValue(FILE *fp, char *line);
+int vffReadHeader(FILE *fp, VFF_header *h);
 void vffPrintHeader(VFF_header *h, FILE *fp);
 
 #endif
