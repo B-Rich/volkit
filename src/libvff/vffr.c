@@ -173,8 +173,9 @@ int vffReadMainheader(FILE *fp, VFF_mainheader *h)
         while (((c = fgetc(fp)) == ' ') || (c == '\n'));
     }
    
-    /* Consume formfeed */
+    /* Consume formfeed and newline */
     c = fgetc(fp);
+    while (fgetc(fp) == '\n');
 
 
     if (!h->rawsize)

@@ -114,8 +114,9 @@ int VffImg::read(int t)
             {
                 for(yi = 0; yi < dimy; yi++)
                 {
-                    uint16_t val = *ptr++;
+                    uint16_t val = *ptr;
                     m[zi][yi][xi] = float(val);
+                    ptr++;
                 } // End for yi
             } // End for zi
         } // End for xi
