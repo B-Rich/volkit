@@ -77,18 +77,18 @@ int VffImg::open(const char *fname)
         return 1;
     }
 
-    dimx = main_header.u_size;
-    dimy = main_header.w_size;
-    dimz = main_header.v_size;
-    pxlNr = dimx * dimy;
-    planeNr = dimz;
+    xSize = main_header.u_size;
+    ySize = main_header.w_size;
+    zSize = main_header.v_size;
+    pxlNr = xSize * ySize;
+    planeNr = zSize;
 
     if (main_header.value[0])
     {
         setLimits(main_header.value[1], main_header.value[0]);
     }
 
-    if (alloc(planeNr, dimx, dimy) > 0)
+    if (alloc(planeNr, xSize, ySize) > 0)
     {
         statmsg = imgmsg[2];
         close();
@@ -135,20 +135,20 @@ int VffImg::read8(int t)
     int xi, yi, zi;
     uint8_t *data = 0, *ptr;
 
-    data = new uint8_t[dimx * dimy * dimz];
+    data = new uint8_t[xSize * ySize * zSize];
     if (data)
     {
         // Read data from file
         fseek(fp, main_header.header_size, SEEK_SET);
-        int s = fread(data, sizeof(uint8_t), dimx * dimy * dimz, fp);
+        int s = fread(data, sizeof(uint8_t), xSize * ySize * zSize, fp);
 
         // Copy matrix data through volume planes
         ptr = data;
-        for(xi = 0; xi < dimx; xi++)
+        for(xi = 0; xi < xSize; xi++)
         {
-            for(zi = 0; zi < dimz; zi++)
+            for(zi = 0; zi < zSize; zi++)
             {
-                for(yi = 0; yi < dimy; yi++)
+                for(yi = 0; yi < ySize; yi++)
                 {
                     uint8_t val = *ptr++;
                     m[zi][yi][xi] = float(val);
@@ -172,20 +172,20 @@ int VffImg::read16(int t)
     int xi, yi, zi;
     uint16_t *data = 0, *ptr;
 
-    data = new uint16_t[dimx * dimy * dimz];
+    data = new uint16_t[xSize * ySize * zSize];
     if (data)
     {
         // Read data from file
         fseek(fp, main_header.header_size, SEEK_SET);
-        int s = fread(data, sizeof(uint16_t), dimx * dimy * dimz, fp);
+        int s = fread(data, sizeof(uint16_t), xSize * ySize * zSize, fp);
 
         // Copy matrix data through volume planes
         ptr = data;
-        for(xi = 0; xi < dimx; xi++)
+        for(xi = 0; xi < xSize; xi++)
         {
-            for(zi = 0; zi < dimz; zi++)
+            for(zi = 0; zi < zSize; zi++)
             {
-                for(yi = 0; yi < dimy; yi++)
+                for(yi = 0; yi < ySize; yi++)
                 {
                     uint16_t val = *ptr++;
                     m[zi][yi][xi] = float(val);

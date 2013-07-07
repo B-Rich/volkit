@@ -94,7 +94,7 @@ void Img::dealloc()
 
 int Img::alloc(int planes, int rows, int columns)
 {
-    unsigned short int zi, ri;
+    int zi, ri;
     float **rptr, *cptr;
 
     // Check arguments

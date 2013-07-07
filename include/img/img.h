@@ -192,9 +192,9 @@ private:
     static const char *statusMessage[];
 
     // Dimensions
-    unsigned short int dimx;
-    unsigned short int dimy;
-    unsigned short int dimz;
+    int dimx;
+    int dimy;
+    int dimz;
 
     // Pointers for actual data
     float *_col;

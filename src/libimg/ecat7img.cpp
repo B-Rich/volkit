@@ -180,7 +180,7 @@ int Ecat7Img::readSubHeader()
 
     // Read the first subheader to get planeNr from volumes and to get x&y dim
     m = 0;
-    dimz = 1;
+    zSize = 1;
     statmsg = imgmsg[9];
 
     switch(main_header.file_type)
@@ -196,11 +196,11 @@ int Ecat7Img::readSubHeader()
                 &image_header
                 );
 
-            dimx = image_header.x_dimension;
-            dimy = image_header.y_dimension;
+            xSize = image_header.x_dimension;
+            ySize = image_header.y_dimension;
             if(image_header.num_dimensions > 2 && image_header.z_dimension > 1)
             {
-                planeNr = dimz = image_header.z_dimension;
+                planeNr = zSize = image_header.z_dimension;
             }
             break;
 
@@ -212,12 +212,12 @@ int Ecat7Img::readSubHeader()
                 &scan2d_header
                 );
 
-                dimx = scan2d_header.num_r_elements;
-                dimy = scan2d_header.num_angles;
+                xSize = scan2d_header.num_r_elements;
+                ySize = scan2d_header.num_angles;
                 if(scan2d_header.num_dimensions > 2 &&
                    scan2d_header.num_z_elements > 1)
                 {
-                    planeNr = dimz = scan2d_header.num_z_elements;
+                    planeNr = zSize = scan2d_header.num_z_elements;
                 }
                 break;
 
@@ -231,24 +231,24 @@ int Ecat7Img::readSubHeader()
                 &scan_header
                 );
 
-            dimx = scan_header.num_r_elements;
-            dimy = scan_header.num_angles;
+            xSize = scan_header.num_r_elements;
+            ySize = scan_header.num_angles;
 
-            for(i = dimz = 0; i < 64; i++)
+            for(i = zSize = 0; i < 64; i++)
             {
-                dimz += scan_header.num_z_elements[i];
+                zSize += scan_header.num_z_elements[i];
             }
 
-            planeNr = dimz;
+            planeNr = zSize;
             break;
 
         default:
-            dimx = dimy = dimz = planeNr=0;
+            xSize = ySize = zSize = planeNr=0;
             ret = -1;
             break;
     }
 
-    pxlNr = dimx * dimy;
+    pxlNr = xSize * ySize;
     if(ret || pxlNr < 1 || planeNr < 1)
     {
         return 1;
@@ -454,14 +454,14 @@ int Ecat7Img::open(const char *fname)
         return 1;
     }
 
-    // Read subheader and calculate dimx, dimy, dimz and pxlNr
+    // Read subheader and calculate xSize, ySize, zSize and pxlNr
     if (readSubHeader() > 0)
     {
         close();
         return 1;
     }
 
-    if (alloc(planeNr, dimx, dimy) > 0)
+    if (alloc(planeNr, xSize, ySize) > 0)
     {
         statmsg = imgmsg[2];
         close();
@@ -512,7 +512,7 @@ int Ecat7Img::read(int t)
         return 1;
     }
 
-    if(dimz > 1)
+    if(zSize > 1)
     {
         // Read ECAT volume matrices
         ecat7_id_to_val(mlist.matdir[t].id, &matval);
@@ -592,11 +592,11 @@ int Ecat7Img::read(int t)
         }
 
         // Copy matrix data through volume planes
-        for(pi = 0; pi < dimz; pi++)
+        for(pi = 0; pi < zSize; pi++)
         {
-            for(yi = 0, fptr = fdata + pi * pxlNr; yi < dimy; yi++)
+            for(yi = 0, fptr = fdata + pi * pxlNr; yi < ySize; yi++)
             {
-                for(xi = 0; xi < dimx; xi++)
+                for(xi = 0; xi < xSize; xi++)
                 {
                     m[pi][yi][xi] = *fptr++;
                 } // End for xi
@@ -606,7 +606,7 @@ int Ecat7Img::read(int t)
         delete fdata;
 
         // Set plane numbers
-        for(pi = 0; pi < dimz; pi++)
+        for(pi = 0; pi < zSize; pi++)
         {
             planeNumber[pi] = pi + 1;
         }
@@ -620,11 +620,11 @@ int Ecat7Img::read(int t)
     // Calibrate
     if(main_header.ecat_calibration_factor > 0.0)
     {
-        for(pi = 0; pi < dimz; pi++)
+        for(pi = 0; pi < zSize; pi++)
         {
-            for(yi = 0; yi < dimy; yi++)
+            for(yi = 0; yi < ySize; yi++)
             {
-                for(xi = 0; xi < dimx; xi++)
+                for(xi = 0; xi < xSize; xi++)
                 {
                     m[pi][yi][xi] *= main_header.ecat_calibration_factor;
                 } // End for xi

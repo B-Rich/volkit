@@ -23,7 +23,8 @@ private:
     ECAT7_mainheader main_header;
     ECAT7_MATRIXLIST mlist;
 
-    int dimx, dimy, dimz, frameNr, planeNr, pxlNr;
+    int xSize, ySize, zSize;
+    int planeNr, frameNr, pxlNr;
     bool matlistLoaded;
 
     int readMainHeader();
