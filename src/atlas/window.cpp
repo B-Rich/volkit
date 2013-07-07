@@ -299,7 +299,6 @@ int Window::loadImg(
         imageHorizontalAct->setEnabled(false);
         imageSagittalAct->setEnabled(true);
         imageCoronalAct->setEnabled(true);
-        img->setLimits(0.0, 65000.0);
         result = readImg(img, slice, frame);
     }
 
