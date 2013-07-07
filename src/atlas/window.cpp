@@ -1,8 +1,10 @@
 #include <QtGui>
 
-#include <iostream>
 #include <stdlib.h>
+#include <iostream>
+#include <string>
 
+#include "img/vffimg.h"
 #include "img/ecat7img.h"
 #include "glwidget.h"
 #include "polytool.h"
@@ -52,7 +54,7 @@ void Window::imageOpen()
 {
     QString fn =
         QFileDialog::getOpenFileName(this, tr("Open File..."),
-            QString(), tr("Ecat7 (*.v);;All Files (*)"));
+            QString(), tr("Ecat7 (*.v);;Vff (*.vff)"));
     if (!fn.isEmpty())
     {
         if (imgLoaded)
@@ -272,7 +274,19 @@ int Window::loadImg(
     int frame
     )
 {
-    Ecat7Img *img = new Ecat7Img;
+    Img *img = 0;
+
+    std::string fname(fn);
+    size_t pos = fname.find_last_of(".");
+    std::string ext = fname.substr(pos + 1);
+    if (ext.compare("vff") == 0)
+    {
+        img = new VffImg;
+    }
+    else if (ext.compare("v") == 0)
+    {
+        img = new Ecat7Img;
+    }
 
     int result = img->open(fn);
     if (result == 0)
