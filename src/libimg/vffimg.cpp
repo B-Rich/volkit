@@ -82,6 +82,14 @@ int VffImg::open(const char *fname)
     zSize = main_header.v_size;
     pxlNr = xSize * ySize;
     planeNr = zSize;
+    if (main_header.frames)
+    {
+        frameNr = main_header.frames;
+    }
+    else
+    {
+        frameNr = 1;
+    }
 
     if (main_header.value[0])
     {
@@ -117,7 +125,7 @@ int VffImg::read(int t)
     switch(main_header.bits)
     {
         case VFF_DEPTH8:
-            ret = read8(t);
+            ret = -1; //read8(t);
             break;
 
         case VFF_DEPTH16:
@@ -134,13 +142,18 @@ int VffImg::read8(int t)
 {
     int xi, yi, zi;
     uint8_t *data = 0, *ptr;
+    long volSize = xSize * ySize * zSize;
 
-    data = new uint8_t[xSize * ySize * zSize];
+    data = new uint8_t[volSize];
     if (data)
     {
         // Read data from file
-        fseek(fp, main_header.header_size, SEEK_SET);
-        int s = fread(data, sizeof(uint8_t), xSize * ySize * zSize, fp);
+        fseek(
+            fp,
+            main_header.header_size + sizeof(uint8_t) * volSize * t,
+            SEEK_SET
+            );
+        int s = fread(data, sizeof(uint8_t), volSize, fp);
 
         // Copy matrix data through volume planes
         ptr = data;
@@ -171,13 +184,18 @@ int VffImg::read16(int t)
 {
     int xi, yi, zi;
     uint16_t *data = 0, *ptr;
+    long volSize = xSize * ySize * zSize;
 
-    data = new uint16_t[xSize * ySize * zSize];
+    data = new uint16_t[volSize];
     if (data)
     {
         // Read data from file
-        fseek(fp, main_header.header_size, SEEK_SET);
-        int s = fread(data, sizeof(uint16_t), xSize * ySize * zSize, fp);
+        fseek(
+            fp,
+            main_header.header_size + sizeof(uint16_t) * volSize * t,
+            SEEK_SET
+            );
+        int s = fread(data, sizeof(uint16_t), volSize, fp);
 
         // Copy matrix data through volume planes
         ptr = data;

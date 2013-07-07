@@ -47,7 +47,7 @@ public:
     virtual int open(const char *fname) { return -1; }
     virtual void close() { }
     virtual int read(int t) { return -1; }
-    virtual int getFrameNr() { return -1; }
+    virtual int getFrameNr() { return 1; }
 
     int getDimx() { return dimx; }
     int getDimy() { return dimy; }

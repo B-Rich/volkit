@@ -10,6 +10,7 @@ public:
     int open(const char *fname);
     void close();
     int read(int t);
+    int getFrameNr() { return frameNr; }
 
 private:
     static const char *imgmsg[];
