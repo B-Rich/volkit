@@ -125,7 +125,7 @@ int VffImg::read(int t)
     switch(main_header.bits)
     {
         case VFF_DEPTH8:
-            ret = -1; //read8(t);
+            ret = read8(t);
             break;
 
         case VFF_DEPTH16:
