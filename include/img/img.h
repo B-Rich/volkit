@@ -20,19 +20,16 @@
 
 // Definitions for file format
 #define IMG_UNKNOWN   0
-#define IMG_E63       1
-#define IMG_E7        2
-#define IMG_E7_2D     3
-#define IMG_ANA       11
-#define IMG_ANA_L     12 // little endian variant
-#define IMG_INTERFILE 21
+#define IMG_E7        1
+#define IMG_E7_2D     2
+#define IMG_VFF       10
 
 // Definition for scanner type
 #define SCANNER_UNKNOWN 0
 #define SCANNER_ECAT931 12
 #define SCANNER_ADVANCE 12096
-#define SCANNER_HRPLUS 3
-#define SCANNER_HRRT 4
+#define SCANNER_HRPLUS  3
+#define SCANNER_HRRT    4
 
 class Img
 {

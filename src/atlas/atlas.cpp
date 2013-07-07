@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 
     if (argc > 1)
     {
-        if (window.loadImg(argv[1], 0.0, 65000.0) != 0)
+        if (window.loadImg(argv[1]) != 0)
         {
             std::cerr << "Error - Unable to open image "
                       << argv[1] << std::endl;

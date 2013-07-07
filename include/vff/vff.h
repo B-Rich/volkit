@@ -14,6 +14,10 @@
 #define VFF_FORMAT_UNKNOWN     0
 #define VFF_FORMAT_SLICE       1
 
+/* File types */
+#define VFF_DEPTH8             8
+#define VFF_DEPTH16            16
+
 typedef struct vff_frameheader
 {
     float            start_time;
@@ -43,8 +47,10 @@ typedef struct vff_mainheader
     unsigned short   bands;
     unsigned short   bits;
     char             title[32];
+    float            value[2];
     unsigned short   frames;
     VFF_frameheader  *frame;
+    long             header_size;
 } VFF_mainheader;
 
 int vffReadMainheader(FILE *fp, VFF_mainheader *h);

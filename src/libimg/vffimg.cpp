@@ -14,7 +14,8 @@ const char *VffImg::imgmsg[] =
     "fault in calling routine",          // 1
     "out of memory",                     // 2
     "cannot open file",                  // 3
-    "unknown file format"                // 4
+    "unknown file format",               // 4
+    "unsupported file type"              // 5
 };
 
 int VffImg::readMainHeader()
@@ -29,17 +30,23 @@ int VffImg::readMainHeader()
         return 1;
     }
 
-#if 0
     // Check for magic number
-    if(strncmp(main_header.magic_number, VFF_MAGICNR, 4) != 0)
+    if (strncmp(main_header.magic_number, VFF_MAGICNR, 4) != 0)
     {
         statmsg = imgmsg[4];
         return 1;
     }
-#endif
 
-    // Check if file_type is supported
-    // TODO
+    // Check if depth is supported
+    if (main_header.bits != VFF_DEPTH8 &&
+        main_header.bits != VFF_DEPTH16)
+    {
+        statmsg = imgmsg[5];
+        return 1;
+    }
+
+    // Set file format
+    _fileFormat = IMG_VFF;
 
     statmsg = imgmsg[0];
 
@@ -76,6 +83,11 @@ int VffImg::open(const char *fname)
     pxlNr = dimx * dimy;
     planeNr = dimz;
 
+    if (main_header.value[0])
+    {
+        setLimits(main_header.value[1], main_header.value[0]);
+    }
+
     if (alloc(planeNr, dimx, dimy) > 0)
     {
         statmsg = imgmsg[2];
@@ -88,6 +100,9 @@ int VffImg::open(const char *fname)
 
 void VffImg::close()
 {
+    // dealloc checks if image is occupied
+    dealloc();
+
     if (fileOpen)
     {
         fclose(fp);
@@ -97,6 +112,63 @@ void VffImg::close()
 
 int VffImg::read(int t)
 {
+    int ret;
+
+    switch(main_header.bits)
+    {
+        case VFF_DEPTH8:
+            ret = read8(t);
+            break;
+
+        case VFF_DEPTH16:
+            ret = read16(t);
+            break;
+
+        default:
+            ret = -1;
+            break;
+    }
+}
+
+int VffImg::read8(int t)
+{
+    int xi, yi, zi;
+    uint8_t *data = 0, *ptr;
+
+    data = new uint8_t[dimx * dimy * dimz];
+    if (data)
+    {
+        // Read data from file
+        fseek(fp, main_header.header_size, SEEK_SET);
+        int s = fread(data, sizeof(uint8_t), dimx * dimy * dimz, fp);
+
+        // Copy matrix data through volume planes
+        ptr = data;
+        for(xi = 0; xi < dimx; xi++)
+        {
+            for(zi = 0; zi < dimz; zi++)
+            {
+                for(yi = 0; yi < dimy; yi++)
+                {
+                    uint8_t val = *ptr++;
+                    m[zi][yi][xi] = float(val);
+                } // End for yi
+            } // End for zi
+        } // End for xi
+
+        delete data;
+    }
+    else
+    {
+        statmsg = imgmsg[3];
+        return 1;
+    }
+
+    return 0;
+}
+
+int VffImg::read16(int t)
+{
     int xi, yi, zi;
     uint16_t *data = 0, *ptr;
 
@@ -104,6 +176,7 @@ int VffImg::read(int t)
     if (data)
     {
         // Read data from file
+        fseek(fp, main_header.header_size, SEEK_SET);
         int s = fread(data, sizeof(uint16_t), dimx * dimy * dimz, fp);
 
         // Copy matrix data through volume planes
@@ -114,9 +187,8 @@ int VffImg::read(int t)
             {
                 for(yi = 0; yi < dimy; yi++)
                 {
-                    uint16_t val = *ptr;
+                    uint16_t val = *ptr++;
                     m[zi][yi][xi] = float(val);
-                    ptr++;
                 } // End for yi
             } // End for zi
         } // End for xi

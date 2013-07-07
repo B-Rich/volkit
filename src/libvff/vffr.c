@@ -44,15 +44,18 @@ int vffReadMainheader(FILE *fp, VFF_mainheader *h)
     int i, i1, i2, i3;
     float f1, f2, f3;
 
-    /* Read magic number */
-    if ((fread(h->magic_number, sizeof(char), 5, fp) < 5) ||
-        (strncmp(h->magic_number, VFF_MAGICNR, 4)))
+    /* Clear header */
+    memset(h, 0, sizeof(VFF_mainheader));
+
+    /* Read magic number including newline */
+    fread(line, sizeof(char), 5, fp);
+
+    /* Copy and check magic number */
+    strncpy(h->magic_number, line, 4);
+    if (strncmp(h->magic_number, VFF_MAGICNR, 4))
     {
         return 1;
     }
-
-    /* Clear header */
-    memset(h, 0, sizeof(VFF_mainheader));
 
     c = fgetc(fp);
     while(c != '\f')
@@ -140,6 +143,13 @@ int vffReadMainheader(FILE *fp, VFF_mainheader *h)
             vffReadValue(fp, line);
             strncpy(h->title, line, 32);
         }
+        else if (!strcmp(line, "value"))
+        {
+            vffReadValue(fp, line);
+            sscanf(line, "%g %g", &f1, &f2);
+            h->value[0] = f1;
+            h->value[1] = f2;
+        }
         else if (!strcmp(line, "frames"))
         {
             vffReadLine(fp, line);
@@ -173,9 +183,9 @@ int vffReadMainheader(FILE *fp, VFF_mainheader *h)
         while (((c = fgetc(fp)) == ' ') || (c == '\n'));
     }
    
-    /* Consume formfeed and newline */
-    c = fgetc(fp);
+    /* Consume newlines */
     while (fgetc(fp) == '\n');
+    h->header_size = ftell(fp);
 
 
     if (!h->rawsize)

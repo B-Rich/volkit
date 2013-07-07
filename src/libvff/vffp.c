@@ -22,6 +22,8 @@ void vffPrintMainheader(VFF_mainheader *h, FILE *fp)
     fprintf(fp, "bands := %d\n", h->bands);
     fprintf(fp, "bits := %d\n", h->bits);
     fprintf(fp, "title := %s\n", h->title);
+    fprintf(fp, "value[0] := %g\n", h->value[0]);
+    fprintf(fp, "value[1] := %g\n", h->value[1]);
     fprintf(fp, "frames := %d\n", h->frames);
 
     for (i = 0; i < h->frames; i++)
