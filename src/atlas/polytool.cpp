@@ -4,13 +4,13 @@
 
 #include "polytool.h"
 
-Polytool::Polytool()
+PolyTool::PolyTool()
     : Tool(TYPE_POLYGON, STATE_IDLE),
       polygonDefined(false)
 {
 }
 
-void Polytool::mouseDown(int x, int y)
+void PolyTool::mouseDown(int x, int y)
 {
     if (getState() == STATE_DEFINE)
     {
@@ -22,7 +22,7 @@ void Polytool::mouseDown(int x, int y)
     setState(STATE_DEFINE);
 }
 
-void Polytool::mouseMove(int x, int y)
+void PolyTool::mouseMove(int x, int y)
 {
     if (getState() == STATE_DEFINE)
     {
@@ -30,7 +30,7 @@ void Polytool::mouseMove(int x, int y)
     }
 }
 
-void Polytool::mouseUp(int x, int y)
+void PolyTool::mouseUp(int x, int y)
 {
     setState(STATE_END);
     setPos(x, y);
@@ -39,14 +39,14 @@ void Polytool::mouseUp(int x, int y)
     setState(STATE_DEFINE);
 }
 
-void Polytool::mouseDoubleClick(int x, int y)
+void PolyTool::mouseDoubleClick(int x, int y)
 {
     setState(STATE_END);
     setPos(x, y);
     setState(STATE_IDLE);
 }
 
-void Polytool::setState(ToolState state)
+void PolyTool::setState(ToolState state)
 {
     if (state != toolState)
     {
@@ -63,7 +63,7 @@ void Polytool::setState(ToolState state)
     }
 }
 
-void Polytool::setPos(int x, int y)
+void PolyTool::setPos(int x, int y)
 {
     switch(toolState)
     {
@@ -90,7 +90,7 @@ void Polytool::setPos(int x, int y)
     }
 }
 
-void Polytool::draw()
+void PolyTool::draw()
 {
     glColor3f(1.0, 1.0, 1.0);
     glBegin(GL_LINES);

@@ -6,10 +6,10 @@
 #include "img/line2.h"
 #include "tool.h"
 
-class Polytool : public Tool
+class PolyTool : public Tool
 {
 public:
-    Polytool();
+    PolyTool();
 
     void setType(ToolType type);
     void setState(ToolState state);

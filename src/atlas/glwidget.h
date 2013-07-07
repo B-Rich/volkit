@@ -23,6 +23,8 @@ public:
     void setData(int w, int h, void *data);
     void unsetData();
 
+    void setTool(Tool *tool);
+
 protected:
     void initializeGL();
     void paintGL();

@@ -5,7 +5,7 @@
 #include <math.h>
 #include <string.h>
 
-#include "polytool.h"
+#include "tool.h"
 #include "glwidget.h"
 
 GLWidget::GLWidget(Tool *tool, QWidget *parent)
@@ -80,6 +80,12 @@ void GLWidget::unsetData()
 {
     dataSet = false;
     repaint();
+}
+
+void GLWidget::setTool(Tool *tool)
+{
+    currTool = tool;
+    currTool->setScale(float(width()), float(height()));
 }
 
 void GLWidget::initializeGL()

@@ -8,6 +8,7 @@
 #include "img/ecat7img.h"
 #include "glwidget.h"
 #include "polytool.h"
+#include "sampletool.h"
 #include "window.h"
 
 Window::Window()
@@ -18,7 +19,7 @@ Window::Window()
     workWidget = new QWidget;
     setCentralWidget(workWidget);
 
-    selectedTool = new Polytool;
+    selectedTool = new SampleTool(this);
     glWidget = new GLWidget(selectedTool, this);
 
     sliceScroll = new QScrollBar(Qt::Vertical);
@@ -138,19 +139,23 @@ void Window::imageExit()
 
 void Window::toolsSelect()
 {
-    selectedTool->setType(Tool::TYPE_SELECT);
+    // TODO
     statusBar()->showMessage(tr("Click on object to select"));
 }
 
 void Window::toolsPolygon()
 {
-    selectedTool->setType(Tool::TYPE_POLYGON);
+    delete selectedTool;
+    selectedTool = new PolyTool;
+    glWidget->setTool(selectedTool);
     statusBar()->showMessage(tr("Draw polygon"));
 }
 
 void Window::toolsSample()
 {
-    selectedTool->setType(Tool::TYPE_SAMPLE);
+    delete selectedTool;
+    selectedTool = new SampleTool(this);
+    glWidget->setTool(selectedTool);
     statusBar()->showMessage(tr("Select point to sample"));
 }
 
