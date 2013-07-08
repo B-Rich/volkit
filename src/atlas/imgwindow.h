@@ -7,14 +7,15 @@
 
 #include "img/colormap.h"
 #include "img/img.h"
-#include "ranges.h"
 #include "tool.h"
+#include "imgparams.h"
 
 class QWidget;
 class QMenu;
 class QToolBar;
 class QScrollBar;
 class ImgWidget;
+class ImgParams;
 
 class ImgWindow : public QMainWindow
 {
@@ -26,7 +27,7 @@ public slots:
     void imageHorizontal();
     void imageSagittal();
     void imageCoronal();
-    void imageRanges();
+    void imageParams();
     void imageColormap();
     void imageExit();
 
@@ -45,7 +46,7 @@ public:
     ImgWindow();
 
     void setOrientation(Img::Orientation o);
-    void setLimits(float low, float high);
+    void setParams(float low, float high, bool trans);
 
     int loadImg(
         const char *fn,
@@ -75,7 +76,7 @@ private:
     QAction *imageHorizontalAct;
     QAction *imageSagittalAct;
     QAction *imageCoronalAct;
-    QAction *imageRangesAct;
+    QAction *imageParamsAct;
     QAction *imageColormapAct;
     QAction *imageExitAct;
 
@@ -98,7 +99,7 @@ private:
     int imgSlice;
     int imgFrame;
 
-    Ranges rangesDialog;
+    ImgParams imgParams;
     Tool *selectedTool;
 };
 

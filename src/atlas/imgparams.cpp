@@ -4,9 +4,9 @@
 #include <QtGui>
 
 #include "imgwindow.h"
-#include "ranges.h"
+#include "imgparams.h"
 
-Ranges::Ranges(QWidget *parent)
+ImgParams::ImgParams(QWidget *parent)
     : parentWidget(parent)
 {
     QGridLayout *inputLayout = new QGridLayout;
@@ -17,6 +17,10 @@ Ranges::Ranges(QWidget *parent)
     inputLayout->addWidget(new QLabel(tr("High limit:")), 1, 0);
     highText = new QLineEdit(tr("65535.0"));
     inputLayout->addWidget(highText, 1, 1);
+
+    inputLayout->addWidget(new QLabel(tr("Transparency:")), 2, 0);
+    transCheck = new QCheckBox();
+    inputLayout->addWidget(transCheck, 2, 1);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     applyButton = new QPushButton(tr("Apply"));
@@ -37,24 +41,26 @@ Ranges::Ranges(QWidget *parent)
 
     createActions();
 
-    setWindowTitle(tr("Ranges"));
+    setWindowTitle(tr("Image parameters"));
 }
 
-void Ranges::buttonApply()
+void ImgParams::buttonApply()
 {
     QString low = lowText->text();
     QString high = highText->text();
     ImgWindow *w = (ImgWindow *) parentWidget;
-    w->setLimits(atof(low.toStdString().c_str()),
-                 atof(high.toStdString().c_str()));
+
+    w->setParams(atof(low.toStdString().c_str()),
+                 atof(high.toStdString().c_str()),
+                 transCheck->isChecked());
 }
 
-void Ranges::buttonClose()
+void ImgParams::buttonClose()
 {
     hide();
 }
 
-void Ranges::createActions()
+void ImgParams::createActions()
 {
     connect(applyButton, SIGNAL(released()), this, SLOT(buttonApply()));
     connect(closeButton, SIGNAL(released()), this, SLOT(buttonClose()));

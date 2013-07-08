@@ -12,7 +12,7 @@
 #include "imgwindow.h"
 
 ImgWindow::ImgWindow()
-    : rangesDialog(this),
+    : imgParams(this),
       colorMap(),
       imgLoaded(false)
 {
@@ -108,9 +108,9 @@ void ImgWindow::imageCoronal()
     setOrientation(Img::ORIENTATION_CORONAL);
 }
 
-void ImgWindow::imageRanges()
+void ImgWindow::imageParams()
 {
-    rangesDialog.show();
+    imgParams.show();
 }
 
 void ImgWindow::imageColormap()
@@ -176,8 +176,8 @@ void ImgWindow::createActions()
     imageCoronalAct = new QAction(tr("&Coronal"), this);
     connect(imageCoronalAct, SIGNAL(triggered()), this, SLOT(imageCoronal()));
 
-    imageRangesAct = new QAction(tr("&Ranges"), this);
-    connect(imageRangesAct, SIGNAL(triggered()), this, SLOT(imageRanges()));
+    imageParamsAct = new QAction(tr("&Parameters"), this);
+    connect(imageParamsAct, SIGNAL(triggered()), this, SLOT(imageParams()));
 
     imageColormapAct = new QAction(tr("Color&map"), this);
     connect(imageColormapAct, SIGNAL(triggered()), this, SLOT(imageColormap()));
@@ -220,7 +220,7 @@ void ImgWindow::createMenus()
     imageMenu->addAction(imageSagittalAct);
     imageMenu->addAction(imageCoronalAct);
     imageMenu->addSeparator();
-    imageMenu->addAction(imageRangesAct);
+    imageMenu->addAction(imageParamsAct);
     imageMenu->addAction(imageColormapAct);
     imageMenu->addSeparator();
     imageMenu->addAction(imageExitAct);
@@ -366,11 +366,19 @@ void ImgWindow::setOrientation(Img::Orientation o)
     }
 }
 
-void ImgWindow::setLimits(float low, float high)
+void ImgWindow::setParams(float low, float high, bool trans)
 {
     if (imgLoaded)
     {
         imgBase->setLimits(low, high);
+        if (trans)
+        {
+            imgBase->setTransparency(Img::TRANSPARENCY_VOXEL);
+        }
+        else
+        {
+            imgBase->setTransparency(Img::TRANSPARENCY_NONE);
+        }
         readImgData();
     }
 }

@@ -1,18 +1,19 @@
-#ifndef RANGES_H
-#define RANGES_H
+#ifndef IMGPARAMS_H
+#define IMGPARAMS_H
 
 #include <QWidget>
 
 class QWidget;
 class QLineEdit;
+class QCheckBox;
 class QPushButton;
 
-class Ranges : public QWidget
+class ImgParams : public QWidget
 {
     Q_OBJECT
 
 public:
-    Ranges(QWidget *parent);
+    ImgParams(QWidget *parent);
 
 private slots:
     void buttonApply();
@@ -23,6 +24,7 @@ private:
 
     QLineEdit *lowText;
     QLineEdit *highText;
+    QCheckBox *transCheck;
     QPushButton *applyButton;
     QPushButton *closeButton;
 
