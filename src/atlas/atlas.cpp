@@ -2,12 +2,12 @@
 
 #include <iostream>
 
-#include "window.h"
+#include "imgwindow.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    Window window;
+    ImgWindow window;
 
     if (argc > 1)
     {

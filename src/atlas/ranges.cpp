@@ -3,7 +3,7 @@
 
 #include <QtGui>
 
-#include "window.h"
+#include "imgwindow.h"
 #include "ranges.h"
 
 Ranges::Ranges(QWidget *parent)
@@ -44,7 +44,7 @@ void Ranges::buttonApply()
 {
     QString low = lowText->text();
     QString high = highText->text();
-    Window *w = (Window *) parentWidget;
+    ImgWindow *w = (ImgWindow *) parentWidget;
     w->setLimits(atof(low.toStdString().c_str()),
                  atof(high.toStdString().c_str()));
 }

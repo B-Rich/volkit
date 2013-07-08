@@ -4,7 +4,6 @@
 #include "img/point2.h"
 
 #include "tool.h"
-#include "window.h"
 
 class QMainWindow;
 

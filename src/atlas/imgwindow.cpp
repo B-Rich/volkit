@@ -6,12 +6,12 @@
 
 #include "img/vffimg.h"
 #include "img/ecat7img.h"
-#include "glwidget.h"
+#include "imgwidget.h"
 #include "polytool.h"
 #include "sampletool.h"
-#include "window.h"
+#include "imgwindow.h"
 
-Window::Window()
+ImgWindow::ImgWindow()
     : rangesDialog(this),
       colorMap(),
       imgLoaded(false)
@@ -20,14 +20,14 @@ Window::Window()
     setCentralWidget(workWidget);
 
     selectedTool = new SampleTool(this);
-    glWidget = new GLWidget(selectedTool, this);
+    imgWidget = new ImgWidget(selectedTool, this);
 
     sliceScroll = new QScrollBar(Qt::Vertical);
     connect(sliceScroll, SIGNAL(valueChanged(int)), this, SLOT(setSlice(int)));
     connect(this, SIGNAL(sliceChanged(int)), sliceScroll, SLOT(setValue(int)));
 
     QHBoxLayout *horLayout = new QHBoxLayout;
-    horLayout->addWidget(glWidget);
+    horLayout->addWidget(imgWidget);
     horLayout->addWidget(sliceScroll);
 
     frameScroll = new QScrollBar(Qt::Horizontal);
@@ -51,7 +51,7 @@ Window::Window()
     setWindowTitle(tr("Atlas"));
 }
 
-void Window::imageOpen()
+void ImgWindow::imageOpen()
 {
     QString fn =
         QFileDialog::getOpenFileName(this, tr("Open File..."),
@@ -75,16 +75,16 @@ void Window::imageOpen()
     }
 }
 
-void Window::imageClose()
+void ImgWindow::imageClose()
 {
     if (imgLoaded)
     {
         closeImg();
-        glWidget->unsetData();
+        imgWidget->unsetData();
     }
 }
 
-void Window::imageHorizontal()
+void ImgWindow::imageHorizontal()
 {
     imageHorizontalAct->setEnabled(false);
     imageSagittalAct->setEnabled(true);
@@ -92,7 +92,7 @@ void Window::imageHorizontal()
     setOrientation(Img::ORIENTATION_HORIZONTAL);
 }
 
-void Window::imageSagittal()
+void ImgWindow::imageSagittal()
 {
     imageHorizontalAct->setEnabled(true);
     imageSagittalAct->setEnabled(false);
@@ -100,7 +100,7 @@ void Window::imageSagittal()
     setOrientation(Img::ORIENTATION_SAGITTAL);
 }
 
-void Window::imageCoronal()
+void ImgWindow::imageCoronal()
 {
     imageHorizontalAct->setEnabled(true);
     imageSagittalAct->setEnabled(true);
@@ -108,12 +108,12 @@ void Window::imageCoronal()
     setOrientation(Img::ORIENTATION_CORONAL);
 }
 
-void Window::imageRanges()
+void ImgWindow::imageRanges()
 {
     rangesDialog.show();
 }
 
-void Window::imageColormap()
+void ImgWindow::imageColormap()
 {
     QString fn =
         QFileDialog::getOpenFileName(this, tr("Load colormap..."),
@@ -132,34 +132,34 @@ void Window::imageColormap()
     }
 }
 
-void Window::imageExit()
+void ImgWindow::imageExit()
 {
     exit(0);
 }
 
-void Window::toolsSelect()
+void ImgWindow::toolsSelect()
 {
     // TODO
     statusBar()->showMessage(tr("Click on object to select"));
 }
 
-void Window::toolsPolygon()
+void ImgWindow::toolsPolygon()
 {
     delete selectedTool;
     selectedTool = new PolyTool;
-    glWidget->setTool(selectedTool);
+    imgWidget->setTool(selectedTool);
     statusBar()->showMessage(tr("Draw polygon"));
 }
 
-void Window::toolsSample()
+void ImgWindow::toolsSample()
 {
     delete selectedTool;
     selectedTool = new SampleTool(this);
-    glWidget->setTool(selectedTool);
+    imgWidget->setTool(selectedTool);
     statusBar()->showMessage(tr("Select point to sample"));
 }
 
-void Window::createActions()
+void ImgWindow::createActions()
 {
     imageOpenAct = new QAction(tr("&Open"), this);
     connect(imageOpenAct, SIGNAL(triggered()), this, SLOT(imageOpen()));
@@ -210,7 +210,7 @@ void Window::createActions()
     connect(toolsSampleAct, SIGNAL(triggered()), this, SLOT(toolsSample()));
 }
 
-void Window::createMenus()
+void ImgWindow::createMenus()
 {
     imageMenu = menuBar()->addMenu(tr("&Image"));
     imageMenu->addAction(imageOpenAct);
@@ -226,7 +226,7 @@ void Window::createMenus()
     imageMenu->addAction(imageExitAct);
 }
 
-void Window::createToolBars()
+void ImgWindow::createToolBars()
 {
     toolsToolBar = addToolBar(tr("Tools"));
     toolsToolBar->addAction(toolsSelectAct);
@@ -234,14 +234,14 @@ void Window::createToolBars()
     toolsToolBar->addAction(toolsSampleAct);
 }
 
-void Window::setSlice(int slice)
+void ImgWindow::setSlice(int slice)
 {
     if (slice != imgSlice)
     {
         imgSlice = slice;
         if (imgLoaded)
         {
-            glWidget->setData(
+            imgWidget->setData(
                 imgBase->getWidth(), imgBase->getHeight(),
                 &imgData[imgSlice * imgBase->getWidth() * imgBase->getHeight()]
                 );
@@ -249,7 +249,7 @@ void Window::setSlice(int slice)
     }
 }
 
-void Window::setFrame(int frame)
+void ImgWindow::setFrame(int frame)
 {
     if (frame != imgFrame)
     {
@@ -262,18 +262,18 @@ void Window::setFrame(int frame)
     }
 }
 
-void Window::readImgData()
+void ImgWindow::readImgData()
 {
     imgBase->getData(imgData, &colorMap);
     sliceScroll->setRange(0, imgBase->getDepth() - 1);
     sliceScroll->setValue(imgSlice);
-    glWidget->setData(
+    imgWidget->setData(
         imgBase->getWidth(), imgBase->getHeight(),
         &imgData[imgSlice * imgBase->getWidth() * imgBase->getHeight()]
         );
 }
 
-int Window::loadImg(
+int ImgWindow::loadImg(
     const char *fn,
     int slice,
     int frame
@@ -305,7 +305,7 @@ int Window::loadImg(
     return result;
 }
 
-int Window::readImg(
+int ImgWindow::readImg(
     Img *img,
     int slice,
     int frame
@@ -353,7 +353,7 @@ int Window::readImg(
     return result;
 }
 
-void Window::setOrientation(Img::Orientation o)
+void ImgWindow::setOrientation(Img::Orientation o)
 {
     if (imgLoaded)
     {
@@ -366,7 +366,7 @@ void Window::setOrientation(Img::Orientation o)
     }
 }
 
-void Window::setLimits(float low, float high)
+void ImgWindow::setLimits(float low, float high)
 {
     if (imgLoaded)
     {
@@ -375,7 +375,7 @@ void Window::setLimits(float low, float high)
     }
 }
 
-void Window::closeImg()
+void ImgWindow::closeImg()
 {
     if (imgLoaded)
     {
@@ -388,7 +388,7 @@ void Window::closeImg()
     }
 }
 
-int Window::loadColormap(const char *fn)
+int ImgWindow::loadColormap(const char *fn)
 {
     int  result = colorMap.loadColormap(fn);
     if ((result == 0) &&imgLoaded)

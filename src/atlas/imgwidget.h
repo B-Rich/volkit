@@ -1,5 +1,5 @@
-#ifndef GLWIDGET_H
-#define GLWIDGET_H
+#ifndef IMGWIDGET_H
+#define IMGWIDGET_H
 
 #include <QGLWidget>
 
@@ -7,11 +7,11 @@
 
 class QWidget;
 
-class GLWidget : public QGLWidget
+class ImgWidget : public QGLWidget
 {
 public:
-    GLWidget(Tool *tool, QWidget *parent);
-    ~GLWidget();
+    ImgWidget(Tool *tool, QWidget *parent);
+    ~ImgWidget();
 
     QSize minimumSizeHint() const;
     QSize sizeHint() const;

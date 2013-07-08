@@ -1,5 +1,5 @@
-#ifndef WINDOW_H
-#define WINDOW_H
+#ifndef IMGWINDOW_H
+#define IMGWINDOW_H
 
 #include <QMainWindow>
 
@@ -14,9 +14,9 @@ class QWidget;
 class QMenu;
 class QToolBar;
 class QScrollBar;
-class GLWidget;
+class ImgWidget;
 
-class Window : public QMainWindow
+class ImgWindow : public QMainWindow
 {
     Q_OBJECT
 
@@ -42,7 +42,7 @@ signals:
     void frameChanged(int frame);
 
 public:
-    Window();
+    ImgWindow();
 
     void setOrientation(Img::Orientation o);
     void setLimits(float low, float high);
@@ -85,7 +85,7 @@ private:
     QAction *toolsSampleAct;
 
     QWidget *workWidget;
-    GLWidget *glWidget;
+    ImgWidget *imgWidget;
     QScrollBar *sliceScroll;
     QScrollBar *frameScroll;
 

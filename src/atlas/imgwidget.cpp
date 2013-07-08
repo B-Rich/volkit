@@ -6,9 +6,9 @@
 #include <string.h>
 
 #include "tool.h"
-#include "glwidget.h"
+#include "imgwidget.h"
 
-GLWidget::GLWidget(Tool *tool, QWidget *parent)
+ImgWidget::ImgWidget(Tool *tool, QWidget *parent)
     : currTool(tool),
       QGLWidget(parent),
       dataSet(false),
@@ -20,45 +20,45 @@ GLWidget::GLWidget(Tool *tool, QWidget *parent)
     setMouseTracking(true);
 }
 
-GLWidget::~GLWidget()
+ImgWidget::~ImgWidget()
 {
     makeCurrent();
 }
 
-QSize GLWidget::minimumSizeHint() const
+QSize ImgWidget::minimumSizeHint() const
 {
     return QSize(256, 256);
 }
 
-QSize GLWidget::sizeHint() const
+QSize ImgWidget::sizeHint() const
 {
     return QSize(512, 512);
 }
 
-void GLWidget::mousePressEvent(QMouseEvent *event)
+void ImgWidget::mousePressEvent(QMouseEvent *event)
 {
     currTool->mouseDown(event->pos().x(), event->pos().y());
 }
 
-void GLWidget::mouseMoveEvent(QMouseEvent *event)
+void ImgWidget::mouseMoveEvent(QMouseEvent *event)
 {
     currTool->mouseMove(event->pos().x(), event->pos().y());
     repaint();
 }
 
-void GLWidget::mouseReleaseEvent(QMouseEvent *event)
+void ImgWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     currTool->mouseMove(event->pos().x(), event->pos().y());
     repaint();
 }
 
-void GLWidget::mouseDoubleClickEvent(QMouseEvent *event)
+void ImgWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
     currTool->mouseDoubleClick(event->pos().x(), event->pos().y());
     currTool->setType(Tool::TYPE_SELECT);
 }
 
-void GLWidget::calculateDataZoom(int w, int h)
+void ImgWidget::calculateDataZoom(int w, int h)
 {
     xDataZoom = float(w) / float(dataWidth);
     yDataZoom = float(h) / float(dataHeight);
@@ -66,7 +66,7 @@ void GLWidget::calculateDataZoom(int w, int h)
     updateState = true;
 }
 
-void GLWidget::setData(int w, int h, void *data)
+void ImgWidget::setData(int w, int h, void *data)
 {
     dataWidth = w;
     dataHeight = h;
@@ -76,19 +76,19 @@ void GLWidget::setData(int w, int h, void *data)
     repaint();
 }
 
-void GLWidget::unsetData()
+void ImgWidget::unsetData()
 {
     dataSet = false;
     repaint();
 }
 
-void GLWidget::setTool(Tool *tool)
+void ImgWidget::setTool(Tool *tool)
 {
     currTool = tool;
     currTool->setScale(float(width()), float(height()));
 }
 
-void GLWidget::initializeGL()
+void ImgWidget::initializeGL()
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
@@ -100,7 +100,7 @@ void GLWidget::initializeGL()
     glLoadIdentity();
 }
 
-void GLWidget::paintGL()
+void ImgWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     if (dataSet)
@@ -116,7 +116,7 @@ void GLWidget::paintGL()
     currTool->draw();
 }
 
-void GLWidget::resizeGL(int w, int h)
+void ImgWidget::resizeGL(int w, int h)
 {
     glViewport(0, 0, w, h); 
     glMatrixMode(GL_PROJECTION);
