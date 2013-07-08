@@ -52,6 +52,7 @@ Img::Img()
     imgOrientation = ORIENTATION_HORIZONTAL;
     lowLimit = 0.0;
     highLimit = 65535.0;
+    imgTransparency = TRANSPARENCY_NONE;
 }
 
 Img::~Img()
@@ -249,33 +250,25 @@ int Img::getDepth()
     return result;
 }
 
-void Img::getData(
-    uint32_t *buf,
-    ColorMap *cmap,
-    uint8_t alpha
-    )
+void Img::getData(uint32_t *buf, ColorMap *cmap)
 {
     switch(imgOrientation)
     {
         case ORIENTATION_HORIZONTAL:
-            getHorizontalData(buf, cmap, alpha);
+            getHorizontalData(buf, cmap);
             break;
 
         case ORIENTATION_SAGITTAL:
-            getSagittalData(buf, cmap, alpha);
+            getSagittalData(buf, cmap);
             break;
 
         case ORIENTATION_CORONAL:
-            getCoronalData(buf, cmap, alpha);
+            getCoronalData(buf, cmap);
             break;
     }
 }
 
-void Img::getHorizontalData(
-    uint32_t *buf,
-    ColorMap *cmap,
-    uint8_t alpha
-    )
+void Img::getHorizontalData(uint32_t *buf, ColorMap *cmap)
 {
     uint8_t *img = (uint8_t *) buf;
     float k = 1.0 / (highLimit - lowLimit);
@@ -305,20 +298,23 @@ void Img::getHorizontalData(
                 }
 
                 int out = int(numColors * result);
-                *img = cmap->r(out); img++;
-                *img = cmap->g(out); img++;
-                *img = cmap->b(out); img++;
-                *img = alpha; img++;
+                *img++ = cmap->r(out);
+                *img++ = cmap->g(out);
+                *img++ = cmap->b(out);
+                if (imgTransparency == TRANSPARENCY_NONE)
+                {
+                    *img++ = 255;;
+                }
+                if (imgTransparency == TRANSPARENCY_VOXEL)
+                {
+                    *img++ = uint8_t(out);
+                }
             } // End for xi
         } // End for yi
     } // End for zi
 }
 
-void Img::getSagittalData(
-    uint32_t *buf,
-    ColorMap *cmap,
-    uint8_t alpha
-    )
+void Img::getSagittalData(uint32_t *buf, ColorMap *cmap)
 {
     uint8_t *img = (uint8_t *) buf;
     float k = 1.0 / (highLimit - lowLimit);
@@ -348,20 +344,23 @@ void Img::getSagittalData(
                 }
 
                 int out = int(numColors * result);
-                *img = cmap->r(out); img++;
-                *img = cmap->g(out); img++;
-                *img = cmap->b(out); img++;
-                *img = alpha; img++;
+                *img++ = cmap->r(out);
+                *img++ = cmap->g(out);
+                *img++ = cmap->b(out);
+                if (imgTransparency == TRANSPARENCY_NONE)
+                {
+                    *img++ = 255;;
+                }
+                if (imgTransparency == TRANSPARENCY_VOXEL)
+                {
+                    *img++ = uint8_t(out);
+                }
             } // End for yi
         } // End for zi
     } // End for xi
 }
 
-void Img::getCoronalData(
-    uint32_t *buf,
-    ColorMap *cmap,
-    uint8_t alpha
-    )
+void Img::getCoronalData(uint32_t *buf, ColorMap *cmap)
 {
     uint8_t *img = (uint8_t *) buf;
     float k = 1.0 / (highLimit - lowLimit);
@@ -391,10 +390,17 @@ void Img::getCoronalData(
                 }
 
                 int out = int(numColors * result);
-                *img = cmap->r(out); img++;
-                *img = cmap->g(out); img++;
-                *img = cmap->b(out); img++;
-                *img = alpha; img++;
+                *img++ = cmap->r(out);
+                *img++ = cmap->g(out);
+                *img++ = cmap->b(out);
+                if (imgTransparency == TRANSPARENCY_NONE)
+                {
+                    *img++ = 255;;
+                }
+                if (imgTransparency == TRANSPARENCY_VOXEL)
+                {
+                    *img++ = uint8_t(out);
+                }
             } // End for xi
         } // End for zi
     } // End for yi

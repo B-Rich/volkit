@@ -41,6 +41,12 @@ public:
         ORIENTATION_CORONAL
     };
 
+    enum Transparency
+    {
+        TRANSPARENCY_NONE,
+        TRANSPARENCY_VOXEL
+    };
+
     Img();
     ~Img();
 
@@ -57,14 +63,14 @@ public:
     int getHeight();
     int getDepth();
 
-    void getData(
-        uint32_t *buf,
-        ColorMap *cmap,
-        uint8_t alpha = 255
-    );
+    void getData(uint32_t *buf, ColorMap *cmap);
 
     void setOrientation(Orientation o) { imgOrientation = o; }
     void setLimits(float low, float high);
+    void setTransparency(Transparency transparency)
+    {
+        imgTransparency = transparency;
+    }
 
     const char *getStatusMessage() { return statmsg; }
 
@@ -169,24 +175,13 @@ protected:
     // Upper and lower limit to include when converting to image data
     float lowLimit, highLimit;
 
+    // Transparency
+    Transparency imgTransparency;
+
 private:
-    void getHorizontalData(
-        uint32_t *buf,
-        ColorMap *cmap,
-        uint8_t alpha = 255
-    );
-
-    void getSagittalData(
-        uint32_t *buf,
-        ColorMap *cmap,
-        uint8_t alpha = 255
-    );
-
-    void getCoronalData(
-        uint32_t *buf,
-        ColorMap *cmap,
-        uint8_t alpha = 255
-    );
+    void getHorizontalData(uint32_t *buf, ColorMap *cmap);
+    void getSagittalData(uint32_t *buf, ColorMap *cmap);
+    void getCoronalData(uint32_t *buf, ColorMap *cmap);
 
     // Status strings
     static const char *statusMessage[];
