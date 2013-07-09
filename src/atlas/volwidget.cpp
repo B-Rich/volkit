@@ -87,7 +87,7 @@ void VolWidget::paintGL()
 
         int sliceSize = dataWidth * dataHeight;
         uint32_t *ptr = (uint32_t *) dataPtr;
-        for (int i = 0; i < dataDepth - 1; i++)
+        for (int i = dataDepth - 2; i >= 0; i--)
         {
             GLuint id;
             glGenTextures(1, &id);
