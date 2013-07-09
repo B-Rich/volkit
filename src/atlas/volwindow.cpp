@@ -13,14 +13,42 @@ VolWindow::VolWindow()
     : colorMap(),
       imgLoaded(false)
 {
+    workWidget = new QWidget;
+    setCentralWidget(workWidget);
+
     volWidget = new VolWidget(this);
-    setCentralWidget(volWidget);
+
+    frameScroll = new QScrollBar(Qt::Horizontal);
+    connect(frameScroll, SIGNAL(valueChanged(int)), this, SLOT(setFrame(int)));
+    connect(this, SIGNAL(frameChanged(int)), frameScroll, SLOT(setValue(int)));
+
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(volWidget);
+    mainLayout->addWidget(frameScroll);
+
+    workWidget->setLayout(mainLayout);
+
+    frameScroll->setValue(0);
 
     setWindowTitle(tr("Volume window"));
 }
 
+void VolWindow::setFrame(int frame)
+{
+    if (frame != imgFrame)
+    {
+        imgFrame = frame;
+        if (imgLoaded)
+        {
+           imgBase->read(frame);
+           readImgData();
+        }
+    }
+}
+
 void VolWindow::readImgData()
 {
+    imgBase->setTransparency(Img::TRANSPARENCY_VOXEL);
     imgBase->getData(imgData, &colorMap);
     volWidget->setData(
         imgBase->getWidth(), imgBase->getHeight(), imgBase->getDepth(),
@@ -79,6 +107,9 @@ int VolWindow::readImg(
         {
             imgBase = img;
             readImgData();
+            frameScroll->setRange(0, imgBase->getFrameNr() - 1);
+            frameScroll->setValue(imgFrame);
+
             imgLoaded = true;
         }
         else
@@ -101,5 +132,16 @@ void VolWindow::closeImg()
         delete imgBase;
         imgBase = 0;
     }
+}
+
+int VolWindow::loadColormap(const char *fn)
+{
+    int  result = colorMap.loadColormap(fn);
+    if ((result == 0) && imgLoaded)
+    {
+        readImgData();
+    }
+
+    return result;
 }
 

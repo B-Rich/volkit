@@ -40,7 +40,6 @@ void VolWidget::mouseMoveEvent(QMouseEvent *event)
 
 void VolWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    repaint();
 }
 
 void VolWidget::mouseDoubleClickEvent(QMouseEvent *event)
@@ -70,10 +69,9 @@ void VolWidget::initializeGL()
     glViewport(0, 0, width(), height()); 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, width(), height(), 0, 0, 1);
+    glOrtho(-1.0, 1.0, -1.0, 1.0, -2.0, 2.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glClearColor(1.0, 1.0, 1.0, 1.0);
 }
 
 void VolWidget::paintGL()
@@ -83,7 +81,40 @@ void VolWidget::paintGL()
     {
         if (updateState)
         {
+            // TODO: It seems all textures cannot fit in memory
             updateState = false;
+        }
+
+        int sliceSize = dataWidth * dataHeight;
+        uint32_t *ptr = (uint32_t *) dataPtr;
+        for (int i = 0; i < dataDepth - 1; i++)
+        {
+            GLuint id;
+            glGenTextures(1, &id);
+            glBindTexture(GL_TEXTURE_2D, id);
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0,
+                         GL_RGBA, dataWidth, dataHeight, 0,
+                         GL_RGBA, GL_UNSIGNED_BYTE, &ptr[i * sliceSize]);
+
+            float z = -1.0 + 2.0 * float(i) / dataDepth;
+            glEnable(GL_TEXTURE_2D);
+            glBegin(GL_QUADS);
+                glTexCoord2f(0.0, 0.0);
+                glVertex3f(-1.0, -1.0, z);
+                glTexCoord2f(1.0, 0.0);
+                glVertex3f(1.0, -1.0, z);
+                glTexCoord2f(1.0, 1.0);
+                glVertex3f(1.0, 1.0, z);
+                glTexCoord2f(0.0, 1.0);
+                glVertex3f(-1.0, 1.0, z);
+            glEnd();
+
+            glDeleteTextures(1, &id);
         }
     }
 }
@@ -93,7 +124,7 @@ void VolWidget::resizeGL(int w, int h)
     glViewport(0, 0, w, h); 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, w, h, 0, 0, 1);
+    glOrtho(-1.0, 1.0, -1.0, 1.0, -2.0, 2.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }

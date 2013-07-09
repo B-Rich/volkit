@@ -32,7 +32,7 @@ ImgWindow::ImgWindow()
 
     frameScroll = new QScrollBar(Qt::Horizontal);
     connect(frameScroll, SIGNAL(valueChanged(int)), this, SLOT(setFrame(int)));
-    connect(this, SIGNAL(frameChanged(int)), sliceScroll, SLOT(setValue(int)));
+    connect(this, SIGNAL(frameChanged(int)), frameScroll, SLOT(setValue(int)));
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addLayout(horLayout);
@@ -48,7 +48,7 @@ ImgWindow::ImgWindow()
     createToolBars();
     statusBar()->showMessage(tr("Ready"));
 
-    setWindowTitle(tr("Atlas"));
+    setWindowTitle(tr("Image window"));
 }
 
 void ImgWindow::imageOpen()
@@ -399,7 +399,7 @@ void ImgWindow::closeImg()
 int ImgWindow::loadColormap(const char *fn)
 {
     int  result = colorMap.loadColormap(fn);
-    if ((result == 0) &&imgLoaded)
+    if ((result == 0) && imgLoaded)
     {
         readImgData();
     }

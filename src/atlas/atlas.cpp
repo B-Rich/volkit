@@ -2,12 +2,20 @@
 
 #include <iostream>
 
+#ifndef VOL
 #include "imgwindow.h"
+#else
+#include "volwindow.h"
+#endif
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+#ifndef VOL
     ImgWindow window;
+#else 
+    VolWindow window;
+#endif
 
     if (argc > 1)
     {

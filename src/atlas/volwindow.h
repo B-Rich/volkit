@@ -8,11 +8,18 @@
 #include "img/colormap.h"
 #include "img/img.h"
 
+class QScrollBar;
 class VolWidget;
 
 class VolWindow : public QMainWindow
 {
     Q_OBJECT
+
+public slots:
+    void setFrame(int frame);
+
+signals:
+    void frameChanged(int frame);
 
 public:
     VolWindow();
@@ -22,6 +29,8 @@ public:
         int frame = -1
         );
 
+    int loadColormap(const char *fn);
+
 private:
     void readImgData();
     int readImg(
@@ -30,7 +39,9 @@ private:
         );
     void closeImg();
 
+    QWidget *workWidget;
     VolWidget *volWidget;
+    QScrollBar *frameScroll;
 
     ColorMap colorMap;
 
