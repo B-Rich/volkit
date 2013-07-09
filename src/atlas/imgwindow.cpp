@@ -6,9 +6,9 @@
 
 #include "img/vffimg.h"
 #include "img/ecat7img.h"
-#include "imgwidget.h"
 #include "polytool.h"
 #include "sampletool.h"
+#include "imgwidget.h"
 #include "imgwindow.h"
 
 ImgWindow::ImgWindow()

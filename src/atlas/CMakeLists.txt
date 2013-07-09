@@ -5,9 +5,11 @@ IF(QT4_FOUND AND OPENGL_FOUND)
 
     SET(atlas_SOURCES
         sampletool.cpp polytool.cpp imgparams.cpp
-        imgwidget.cpp imgwindow.cpp atlas.cpp
+        imgwidget.cpp imgwindow.cpp
+        volwidget.cpp volwindow.cpp
+        atlas.cpp
     )
-    SET(atlas_HEADERS imgparams.h imgwindow.h)
+    SET(atlas_HEADERS imgparams.h imgwindow.h volwindow.h)
     SET(atlas_RESOURCES application.qrc)
 
     QT4_WRAP_CPP(atlas_HEADERS_MOC ${atlas_HEADERS})
