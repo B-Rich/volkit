@@ -47,7 +47,7 @@ private:
 
     bool imgLoaded;
     Img *imgBase;
-    uint32_t *imgData;
+    bool imgRead;
 
     int imgFrame;
 };

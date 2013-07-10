@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
                       << argv[2] << std::endl;
         }
     }
+
     window.show();
 
     return app.exec();

@@ -3,6 +3,9 @@
 
 #include <QGLWidget>
 
+#include "imgbrick.h"
+#include <vector>
+
 class QWidget;
 
 class VolWidget : public QGLWidget
@@ -18,9 +21,10 @@ public:
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
 
-    void setData(int w, int h, int d, void *data);
+    void addBrick(int w, int h, int d, uint32_t *data);
+    void setBricks(int x, int y, int z);
     void unsetData();
-
+   
 protected:
     void initializeGL();
     void paintGL();
@@ -31,9 +35,14 @@ private:
     int dataWidth, dataHeight, dataDepth;
     void *dataPtr;
 
+    int xBricks, yBricks, zBricks;
+    std::vector<ImgBrick*> bricks;
+
     bool updateState;
 
     QWidget *parentWidget;
+
+    GLuint genTexture(ImgBrick *brick, int slice);
 };
 
 #endif

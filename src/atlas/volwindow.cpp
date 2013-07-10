@@ -11,7 +11,8 @@
 
 VolWindow::VolWindow()
     : colorMap(),
-      imgLoaded(false)
+      imgLoaded(false),
+      imgRead(false)
 {
     workWidget = new QWidget;
     setCentralWidget(workWidget);
@@ -48,12 +49,40 @@ void VolWindow::setFrame(int frame)
 
 void VolWindow::readImgData()
 {
-    imgBase->setTransparency(Img::TRANSPARENCY_VOXEL);
-    imgBase->getData(imgData, &colorMap);
-    volWidget->setData(
-        imgBase->getWidth(), imgBase->getHeight(), imgBase->getDepth(),
-        &imgData[imgBase->getWidth() * imgBase->getHeight()]
-        );
+    if (imgRead)
+    {
+        volWidget->unsetData();
+    }
+
+    const int xBricks = 1;
+    const int yBricks = 1;
+    const int zBricks = 1;
+
+    volWidget->setBricks(xBricks, yBricks, zBricks);
+    int w = imgBase->getWidth() / xBricks;
+    int h = imgBase->getHeight() / yBricks;
+    int d = imgBase->getDepth() / zBricks;
+    int sz = w * h * d;
+    for (int zi = zBricks - 1; zi >= 0; zi--)
+    {
+        for (int yi = 0; yi < yBricks; yi++)
+        {
+            for (int xi = 0; xi < xBricks; xi++)
+            {
+                uint32_t *data = new uint32_t[sz];
+                imgBase->getData(
+                     data,
+                     &colorMap,
+                     xi * w, xi * w + w,
+                     yi * h, yi * h + h,
+                     zi * d, zi * d + d
+                    );
+                volWidget->addBrick(w, h, d, data);
+            } // End for xi
+        } // End for yi
+    } // End for zi
+
+    imgRead = true;
 }
 
 int VolWindow::loadImg(
@@ -101,21 +130,13 @@ int VolWindow::readImg(
     int result = img->read(imgFrame);
     if (result == 0)
     {
-        imgData =
-            new uint32_t[img->getWidth() * img->getHeight() * img->getDepth()];
-        if (imgData)
-        {
-            imgBase = img;
-            readImgData();
-            frameScroll->setRange(0, imgBase->getFrameNr() - 1);
-            frameScroll->setValue(imgFrame);
+        imgBase = img;
+        imgBase->setTransparency(Img::TRANSPARENCY_VOXEL);
+        readImgData();
+        frameScroll->setRange(0, imgBase->getFrameNr() - 1);
+        frameScroll->setValue(imgFrame);
 
-            imgLoaded = true;
-        }
-        else
-        {
-            result = -1;
-        }
+        imgLoaded = true;
     }
 
     return result;
@@ -123,11 +144,15 @@ int VolWindow::readImg(
 
 void VolWindow::closeImg()
 {
+    if (imgRead)
+    {
+        volWidget->unsetData();
+        imgRead = false;
+    }
+
     if (imgLoaded)
     {
         imgLoaded = false;
-        delete imgData;
-        imgData = 0;
         imgBase->close();
         delete imgBase;
         imgBase = 0;
