@@ -63,7 +63,13 @@ public:
     int getHeight();
     int getDepth();
 
-    void getData(uint32_t *buf, ColorMap *cmap);
+    void getData(
+        uint32_t *buf,
+        ColorMap *cmap,
+        int x1 = 0, int x2 = -1,
+        int y1 = 0, int y2 = -1,
+        int z1 = 0, int z2 = -1
+        );
 
     void setOrientation(Orientation o) { imgOrientation = o; }
     void setLimits(float low, float high);
@@ -179,9 +185,30 @@ protected:
     Transparency imgTransparency;
 
 private:
-    void getHorizontalData(uint32_t *buf, ColorMap *cmap);
-    void getSagittalData(uint32_t *buf, ColorMap *cmap);
-    void getCoronalData(uint32_t *buf, ColorMap *cmap);
+    void getHorizontalData(
+        uint32_t *buf,
+        ColorMap *cmap,
+        int x1, int x2,
+        int y1, int y2,
+        int z1, int z2
+        );
+
+    void getSagittalData(
+        uint32_t *buf,
+        ColorMap *cmap,
+        int y1, int y2,
+        int z1, int z2,
+        int x1, int x2
+        );
+
+    void getCoronalData(
+        uint32_t *buf,
+        ColorMap *cmap,
+        int x1, int x2,
+        int z1, int z2,
+        int y1, int y2
+        );
+
 
     // Status strings
     static const char *statusMessage[];

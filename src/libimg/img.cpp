@@ -250,36 +250,63 @@ int Img::getDepth()
     return result;
 }
 
-void Img::getData(uint32_t *buf, ColorMap *cmap)
+void Img::getData(
+    uint32_t *buf,
+    ColorMap *cmap,
+    int x1, int x2,
+    int y1, int y2,
+    int z1, int z2
+    )
 {
+    if (x2 < 0)
+    {
+        x2 = getWidth();
+    }
+
+    if (y2 < 0)
+    {
+        y2 = getHeight();
+    }
+
+    if (z2 < 0)
+    {
+        z2 = getDepth();
+    }
+
     switch(imgOrientation)
     {
         case ORIENTATION_HORIZONTAL:
-            getHorizontalData(buf, cmap);
+            getHorizontalData(buf, cmap, x1, x2, y1, y2, z1, z2);
             break;
 
         case ORIENTATION_SAGITTAL:
-            getSagittalData(buf, cmap);
+            getSagittalData(buf, cmap, x1, x2, y1, y2, z1, z2);
             break;
 
         case ORIENTATION_CORONAL:
-            getCoronalData(buf, cmap);
+            getCoronalData(buf, cmap, x1, x2, y1, y2, z1, z2);
             break;
     }
 }
 
-void Img::getHorizontalData(uint32_t *buf, ColorMap *cmap)
+void Img::getHorizontalData(
+    uint32_t *buf,
+    ColorMap *cmap,
+    int x1, int x2,
+    int y1, int y2,
+    int z1, int z2
+    )
 {
     uint8_t *img = (uint8_t *) buf;
     float k = 1.0 / (highLimit - lowLimit);
     float numColors = float(cmap->getNumColors() - 1);
     float result;
 
-    for (int zi = 0; zi < dimz; zi++)
+    for (int zi = z1; zi < z2; zi++)
     {
-        for (int yi = dimy - 1; yi >= 0; yi--)
+        for (int yi = y2 - 1; yi >= y1; yi--)
         {
-            for (int xi = 0; xi < dimx; xi++)
+            for (int xi = x1; xi < x2; xi++)
             {
                 float val = m[zi][yi][xi];
                 if (val > lowLimit && val < highLimit)
@@ -314,18 +341,24 @@ void Img::getHorizontalData(uint32_t *buf, ColorMap *cmap)
     } // End for zi
 }
 
-void Img::getSagittalData(uint32_t *buf, ColorMap *cmap)
+void Img::getSagittalData(
+    uint32_t *buf,
+    ColorMap *cmap,
+    int y1, int y2,
+    int z1, int z2,
+    int x1, int x2
+    )
 {
     uint8_t *img = (uint8_t *) buf;
     float k = 1.0 / (highLimit - lowLimit);
     float numColors = float(cmap->getNumColors() - 1);
     float result;
 
-    for (int xi = 0; xi < dimx; xi++)
+    for (int xi = x1; xi < x2; xi++)
     {
-        for (int zi = dimz - 1; zi >= 0; zi--)
+        for (int zi = z2 - 1; zi >= z1; zi--)
         {
-            for (int yi = 0; yi < dimy; yi++)
+            for (int yi = y1; yi < y2; yi++)
             {
                 float val = m[zi][yi][xi];
                 if (val > lowLimit && val < highLimit)
@@ -360,18 +393,24 @@ void Img::getSagittalData(uint32_t *buf, ColorMap *cmap)
     } // End for xi
 }
 
-void Img::getCoronalData(uint32_t *buf, ColorMap *cmap)
+void Img::getCoronalData(
+    uint32_t *buf,
+    ColorMap *cmap,
+    int x1, int x2,
+    int z1, int z2,
+    int y1, int y2
+    )
 {
     uint8_t *img = (uint8_t *) buf;
     float k = 1.0 / (highLimit - lowLimit);
     float numColors = float(cmap->getNumColors() - 1);
     float result;
 
-    for (int yi = 0; yi < dimx; yi++)
+    for (int yi = y1; yi < y2; yi++)
     {
-        for (int zi = dimz - 1; zi >= 0; zi--)
+        for (int zi = z2 - 1; zi >= z1; zi--)
         {
-            for (int xi = 0; xi < dimx; xi++)
+            for (int xi = x1; xi < x2; xi++)
             {
                 float val = m[zi][yi][xi];
                 if (val > lowLimit && val < highLimit)

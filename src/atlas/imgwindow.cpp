@@ -333,7 +333,7 @@ int ImgWindow::readImg(
     if (result == 0)
     {
         imgData =
-            new uint32_t[img->getDimx() * img->getDimy() * img->getDimz()];
+            new uint32_t[img->getWidth() * img->getHeight() * img->getDepth()];
         if (imgData)
         {
             imgBase = img;
