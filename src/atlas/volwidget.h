@@ -43,6 +43,18 @@ private:
     QWidget *parentWidget;
 
     GLuint genTexture(ImgBrick *brick, int slice);
+    void drawBrick(
+        float x, float y, float z,
+        float dx, float dy, float dz,
+        ImgBrick *brick
+        );
+
+    GLuint genTexture3D(ImgBrick *brick);
+    void drawBrick3D(
+        float x, float y, float z,
+        float dx, float dy, float dz,
+        ImgBrick *brick
+        );
 };
 
 #endif

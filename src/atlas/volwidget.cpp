@@ -81,7 +81,6 @@ void VolWidget::initializeGL()
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
-    glEnable(GL_TEXTURE_2D);
     glViewport(0, 0, width(), height()); 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -109,9 +108,79 @@ GLuint VolWidget::genTexture(ImgBrick *brick, int slice)
     return id;
 }
 
+void VolWidget::drawBrick(
+    float x, float y, float z,
+    float dx, float dy, float dz,
+    ImgBrick *brick
+    )
+{
+    glEnable(GL_TEXTURE_2D);
+    for (int i = 0; i < brick->depth; i++)
+    {
+        GLuint id = genTexture(brick, i);
+        float zSlice = 1.0 - 2.0 * float(i) / brick->depth;
+        glBegin(GL_QUADS);
+            glTexCoord2f(0.0, 0.0);
+            glVertex3f(x, y - dy, zSlice);
+            glTexCoord2f(1.0, 0.0);
+            glVertex3f(x + dx, y - dy, zSlice);
+            glTexCoord2f(1.0, 1.0);
+            glVertex3f(x + dx, y, zSlice);
+            glTexCoord2f(0.0, 1.0);
+            glVertex3f(x, y, zSlice);
+            glEnd();
+            glDeleteTextures(1, &id);
+    } // End for i
+}
+
+GLuint VolWidget::genTexture3D(ImgBrick *brick)
+{
+    GLuint id;
+
+    glGenTextures(1, &id);
+    glBindTexture(GL_TEXTURE_3D, id);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexImage3D(GL_TEXTURE_3D, 0,
+                 GL_RGBA, brick->width, brick->height, brick->depth, 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, brick->data);
+
+    return id;
+}
+
+void VolWidget::drawBrick3D(
+    float x, float y, float z,
+    float dx, float dy, float dz,
+    ImgBrick *brick
+    )
+{
+    glEnable(GL_TEXTURE_3D);
+    GLuint id = genTexture3D(brick);
+    for (int i = 0; i < brick->depth; i++)
+    {
+        float zSlice = 1.0 - 2.0 * float(i) / brick->depth;
+        float zCoord = float(i) / brick->depth;
+        glBegin(GL_QUADS);
+            glTexCoord3f(0.0, 0.0, zCoord);
+            glVertex3f(x, y - dy, zSlice);
+            glTexCoord3f(1.0, 0.0, zCoord);
+            glVertex3f(x + dx, y - dy, zSlice);
+            glTexCoord3f(1.0, 1.0, zCoord);
+            glVertex3f(x + dx, y, zSlice);
+            glTexCoord3f(0.0, 1.0, zCoord);
+            glVertex3f(x, y, zSlice);
+        glEnd();
+    } // End for i
+    glDeleteTextures(1, &id);
+}
+
 void VolWidget::paintGL()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     if (dataSet)
     {
         if (updateState)
@@ -133,26 +202,16 @@ void VolWidget::paintGL()
                 {
                     ImgBrick *brick = *it;
                     ++it;
-                    for (int i = brick->depth - 2; i >= 0; i--)
-                    {
-                        GLuint id = genTexture(brick, i);
-                        float zSlice = 1.0 - 2.0 * float(i) / brick->depth;
-                        glBegin(GL_QUADS);
-                            glTexCoord2f(0.0, 0.0);
-                            glVertex3f(x, y - dy, zSlice);
-                            glTexCoord2f(1.0, 0.0);
-                            glVertex3f(x + dx, y - dy, zSlice);
-                            glTexCoord2f(1.0, 1.0);
-                            glVertex3f(x + dx, y, zSlice);
-                            glTexCoord2f(0.0, 1.0);
-                            glVertex3f(x, y, zSlice);
-                        glEnd();
-                        glDeleteTextures(1, &id);
-                    } // End for i
+#ifdef TEXTURE_2D
+                    drawBrick(x, y, z, dx, dy, dz, brick);
+#else
+                    drawBrick3D(x, y, z, dx, dy, dz, brick);
+#endif
                     x += dx;
                 } // End for xi
                 y -= dy;
             } // End for yi
+            z += dz;
         } // End for zi
     }
 }

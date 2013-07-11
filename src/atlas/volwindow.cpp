@@ -52,6 +52,7 @@ void VolWindow::readImgData()
     if (imgRead)
     {
         volWidget->unsetData();
+        imgRead = false;
     }
 
     const int xBricks = 1;
