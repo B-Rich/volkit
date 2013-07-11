@@ -136,6 +136,8 @@ int VffImg::read(int t)
             ret = -1;
             break;
     }
+
+    return ret;
 }
 
 int VffImg::read8(int t)
