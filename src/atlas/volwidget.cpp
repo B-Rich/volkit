@@ -132,7 +132,7 @@ void VolWidget::drawBrick(
     for (int i = 0; i < brick->depth; i++)
     {
         GLuint id = genTexture(brick, i);
-        float zSlice = 1.0 - 2.0 * float(i) / brick->depth;
+        float zSlice = z - dz * float(i) / brick->depth;
         glBegin(GL_QUADS);
             glTexCoord2f(0.0, 0.0);
             glVertex3f(x, y - dy, zSlice);
@@ -175,7 +175,7 @@ void VolWidget::drawBrick3D(
     GLuint id = genTexture3D(brick);
     for (int i = 0; i < brick->depth; i++)
     {
-        float zSlice = 1.0 - 2.0 * float(i) / brick->depth;
+        float zSlice = z - dz * float(i) / brick->depth;
         float zCoord = float(i) / brick->depth;
         glBegin(GL_QUADS);
             glTexCoord3f(0.0, 0.0, zCoord);
@@ -204,7 +204,7 @@ void VolWidget::paintGL()
 
         std::vector<ImgBrick*>::iterator it = bricks.begin();
 
-        float z = -1.0, dz = 2.0 / zBricks;
+        float z = 1.0, dz = 2.0 / zBricks;
         for (int zi = 0; zi < zBricks; zi++)
         {
             float y = 1.0, dy = 2.0 / yBricks;
@@ -227,7 +227,7 @@ void VolWidget::paintGL()
                 } // End for xi
                 y -= dy;
             } // End for yi
-            z += dz;
+            z -= dz;
         } // End for zi
     }
 }
