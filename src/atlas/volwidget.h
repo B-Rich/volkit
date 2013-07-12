@@ -4,6 +4,7 @@
 #include <QGLWidget>
 
 #include "imgbrick.h"
+
 #include <vector>
 
 class QWidget;
@@ -38,6 +39,7 @@ private:
     int xBricks, yBricks, zBricks;
     std::vector<ImgBrick*> bricks;
 
+    bool extTexture3D;
     bool updateState;
 
     QWidget *parentWidget;

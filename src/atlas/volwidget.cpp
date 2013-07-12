@@ -1,5 +1,5 @@
-#include <QtGui>
-#include <QtOpenGL>
+#include <glew.h>
+#include <QtOpenGL/QGLFormat>
 
 #include <iostream>
 #include <math.h>
@@ -7,9 +7,11 @@
 
 #include "volwidget.h"
 
+
 VolWidget::VolWidget(QWidget *parent)
     : QGLWidget(parent),
       dataSet(false),
+      extTexture3D(false),
       updateState(true),
       parentWidget(parent)
 {
@@ -79,6 +81,19 @@ void VolWidget::unsetData()
 
 void VolWidget::initializeGL()
 {
+    GLenum result = glewInit();
+    if (result == GLEW_OK && GLEW_EXT_texture3D)
+    {
+        extTexture3D = true;
+        std::cout << "Found Open GL extension: EXT_texture3D" << std::endl;
+        glEnable(GL_TEXTURE_3D);
+    }
+    else
+    {
+        extTexture3D = false;
+        glEnable(GL_TEXTURE_2D);
+    }
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
     glViewport(0, 0, width(), height()); 
@@ -114,7 +129,6 @@ void VolWidget::drawBrick(
     ImgBrick *brick
     )
 {
-    glEnable(GL_TEXTURE_2D);
     for (int i = 0; i < brick->depth; i++)
     {
         GLuint id = genTexture(brick, i);
@@ -158,7 +172,6 @@ void VolWidget::drawBrick3D(
     ImgBrick *brick
     )
 {
-    glEnable(GL_TEXTURE_3D);
     GLuint id = genTexture3D(brick);
     for (int i = 0; i < brick->depth; i++)
     {
@@ -202,11 +215,14 @@ void VolWidget::paintGL()
                 {
                     ImgBrick *brick = *it;
                     ++it;
-#ifdef TEXTURE_2D
-                    drawBrick(x, y, z, dx, dy, dz, brick);
-#else
-                    drawBrick3D(x, y, z, dx, dy, dz, brick);
-#endif
+                    if (extTexture3D)
+                    {
+                        drawBrick3D(x, y, z, dx, dy, dz, brick);
+                    }
+                    else
+                    {
+                        drawBrick(x, y, z, dx, dy, dz, brick);
+                    }
                     x += dx;
                 } // End for xi
                 y -= dy;
