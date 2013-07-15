@@ -142,8 +142,8 @@ void VolWidget::drawBrick(
             glVertex3f(x + dx, y, zSlice);
             glTexCoord2f(0.0, 1.0);
             glVertex3f(x, y, zSlice);
-            glEnd();
-            glDeleteTextures(1, &id);
+        glEnd();
+        glDeleteTextures(1, &id);
     } // End for i
 }
 

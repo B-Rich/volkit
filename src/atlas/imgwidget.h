@@ -10,6 +10,9 @@ class QWidget;
 class ImgWidget : public QGLWidget
 {
 public:
+    enum DataState { DATA_STATE_EMPTY, DATA_STATE_SET, DATA_STATE_READY };
+    enum TextureFilter { TEXTURE_FILTER_NEAREST, TEXTURE_FILTER_LINEAR };
+
     ImgWidget(Tool *tool, QWidget *parent);
     ~ImgWidget();
 
@@ -20,27 +23,26 @@ public:
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
 
+    void setTool(Tool *tool);
+
     void setData(int w, int h, void *data);
     void unsetData();
 
-    void setTool(Tool *tool);
-
 protected:
+    void initDataGL();
     void initializeGL();
     void paintGL();
     void resizeGL(int w, int h);
 
 private:
-    void calculateDataZoom(int w, int h);
-
     Tool *currTool;
+    float xDataZoom, yDataZoom;
 
-    bool dataSet;
+    DataState dataState;
     int dataWidth, dataHeight;
     void *dataPtr;
-
-    bool updateState;
-    float xDataZoom, yDataZoom;
+    GLuint texId;
+    TextureFilter textureFilter;
 
     QWidget *parentWidget;
 };

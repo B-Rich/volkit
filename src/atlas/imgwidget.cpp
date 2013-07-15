@@ -11,10 +11,8 @@
 ImgWidget::ImgWidget(Tool *tool, QWidget *parent)
     : currTool(tool),
       QGLWidget(parent),
-      dataSet(false),
-      updateState(true),
-      xDataZoom(1.0),
-      yDataZoom(1.0),
+      dataState(DATA_STATE_EMPTY),
+      textureFilter(TEXTURE_FILTER_LINEAR),
       parentWidget(parent)
 {
     setMouseTracking(true);
@@ -58,12 +56,10 @@ void ImgWidget::mouseDoubleClickEvent(QMouseEvent *event)
     currTool->setType(Tool::TYPE_SELECT);
 }
 
-void ImgWidget::calculateDataZoom(int w, int h)
+void ImgWidget::setTool(Tool *tool)
 {
-    xDataZoom = float(w) / float(dataWidth);
-    yDataZoom = float(h) / float(dataHeight);
-    currTool->setScale(float(w), float(h));
-    updateState = true;
+    currTool = tool;
+    currTool->setScale(float(width()), float(height()));
 }
 
 void ImgWidget::setData(int w, int h, void *data)
@@ -71,21 +67,43 @@ void ImgWidget::setData(int w, int h, void *data)
     dataWidth = w;
     dataHeight = h;
     dataPtr = data;
-    dataSet = true;
-    calculateDataZoom(width(), height());
+    dataState = DATA_STATE_SET;
+    currTool->setScale(float(width()), float(height()));
     repaint();
+}
+
+void ImgWidget::initDataGL()
+{
+    glGenTextures(1, &texId);
+    glBindTexture(GL_TEXTURE_2D, texId);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    if (textureFilter ==  TEXTURE_FILTER_NEAREST)
+    {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    }
+    else if (textureFilter ==  TEXTURE_FILTER_LINEAR)
+    {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    }
+    glTexImage2D(GL_TEXTURE_2D, 0,
+                 GL_RGBA, dataWidth, dataHeight, 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, dataPtr);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    dataState = DATA_STATE_READY;
 }
 
 void ImgWidget::unsetData()
 {
-    dataSet = false;
+    if (dataState == DATA_STATE_READY)
+    {
+        glDeleteTextures(1, &texId);
+    }
+    dataState = DATA_STATE_EMPTY;
     repaint();
-}
-
-void ImgWidget::setTool(Tool *tool)
-{
-    currTool = tool;
-    currTool->setScale(float(width()), float(height()));
 }
 
 void ImgWidget::initializeGL()
@@ -103,15 +121,26 @@ void ImgWidget::initializeGL()
 void ImgWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    if (dataSet)
+    if (dataState == DATA_STATE_SET)
     {
-        if (updateState)
-        {
-            glRasterPos2i(0, int(yDataZoom * float(dataHeight)));
-            glPixelZoom(xDataZoom, yDataZoom);
-            updateState = false;
-        }
-        glDrawPixels(dataWidth, dataHeight, GL_RGBA, GL_UNSIGNED_BYTE, dataPtr);
+        initDataGL();
+    }
+    if (dataState == DATA_STATE_READY)
+    {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, texId);
+        glBegin(GL_QUADS);
+            glTexCoord2f(0.0, 0.0);
+            glVertex2i(0, height());
+            glTexCoord2f(1.0, 0.0);
+            glVertex2i(width(), height());
+            glTexCoord2f(1.0, 1.0);
+            glVertex2i(width(), 0);
+            glTexCoord2f(0.0, 1.0);
+            glVertex2i(0, 0);
+        glEnd();
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_TEXTURE_2D);
     }
     currTool->draw();
 }
@@ -124,6 +153,6 @@ void ImgWidget::resizeGL(int w, int h)
     glOrtho(0, w, h, 0, 0, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    calculateDataZoom(w, h);
+    currTool->setScale(float(w), float(h));
 }
 
