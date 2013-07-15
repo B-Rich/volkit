@@ -85,7 +85,7 @@ int getPlaneCubeIntersect(
             {
                 i = faceedges[face][j];
 
-	        pleval = cpt[edgevertices[i][0]][0] * a + 
+                pleval = cpt[edgevertices[i][0]][0] * a + 
                          cpt[edgevertices[i][0]][1] * b +
                          cpt[edgevertices[i][0]][2] * c + d;
 
