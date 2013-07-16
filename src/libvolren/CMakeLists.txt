@@ -1,4 +1,4 @@
 ADD_LIBRARY(volren
-    cube.c brick.c
+    scalar.c matrix.c coord.c cube.c brick.c
     )
 

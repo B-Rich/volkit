@@ -7,7 +7,6 @@
  * getPlaneCubeIntersect - Get vertices for intersection between plane and cube
  *
  * RETURNS: Number of polygon vertices for intersection
- *
  */
 
 int getPlaneCubeIntersect(
