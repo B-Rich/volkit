@@ -13,6 +13,8 @@
 #define DEFAULT_WINDOW_WIDTH 400
 #define DEFAULT_WINDOW_HEIGHT 400
 
+#define UPDATE_WINDOW_EVENT 99
+
 Display *dpy;
 Window win;
 Bool doubleBuffer = True;
@@ -98,9 +100,7 @@ void generateTimeoutEvent(Display *dpy, Window win)
   event.xclient.window = win;
   event.xclient.message_type = 0;
   event.xclient.format = 32;
-#ifdef TODO
   event.xclient.data.l[0] = UPDATE_WINDOW_EVENT;
-#endif
 
   event_mask = ExposureMask | StructureNotifyMask;
 
@@ -269,11 +269,9 @@ int main(int argc, char *argv[])
 	  if (event.xclient.data.l[0] == wmDeleteWindow) {
             exit(0);
           }
-#ifdef TODO
 	  else if(event.xclient.data.l[0] == UPDATE_WINDOW_EVENT) {
             redraw();
           }
-#endif
           break;
       }
     } while (XPending(dpy));
