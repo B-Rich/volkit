@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 
+#include "img/imgloader.h"
 #include "img/vffimg.h"
 #include "img/ecat7img.h"
 #include "polytool.h"
@@ -279,22 +280,10 @@ int ImgWindow::loadImg(
     int frame
     )
 {
-    Img *img = 0;
+    int result = 1;
 
-    std::string fname(fn);
-    size_t pos = fname.find_last_of(".");
-    std::string ext = fname.substr(pos + 1);
-    if (ext.compare("vff") == 0)
-    {
-        img = new VffImg;
-    }
-    else if (ext.compare("v") == 0)
-    {
-        img = new Ecat7Img;
-    }
-
-    int result = img->open(fn);
-    if (result == 0)
+    Img *img = ImgLoader::open(fn);
+    if (img)
     {
         imageHorizontalAct->setEnabled(false);
         imageSagittalAct->setEnabled(true);
