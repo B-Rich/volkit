@@ -7,16 +7,13 @@
 extern "C" {
 #endif
 
-#define SIGMA                  (0.00001)
+/*******************************************************************************
+ * square - Calculate square of number
+ *
+ * RETURNS: Argument squared
+ */
 
-#define SIGN(x)                (((x) > 0.0) ? 1 : (((x) < 0.0) ? -1 : 0))
-
-#define SQUARE(x)              ((x) * (x))
-
-#define MIN(x, y)              ((x) > (y) ? (y) : (x))
-#define MAX(x, y)              ((x) < (y) ? (y) : (x))
-
-#define CLAMP(v, n, x)         (((v) < (n)) ? (n) : (((v) > (x)) ? (x) : (v)))
+#define square(x)              ((x) * (x))
 
 /*******************************************************************************
  * power_of_two - Determine if integer is a power-of-two

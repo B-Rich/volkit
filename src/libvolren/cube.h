@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-typedef float coord[3];
+#include "volren/coord.h"
 
 extern int edgevertices[12][2];
 extern int faceedges[6][4];

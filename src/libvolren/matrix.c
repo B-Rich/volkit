@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "matrix.h"
+#include "volren/matrix.h"
 
 matrix IdentityMatrix =
 {

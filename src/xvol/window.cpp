@@ -10,6 +10,10 @@
 #include <X11/Xmu/StdCmap.h>
 #include <X11/keysym.h>
 
+#include "volren/volren.h"
+#include "volren/matrix.h"
+#include "volren/coord.h"
+
 #define DEFAULT_WINDOW_WIDTH 400
 #define DEFAULT_WINDOW_HEIGHT 400
 
@@ -33,17 +37,46 @@ void init(void)
   glLoadIdentity();
 }
 
+void draw_brick(void)
+{
+    int i, n;
+    VRVolumeData vd;
+    Brick br;
+    float cp[4];
+
+    // Initialize volume data
+    vd.nxBricks = 1;
+    vd.nyBricks = 1;
+    vd.nzBricks = 1;
+
+    // Initialize brick
+    br.xOff = 0.0;
+    br.yOff = 0.0;
+    br.zOff = 0.0;
+
+    // Initialize plane
+    cp[0] = 0.707;
+    cp[1] = 0.0;
+    cp[2] = 0.707;
+    cp[3] = 0.5;
+
+    render_brick(&vd, &br, cp);
+}
+
 void redraw(void)
 {
   glClear(GL_COLOR_BUFFER_BIT);
 
+  glColor3f(1.0, 1.0, 1.0);
+  draw_brick();
+#if 0
   glBegin(GL_QUADS);
-    glColor3f(1.0, 1.0, 1.0);
     glVertex2f(0.0, 0.0);
     glVertex2f(1.0, 0.0);
     glVertex2f(1.0, 1.0);
     glVertex2f(0.0, 1.0);
   glEnd();
+#endif
 
   if (doubleBuffer)
     glXSwapBuffers(dpy, win);

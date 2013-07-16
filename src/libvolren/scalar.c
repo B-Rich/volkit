@@ -1,4 +1,4 @@
-#include "scalar.h"
+#include "volren/scalar.h"
 
 /*******************************************************************************
  * power_of_two - Determine if integer is a power-of-two

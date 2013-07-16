@@ -144,7 +144,7 @@ typedef float matrix[4][4];
 #define matrix_print(a)        matrix_print_prefix(a, " ")
 
 /*******************************************************************************
- * matrix_copy - Copy 4x4 matrix
+ * matrix_copy - Copy nxn matrix
  *
  * RETURNS: N/A
  */

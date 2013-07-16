@@ -1,8 +1,9 @@
 #ifndef COORD_H
 #define COORD_H
 
-#include "scalar.h"
-#include "matrix.h"
+#include <stdio.h>
+#include "volren/scalar.h"
+#include "volren/matrix.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -133,9 +134,9 @@ typedef float coord[3];
 
 #define coord_norm(c1, Z)                                                      \
 {                                                                              \
-    Z = sqrt(SQUARE((c1)[0]) +                                                 \
-             SQUARE((c1)[1]) +                                                 \
-             SQUARE((c1)[2]));                                                 \
+    Z = sqrt(square((c1)[0]) +                                                 \
+             square((c1)[1]) +                                                 \
+             square((c1)[2]));                                                 \
 }
 
 /*******************************************************************************
@@ -250,7 +251,7 @@ typedef float coord[3];
     __B = (c1)[0] - (c0)[0];                                                   \
     __C = ((c1)[0] - (c0)[0])*(c0)[1] + ((c0)[1] - (c1)[1])*(c0)[0];           \
                                                                                \
-    SIDE = SIGN(__A*(pt)[0] + __B*(pt)[1] - __C);                              \
+    SIDE = signbit(__A * (pt)[0] + __B * (pt)[1] - __C);                       \
 }
 
 /*******************************************************************************
@@ -308,7 +309,6 @@ typedef float coord[3];
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif
 

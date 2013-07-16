@@ -1,5 +1,6 @@
 IF(OPENGL_FOUND)
-    INCLUDE_DIRECTORIES(${ATLAS_SOURCE_DIR}/../include/tpc
+    INCLUDE_DIRECTORIES(
+        ${ATLAS_SOURCE_DIR}/../include
         ${OPENGL_INCLUDE_DIR}
         )
 
@@ -12,7 +13,7 @@ IF(OPENGL_FOUND)
         )
 
     TARGET_LINK_LIBRARIES(xvol
-        img vff tpcimgio tpcmisc
+        volren img vff tpcimgio tpcmisc
         ${OPENGL_LIBRARIES} Xmu
         )
 ELSE()

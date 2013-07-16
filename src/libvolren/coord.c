@@ -1,4 +1,4 @@
-#include "coord.h"
+#include "volren/coord.h"
 
 void coord_orient(
     coord c1,
@@ -10,7 +10,7 @@ void coord_orient(
     coord cc1, cc2;
     matrix Rx, Ry, Rz, M1, M2;
 
-    d = 1.0 / sqrt(SQUARE(c1[1]) + SQUARE(c1[2]));
+    d = 1.0 / sqrt(square(c1[1]) + square(c1[2]));
 
     c1_z = c1[2] * d;
     c1_y = c1[1] * d;
@@ -58,9 +58,9 @@ void coord_view(
 
     coord_sub(c2, c1, cc0);
 
-    d = sqrt(SQUARE(cc0[1]) + SQUARE(cc0[2]));
+    d = sqrt(square(cc0[1]) + square(cc0[2]));
 
-    if (d > SIGMA)
+    if (d > 0.00001)
     {
         d = 1.0 / d;              
 
@@ -83,7 +83,7 @@ void coord_view(
 
     coord_transform(cc0, Rx, cc1);
 
-    d = sqrt(SQUARE(cc1[0]) + SQUARE(cc1[2]));
+    d = sqrt(square(cc1[0]) + square(cc1[2]));
 
     if (d > 0.000001)
     {
@@ -131,9 +131,9 @@ void coord_look(
 
     coord_sub(c2, c1, cc0);
 
-    d = sqrt(SQUARE(cc0[1]) + SQUARE(cc0[2]));
+    d = sqrt(square(cc0[1]) + square(cc0[2]));
 
-    if (d > SIGMA)
+    if (d > 0.00001)
     {
         d = 1.0 / d;              
 
@@ -153,7 +153,7 @@ void coord_look(
 
     coord_transform(cc0, Rx, cc1);
 
-    d = sqrt(SQUARE(cc1[0]) + SQUARE(cc1[2]));
+    d = sqrt(square(cc1[0]) + square(cc1[2]));
 
     if (d > 0.000001)
     {
@@ -183,7 +183,7 @@ void coord_look(
     x = rms1[0];
     y = rms1[1];
 
-    d = sqrt(SQUARE(x) + SQUARE(y));
+    d = sqrt(square(x) + square(y));
 
     x /= d;
     y /= d;
