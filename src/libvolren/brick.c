@@ -7,6 +7,8 @@
 #include "volren/brick.h"
 #include "volren/volren.h"
 
+static Matrix BTRMat, RTTMat;
+
 /*******************************************************************************
  * get_plane_cube_intersect - Get intersection polygon for plane and cube
  *
@@ -138,12 +140,12 @@ static int get_plane_cube_intersect(
  */
 
 void get_brick_vertices(
-    VRVolumeData *vd,
     Brick *br,
-    Coord cpt[8]
+    VRState *state,
+    Coord cpt[8],
+    VRVolumeData *vd
     )
 {
-    static Matrix BTRMat;
     int i;
 
     matrix_copy(IdentityMatrix, 4, BTRMat);
@@ -163,38 +165,83 @@ void get_brick_vertices(
         coord_transform(PlusMinusCube[i], BTRMat, cpt[i]);
     }
 
-    // TODO: Texture matrix
+    /*
+     * Create a transformation which undoes (inverts) the above transformation
+     * so the texture coordinates live in the range [0.0, 1.0]
+     */
+    matrix_invert4(BTRMat, RTTMat);
+    matrix_translate(1.0, 1.0, 1.0, RTTMat);
+    matrix_scale(0.5, 0.5, 0.5, RTTMat);
+    matrix_translate(br->txOff, br->tyOff, br->tzOff, RTTMat);
+    matrix_scale(br->txScl, br->tyScl, br->tzScl, RTTMat);
 }
 
 /*******************************************************************************
- * draw_slice - Draw volume slice within a brick
+ * draw_slices - Draw slices that make up the brick
  *
  * RETURNS: N/A
  */
 
-static void draw_slice(
-    Brick *b,                  /* in: Brick to draw */
-    Coord cpt[8],              /* in: Brick bounding box */
-    float cp[4]                /* in: Slice plane */
+static void draw_slices(
+    Brick *b,
+    VRState *state,
+    Coord cpt[8],
+    int direction
     )
 {
-    int i, n;
-    float p[8][3];
+    int i, j, n;
+    float d;
+    float min_z, max_z;
+    int slice_count;
+    GLfloat p[8][3];
 
-    n = get_plane_cube_intersect(cp[0], cp[1], cp[2], cp[3], p, cpt);
-    if (n > 2)
+    /* Get slice distance from state */
+    float delta = state->view->delta;
+    float dz = delta * (float) direction;
+
+    // TODO: Do transformation here
+    glMatrixMode(GL_TEXTURE);
+    glLoadMatrixf((GLfloat *) RTTMat);
+    glMatrixMode(GL_MODELVIEW);
+
+    min_z =  HUGE;
+    max_z = -HUGE;
+
+    /* Find minimum and maximum z-coordinates */
+    for (i = 0; i < 8; i++)
     {
-        glBegin(GL_POLYGON);
-            for (i = 0; i < n; i++)
+        if (min_z > cpt[i][2])
+        {
+            min_z = cpt[i][2];
+        }
+        if (max_z < cpt[i][2])
+        {
+            max_z = cpt[i][2];
+        }
+    }
+
+    min_z = floor(min_z / delta) * delta;
+    max_z = floor(max_z / delta) * delta;
+
+    /* For each slice */
+    slice_count = 0;
+    for (d = min_z; (direction == 1) ? (d <= max_z) : (d >= max_z); d += dz)
+    {
+        /* Get intersection polygon */
+        n = get_plane_cube_intersect(0.0, 0.0, 1.0, -d, p, cpt);
+        if (n > 2)
+        {
+            slice_count++;
+
+            /* Draw slice */
+            glBegin(GL_POLYGON);
+            for (j = 0; j < n; j++)
             {
-#ifdef DEBUG
-                coord_print(p[i]);
-                printf("\n");
-#endif
-                glTexCoord3fv(p[i]);
-                glVertex3fv(p[i]);
+                glTexCoord3fv(p[j]);
+                glVertex3fv(p[j]);
             }
-        glEnd();
+            glEnd();
+        }
     }
 }
 
@@ -205,45 +252,16 @@ static void draw_slice(
  */
 
 void render_brick(
+    VRState *state,
     VRVolumeData *vd,
-    Brick *br,
-    float cp[4]
+    Brick *b,
+    int direction
     )
 {
     Coord cpt[8];
 
-    get_brick_vertices(vd, br, cpt);
+    get_brick_vertices(b, state, cpt, vd);
 
-    draw_slice(br, cpt, cp);
+    draw_slices(b, state, cpt, direction);
 }
-
-#ifdef MAIN
-int main(void)
-{
-    int i, n;
-    VRVolumeData vd;
-    Brick br;
-    float cp[4];
-
-    /* Initialize volume data */
-    vd.nxBricks = 1;
-    vd.nyBricks = 1;
-    vd.nzBricks = 1;
-
-    /* Initialize brick */
-    br.xOff = 0.0;
-    br.yOff = 0.0;
-    br.zOff = 0.0;
-
-    /* Initialize plane */
-    cp[0] = 0.707;
-    cp[1] = 0.0;
-    cp[2] = 0.707;
-    cp[3] = 0.5;
-
-    render_brick(&vd, &br, cp);
-
-    return 0;
-}
-#endif
 

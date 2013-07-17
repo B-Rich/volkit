@@ -9,6 +9,16 @@ extern "C" {
 
 typedef struct
 {
+    float delta;               /* Distance between two slices */
+} VRView;
+
+typedef struct
+{
+    VRView *view;              /* View specific parameters */
+} VRState;
+
+typedef struct
+{
     int nxBricks, nyBricks, nzBricks;
 } VRVolumeData;
 
@@ -19,9 +29,10 @@ typedef struct
  */
 
 void render_brick(
+    VRState *state,
     VRVolumeData *vd,
-    Brick *br,
-    float cp[4]
+    Brick *b,
+    int direction
     );
 
 #ifdef __cplusplus

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 #include <GL/gl.h>
 #include <GL/glx.h>
@@ -10,6 +11,8 @@
 #include <X11/Xmu/StdCmap.h>
 #include <X11/keysym.h>
 
+#include "img/imgloader.h"
+#include "img/colormap.h"
 #include "volren/volren.h"
 #include "volren/matrix.h"
 #include "volren/coord.h"
@@ -21,9 +24,58 @@
 
 Display *dpy;
 Window win;
+Img *img = 0;
+uint32_t *imgData = 0;
 Bool doubleBuffer = True;
 int window_width;
 int window_height;
+
+int load_image(const char *fn)
+{
+    ColorMap colorMap;
+    int result = 1;
+
+    img = ImgLoader::open(fn);
+    img->setTransparency(Img::TRANSPARENCY_VOXEL);
+    if (img)
+    {
+        result = img->read(0);
+        if (result == 0)
+        {
+            imgData =
+             new uint32_t[img->getWidth() * img->getHeight() * img->getDepth()];
+            if (imgData)
+            {
+                img->getData(imgData, &colorMap);
+            }
+        }
+        else
+        {
+            result = -1;
+        }
+    }
+
+    return result;
+}
+
+int init_texture()
+{
+    GLuint id;
+
+    glGenTextures(1, &id);
+    glBindTexture(GL_TEXTURE_3D, id);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexImage3D(GL_TEXTURE_3D, 0,
+                 GL_RGBA, img->getWidth(), img->getHeight(), img->getDepth(), 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, imgData);
+
+    return id;
+}
 
 void init(void)
 {
@@ -35,14 +87,21 @@ void init(void)
   glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
+  init_texture();
+  glEnable(GL_TEXTURE_3D);
 }
 
 void draw_brick(void)
 {
     int i, n;
+    VRState state;
+    VRView view;
     VRVolumeData vd;
     Brick br;
-    float cp[4];
+
+    // Initialize state
+    view.delta = 1.0 / img->getDepth();
+    state.view = &view;
 
     // Initialize volume data
     vd.nxBricks = 1;
@@ -53,14 +112,14 @@ void draw_brick(void)
     br.xOff = 0.0;
     br.yOff = 0.0;
     br.zOff = 0.0;
+    br.txScl = 1.0;
+    br.tyScl = 1.0;
+    br.tzScl = 1.0;
+    br.txOff = 0.0;
+    br.tyOff = 0.0;
+    br.tzOff = 0.0;
 
-    // Initialize plane
-    cp[0] = 0.707;
-    cp[1] = 0.0;
-    cp[2] = 0.707;
-    cp[3] = 0.5;
-
-    render_brick(&vd, &br, cp);
+    render_brick(&state, &vd, &br, 1);
 }
 
 void redraw(void)
@@ -274,6 +333,13 @@ int main(int argc, char *argv[])
   glXMakeCurrent(dpy, win, cx);
   window_width = width;
   window_height = height;
+
+  /* Load image */
+  if (load_image(argv[1]) != 0)
+  {
+      fprintf(stderr, "Error - Unable to load image %s\n", argv[1]);
+      return 1;
+  }
 
   /* Draw window */
   XMapWindow(dpy, win);

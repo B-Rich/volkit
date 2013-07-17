@@ -12,6 +12,8 @@ typedef struct
     float xOff, yOff, zOff;    /* Brick offset coordinates */
     float xRes, yRes, zRes;    /* Brick size in each dimension */
     GLuint texId;              /* Texture id */
+    float txScl, tyScl, tzScl; /* Texture scale */
+    float txOff, tyOff, tzOff; /* Texture offset */
 } Brick;
 
 #ifdef __cplusplus
