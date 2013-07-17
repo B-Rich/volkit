@@ -107,6 +107,9 @@ void draw_brick(void)
     vd.nxBricks = 1;
     vd.nyBricks = 1;
     vd.nzBricks = 1;
+    matrix_copy(IdentityMatrix, 4, vd.VTRMat);
+    //matrix_xrot(M_PI/2, vd.VTRMat);
+    //matrix_yrot(3*M_PI/4, vd.VTRMat);
 
     // Initialize brick
     br.xOff = 0.0;

@@ -7,8 +7,6 @@
 #include "volren/brick.h"
 #include "volren/volren.h"
 
-static Matrix BTRMat, RTTMat;
-
 /*******************************************************************************
  * get_plane_cube_intersect - Get intersection polygon for plane and cube
  *
@@ -139,15 +137,18 @@ static int get_plane_cube_intersect(
  * RETURNS: N/A
  */
 
-void get_brick_vertices(
+static void get_brick_vertices(
     Brick *br,
     VRState *state,
     Coord cpt[8],
-    VRVolumeData *vd
+    VRVolumeData *vd,
+    Matrix RTTMat
     )
 {
     int i;
+    Matrix BTRMat;
 
+    /* Locate brick cube at the proper location and rotate it */
     matrix_copy(IdentityMatrix, 4, BTRMat);
     matrix_translate(1.0, 1.0, 1.0, BTRMat);
     matrix_scale(0.5, 0.5, 0.5, BTRMat);
@@ -157,7 +158,7 @@ void get_brick_vertices(
                  1.0 / (float) vd->nzBricks, BTRMat);
     matrix_scale(2.0, 2.0, 2.0, BTRMat);
     matrix_translate(-1.0, -1.0, -1.0, BTRMat);
-    // TODO: matrix_mult_safe(BTRMat, vd->VTRMat, BTRMat);
+    matrix_mult_safe(BTRMat, vd->VTRMat, BTRMat);
 
     /* Transform unit cube */
     for (i = 0; i < 8; i++)
@@ -165,11 +166,8 @@ void get_brick_vertices(
         coord_transform(PlusMinusCube[i], BTRMat, cpt[i]);
     }
 
-    /*
-     * Create a transformation which undoes (inverts) the above transformation
-     * so the texture coordinates live in the range [0.0, 1.0]
-     */
-    matrix_invert4(BTRMat, RTTMat);
+    /* Store invers transformation so texture coords are in range [0.0 1.0] */
+    matrix_invert(BTRMat, RTTMat);
     matrix_translate(1.0, 1.0, 1.0, RTTMat);
     matrix_scale(0.5, 0.5, 0.5, RTTMat);
     matrix_translate(br->txOff, br->tyOff, br->tzOff, RTTMat);
@@ -186,6 +184,7 @@ static void draw_slices(
     Brick *b,
     VRState *state,
     Coord cpt[8],
+    Matrix RTTMat,
     int direction
     )
 {
@@ -258,10 +257,13 @@ void render_brick(
     int direction
     )
 {
+    Matrix RTTMat;
     Coord cpt[8];
 
-    get_brick_vertices(b, state, cpt, vd);
+    /* Get vertices for brick */
+    get_brick_vertices(b, state, cpt, vd, RTTMat);
 
-    draw_slices(b, state, cpt, direction);
+    /* Draw brick slices */
+    draw_slices(b, state, cpt, RTTMat, direction);
 }
 

@@ -11,12 +11,12 @@ Matrix IdentityMatrix =
 };
 
 /*******************************************************************************
- * matrix_invert4 - Invert 4x4 matrix
+ * matrix_invert - Invert 4x4 matrix
  *
  * RETURNS: N/A
  */
 
-void matrix_invert4(
+void matrix_invert(
     Matrix m1,                 /* in: Matrix to be inverted */
     Matrix m2                  /* out: Resulting inverse matrix */
     )
