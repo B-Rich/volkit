@@ -1,0 +1,50 @@
+/**
+\mainpage libtpcroi 1.2.2 (c) 1996-2013 by Turku PET Centre, University of Turku
+\section readme Readme
+<PRE>
+
+libtpcroi 1.2.2 (c) 1996-2013 by Turku PET Centre, University of Turku
+
+Build Jul  8 2013 17:07:04
+
+
+PET ROI library
+--------------------------------------------------------------------------
+
+Library is distributed under the GNU Lesser General Public Licence
+http://www.turkupetcentre.net/software/lgpl-license.html
+More information on open source licences: http://www.opensource.org
+
+Description
+--------------------------------------------------------------------------
+
+The library contains methods for using PET image ROI definitions.
+
+List of files
+--------------------------------------------------------------------------
+
+Doxyfile         - Doxygen configuration file.
+include/         - Includes all the header files for the .c files
+Makefile         - The makefile
+** .c files **
+roi.c            - IO functions for CTI ECAT 6.3 ROI files.
+oldroi.c         - Old API for IO functions for CTI ECAT 6.3 ROI files.
+libtpcroiv.c     - Functions for printing the library information.
+libtpcroi.c      - Program for printing the library information,
+                   and for testing the library functions.
+
+Using the library
+--------------------------------------------------------------------------
+
+The program that uses the library should include the .h file it needs.
+Example:
+    \#include <roi.h>
+
+libtpcroi depends on libtpcmisc and libtpcimgio.
+Example:
+
+	gcc myprog.c -ltpcroi -ltpcimgio -ltpcmisc
+
+
+</PRE> 
+ */

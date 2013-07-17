@@ -1,0 +1,34 @@
+/**
+\page History
+\section history History
+<PRE>
+
+2004-11-07 Vesa Oikonen
+  First created, based on roi.c and roi.h.
+2005-04-26 Jarkko Johansson
+  Functions libtpcroi_print_readme(), libtpcroi_print_history(),
+  libtpcroi_print_dreadme() and libtpcroi_print_dhistory()
+  are used for getting the Readme and History messages for the libtpcroi,
+  with and without Doxygen style tags. Remember to update the
+  functions to get correct Readme and History messages!
+  Function libtpcroi_print_build(), is used for getting the build
+  information.
+2005-05-13 Harri Merisaari
+  Functions for processing Imadeus ROIs added (file roi_Imadeus_IO.[hc]).
+2005-06-03 Calle Laakkonen
+  Rewrote roi_read(). fscanf didn't work properly on Windows because of
+  different coding for newlines.
+2005-06-06 Calle Laakkonen
+  Image filename can now have spaces escaped with backslashes or quotes.
+  Fixed reading of files in windows format broken in previous version.
+2006-10-13 1.2.1 Kaisa Sederholm 
+  Functions roi_mplane and roi_mframe were recovered.
+2013-02-11 1.2.2 VO
+  Updated to get this compiled and built.
+  Recovered old function APIs for compatibility with old SW.
+  Removed support for Imadeus ROIs.
+  Fixed Doxygen comments.
+
+
+</PRE> 
+ */
