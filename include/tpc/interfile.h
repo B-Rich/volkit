@@ -11,6 +11,10 @@
 ******************************************************************************/
 #ifndef _INTERFILE_H_
 #define _INTERFILE_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 /* Backup file extension */
 #ifndef BACKUP_EXTENSION
@@ -24,4 +28,8 @@ extern int interfileIsHeader(const char *hdrfile, char *imgfile);
 extern int interfileExists(
   const char *fname, char *hdrfile, char *imgfile, int verbose);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif

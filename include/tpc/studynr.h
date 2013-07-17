@@ -24,6 +24,10 @@
 ******************************************************************************/
 #ifndef _STUDYNR_H
 #define _STUDYNR_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 /** Max length of Study number (+1) */
 #ifndef MAX_STUDYNR_LEN
@@ -42,5 +46,9 @@ extern int studynr_to_lowercase(char *studynr);
 extern int fnmatch(char *key, char *fname);
 extern int fncasematch(char *key, char *fname);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

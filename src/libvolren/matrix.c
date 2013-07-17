@@ -2,7 +2,7 @@
 
 #include "volren/matrix.h"
 
-matrix IdentityMatrix =
+Matrix IdentityMatrix =
 {
     { 1.0, 0.0, 0.0, 0.0 },
     { 0.0, 1.0, 0.0, 0.0 },
@@ -17,8 +17,8 @@ matrix IdentityMatrix =
  */
 
 void matrix_invert4(
-    matrix m1,                 /* in: Matrix to be inverted */
-    matrix m2                  /* out: Resulting inverse matrix */
+    Matrix m1,                 /* in: Matrix to be inverted */
+    Matrix m2                  /* out: Resulting inverse matrix */
     )
 {
     float a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p;

@@ -44,6 +44,10 @@
 ******************************************************************************/
 #ifndef _ECAT7_H_
 #define _ECAT7_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 #ifndef MatBLKSIZE
 #define MatBLKSIZE 512
@@ -709,5 +713,9 @@ extern int ecat7EditMHeader(ECAT7_mainheader *h, char *field, char *value);
 extern int ecat7EditSHeader(ECAT7_scanheader *h, char *field, char *value);
 extern int ecat7EditVHeader(ECAT7_imageheader *h, char *field, char *value);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

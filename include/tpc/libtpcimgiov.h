@@ -10,8 +10,10 @@
 ******************************************************************************/
 #ifndef _LIBTPCIMGIOV_H
 #define _LIBTPCIMGIOV_H
-/*****************************************************************************/
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 extern void libtpcimgio_print_readme(FILE *fp);
 extern void libtpcimgio_print_history(FILE *fp);
@@ -21,5 +23,9 @@ extern void libtpcimgio_print_build(FILE *fp);
 /*****************************************************************************/
 extern void libtpcimgio_printdate(FILE *fp);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

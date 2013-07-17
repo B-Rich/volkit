@@ -12,6 +12,10 @@
 ******************************************************************************/
 #ifndef _RNAME_H
 #define _RNAME_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 /** Max length of Region name (+1) */
 #ifndef MAX_REGIONNAME_LEN
@@ -29,5 +33,9 @@ extern int rnameRmDots(char *rname1, char *rname2);
 extern int rnameCatenate(char *rname, int max_rname_len,
   char *name1, char *name2, char *name3, char space);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

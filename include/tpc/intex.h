@@ -13,6 +13,10 @@
 ******************************************************************************/
 #ifndef _INTEX_H
 #define _INTEX_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 /* Integer list */
 typedef struct {
@@ -24,5 +28,9 @@ extern int intExpand(char *text, INT_list *list);
 extern INT_list intMerge(INT_list *list1,INT_list *list2);
 extern int _intexadd(INT_list *list, int a);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

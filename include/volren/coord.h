@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-typedef float coord[3];
+typedef float Coord[3];
 
 /*******************************************************************************
  * coord_dot_product - Calcualte dot product between vectors
@@ -161,7 +161,7 @@ typedef float coord[3];
 
 #define coord_transform(c1, a, C2)                                             \
 {                                                                              \
-    coord __tmp;                                                               \
+    Coord __tmp;                                                               \
                                                                                \
     __tmp[0] = a[0][0] * (c1)[0] +                                             \
                a[1][0] * (c1)[1] +                                             \
@@ -305,6 +305,43 @@ typedef float coord[3];
  */
 
 #define coord_print(c) printf("%9.4f %9.4f %9.4f", (c)[0], (c)[1], (c)[2]);
+
+/*******************************************************************************
+ * coord_orient
+ *
+ * RETURNS: N/A
+ */
+
+void coord_orient(
+    Coord c1,
+    Coord c2,
+    Matrix M
+    );
+
+/*******************************************************************************
+ * coord_view
+ *
+ * RETURNS: N/A
+ */
+
+void coord_view(
+    Coord c1,
+    Coord c2,
+    float theta,
+    Matrix M
+    );
+
+/*******************************************************************************
+ * coord_look
+ *
+ * RETURNS: N/A
+ */
+
+void coord_look(
+    Coord c1,
+    Coord c2,
+    Matrix M
+    );
 
 #ifdef __cplusplus
 }

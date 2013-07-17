@@ -12,6 +12,10 @@
 ******************************************************************************/
 #ifndef _IMGMAX_H
 #define _IMGMAX_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 #include "img.h"
 /*****************************************************************************/
@@ -26,5 +30,9 @@ extern int imgSmoothMax(IMG *img, float *maxvalue, IMG_PIXEL *p);
 extern int imgGetPeak(IMG *img, float beforeTime, IMG_PIXEL *p, int verbose);
 extern int imgAvg(IMG *img, IMG_RANGE *r, float *avg);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

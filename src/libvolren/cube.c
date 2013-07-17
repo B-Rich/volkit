@@ -1,6 +1,6 @@
 #include "cube.h"
 
-int edgevertices[12][2] =
+const int CubeEdgeVertices[12][2] =
 {
     { 0, 3 },                  /* 0 */
     { 0, 1 },                  /* 1 */
@@ -16,7 +16,7 @@ int edgevertices[12][2] =
     { 3, 7 }                   /* 11 */
 };
 
-int faceedges[6][4] =
+const int CubeFaceEdges[6][4] =
 {
     { 0,  1,  2,  3 },
     { 3,  4,  5,  6 },
@@ -26,7 +26,7 @@ int faceedges[6][4] =
     { 1,  4,  7, 10 }
 };
 
-int edgefaces[12][2] =
+const int CubeEdgeFaces[12][2] =
 {
     { 0, 3 },                  /* 0 */
     { 0, 5 },                  /* 1 */
@@ -42,7 +42,7 @@ int edgefaces[12][2] =
     { 3, 4 }                   /* 11 */
 };
 
-coord UnitCube[8] =
+const Coord UnitCube[8] =
 {
    { 0.0, 0.0, 0.0 },
    { 1.0, 0.0, 0.0 },
@@ -54,7 +54,7 @@ coord UnitCube[8] =
    { 0.0, 1.0, 1.0 }
 };
 
-coord PlusMinusCube[8] =
+const Coord PlusMinusCube[8] =
 {
    { -1.0, -1.0, -1.0 },
    {  1.0, -1.0, -1.0 },

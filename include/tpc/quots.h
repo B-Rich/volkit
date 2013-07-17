@@ -14,9 +14,17 @@
 ******************************************************************************/
 #ifndef _QUOTS_H
 #define _QUOTS_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 extern char *strstr_noquotation(const char *str1, const char *str2);
 extern int strnCopyClean(char *str1, const char *str2, int maxlen);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

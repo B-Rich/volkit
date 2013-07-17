@@ -20,6 +20,10 @@
 ******************************************************************************/
 #ifndef _DECPOINT_H
 #define _DECPOINT_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 extern int dec_comma_is(char *str);
 extern int dec_separator(char *str);
@@ -29,5 +33,9 @@ extern int dec_nr(char *str);
 extern int atof_with_check(char *double_as_string, double *result_value);
 extern char *strPtrToNextValue(char *str, char **nxtp);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

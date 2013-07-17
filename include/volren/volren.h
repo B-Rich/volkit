@@ -19,9 +19,9 @@ typedef struct
  */
 
 void render_brick(
-    VRVolumeData *vd,          /* in: Volume data */
-    Brick *br,                 /* in: Brick to render */
-    float cp[4]                /* in: Slice plane */
+    VRVolumeData *vd,
+    Brick *br,
+    float cp[4]
     );
 
 #ifdef __cplusplus

@@ -19,6 +19,10 @@
 ******************************************************************************/
 #ifndef _VOL_H
 #define _VOL_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 extern int VOL_TEST;
 /*****************************************************************************/
@@ -113,7 +117,9 @@ extern int vrdReorder(VOL_RANGE *vol_range);
 extern int vrdRead(char *vdffile, VOL_RANGE *vol_range, char *status);
 extern int string_to_xyz(char *str, int *x, int *y, int *z);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
 
-/*****************************************************************************/
 #endif /* _VOL_H */
 

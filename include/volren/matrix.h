@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-typedef float matrix[4][4];
+typedef float Matrix[4][4];
 
 /*******************************************************************************
  * matrix_assign - Assign element values to 4x4 matrix
@@ -73,7 +73,7 @@ typedef float matrix[4][4];
 
 #define matrix_mult_safe(a, b, C)                                              \
 {                                                                              \
-    matrix d;                                                                  \
+    Matrix d;                                                                  \
                                                                                \
     matrix_inner_product(a, b, 0, 0, d);                                       \
     matrix_inner_product(a, b, 0, 1, d);                                       \
@@ -159,7 +159,7 @@ typedef float matrix[4][4];
 
 #define matrix_scale(x, y, z, A)                                               \
 {                                                                              \
-    matrix b;                                                                  \
+    Matrix b;                                                                  \
                                                                                \
     matrix_assign(x,  0.0, 0.0, 0.0,                                           \
                   0.0,  y, 0.0, 0.0,                                           \
@@ -176,7 +176,7 @@ typedef float matrix[4][4];
 
 #define matrix_translate(x, y, z, A)                                           \
 {                                                                              \
-    matrix b;                                                                  \
+    Matrix b;                                                                  \
                                                                                \
     matrix_assign(1.0, 0.0, 0.0, 0.0,                                          \
                   0.0, 1.0, 0.0, 0.0,                                          \
@@ -193,13 +193,13 @@ typedef float matrix[4][4];
 
 #define matrix_pre_scale(x, y, z, A)                                           \
 {                                                                              \
-    matrix b;                                                                  \
+    Matrix b;                                                                  \
                                                                                \
     matrix_assign(  x, 0.0, 0.0, 0.0,                                          \
                   0.0,   y, 0.0, 0.0,                                          \
                   0.0, 0.0,   z, 0.0,                                          \
                   0.0, 0.0, 0.0, 1.0, b);                                      \
-  matrix_mult_safe(b, A, A);                                                   \
+    matrix_mult_safe(b, A, A);                                                 \
 }
 
 /*******************************************************************************
@@ -210,7 +210,7 @@ typedef float matrix[4][4];
 
 #define matrix_pre_translate(x, y, z, A)                                       \
 {                                                                              \
-    matrix b;                                                                  \
+    Matrix b;                                                                  \
                                                                                \
     matrix_assign(1.0, 0.0, 0.0, 0.0,                                          \
                   0.0, 1.0, 0.0, 0.0,                                          \
@@ -227,7 +227,7 @@ typedef float matrix[4][4];
 
 #define matrix_xrot(ang, A)                                                    \
 {                                                                              \
-    matrix b;                                                                  \
+    Matrix b;                                                                  \
                                                                                \
     double s = sin(ang);                                                       \
     double c = cos(ang);                                                       \
@@ -247,7 +247,7 @@ typedef float matrix[4][4];
 
 #define matrix_yrot(ang, A)                                                    \
 {                                                                              \
-    matrix b;                                                                  \
+    Matrix b;                                                                  \
                                                                                \
     double s = sin(ang);                                                       \
     double c = cos(ang);                                                       \
@@ -267,7 +267,7 @@ typedef float matrix[4][4];
 
 #define matrix_zrot(ang, A)                                                    \
 {                                                                              \
-    matrix b;                                                                  \
+    Matrix b;                                                                  \
                                                                                \
     double s = sin(ang);                                                       \
     double c = cos(ang);                                                       \
@@ -279,7 +279,7 @@ typedef float matrix[4][4];
     matrix_mult_safe(A, b, A);                                                 \
 }
 
-extern matrix IdentityMatrix;
+extern Matrix IdentityMatrix;
 
 /*******************************************************************************
  * matrix_invert4 - Invert 4x4 matrix
@@ -288,8 +288,8 @@ extern matrix IdentityMatrix;
  */
 
 void matrix_invert4(
-    matrix m1,                 /* in: Matrix to be inverted */
-    matrix m2                  /* out: Resulting inverse matrix */
+    Matrix m1,                 /* in: Matrix to be inverted */
+    Matrix m2                  /* out: Resulting inverse matrix */
     );
 
 #ifdef __cplusplus

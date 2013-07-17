@@ -9,6 +9,10 @@
 ******************************************************************************/
 #ifndef IDCRYPT_H
 #define IDCRYPT_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 
 /*
@@ -21,7 +25,10 @@ extern const char *libpet_idcrypt_version(void);
  * using the Vigenere Cipher.
  */
 extern int id_crypt(const char *string,const char *key,char *out,int decrypt);
-
+/*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

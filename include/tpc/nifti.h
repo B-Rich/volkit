@@ -15,6 +15,10 @@
 ******************************************************************************/
 #ifndef _NIFTI_H
 #define _NIFTI_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 /* Backup file extension */
 #ifndef BACKUP_EXTENSION
@@ -189,6 +193,9 @@ extern int niftiWriteHeader(
   char *filename, NIFTI_DSR *dsr, int verbose, char *status
 );
 /*****************************************************************************/
-
-/*****************************************************************************/
+#ifdef __cplusplus
+}
 #endif
+
+#endif
+

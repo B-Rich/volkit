@@ -14,9 +14,17 @@
 ******************************************************************************/
 #ifndef _BACKUP_H
 #define _BACKUP_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 extern int backupExistingFile(char *filename, char *backup_ext, char *status);
 extern int fileCopy(char *filename1, char *filename2, char *status);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

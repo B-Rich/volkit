@@ -15,6 +15,10 @@
 ******************************************************************************/
 #ifndef _DATETIME_H
 #define _DATETIME_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 #include <time.h>
 /*****************************************************************************/
@@ -31,5 +35,9 @@ extern int isleapyear(long int year);
 extern long int leaps_between(long int year1, long int year2);
 extern void time_to_tm(time_t totalsecs, int offset, struct tm *result);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

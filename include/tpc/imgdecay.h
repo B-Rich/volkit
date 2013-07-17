@@ -9,6 +9,10 @@
 ******************************************************************************/
 #ifndef _IMGDECAY_H
 #define _IMGDECAY_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 #include "img.h"
 /*****************************************************************************/
@@ -18,5 +22,9 @@ extern int imgSetDecayCorrFactors(IMG *image, int mode);
 extern int imgBranchingCorrection(
   IMG *image, int mode, int verbose, char *status);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

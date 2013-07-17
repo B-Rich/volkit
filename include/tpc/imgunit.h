@@ -11,6 +11,10 @@
 ******************************************************************************/
 #ifndef _IMGUNIT_H
 #define _IMGUNIT_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 #include "img.h"
 #include "ecat7.h"
@@ -44,5 +48,9 @@ extern void imgUnitToEcat7(IMG *img, ECAT7_mainheader *h);
 extern char *imgUnit(int dunit);
 extern int imgSetUnit(IMG *img, char *unit);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

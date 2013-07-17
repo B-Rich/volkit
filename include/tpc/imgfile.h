@@ -26,6 +26,10 @@
 ******************************************************************************/
 #ifndef _IMGFILE_H
 #define _IMGFILE_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 #include "img.h"
 #include "ecat7.h"
@@ -134,5 +138,9 @@ extern int imgWriteNifti(
   const char *dbname, IMG *img, int save_sif, int verbose
 );
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif /* _IMGFILE_H */
 

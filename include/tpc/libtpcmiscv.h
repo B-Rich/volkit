@@ -13,6 +13,10 @@
 ******************************************************************************/
 #ifndef _LIBTPCMISCV_H
 #define _LIBTPCMISCV_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,5 +31,9 @@ extern void libtpcmisc_print_build(FILE *fp);
 /*****************************************************************************/
 extern void libtpcmisc_printdate(FILE *fp);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

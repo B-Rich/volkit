@@ -1,14 +1,20 @@
 #include "volren/coord.h"
 
+/*******************************************************************************
+ * coord_orient
+ *
+ * RETURNS: N/A
+ */
+
 void coord_orient(
-    coord c1,
-    coord c2,
-    matrix *M
+    Coord c1,
+    Coord c2,
+    Matrix M
     )
 {
     float d, c1_z, c1_y;
-    coord cc1, cc2;
-    matrix Rx, Ry, Rz, M1, M2;
+    Coord cc1, cc2;
+    Matrix Rx, Ry, Rz, M1, M2;
 
     d = 1.0 / sqrt(square(c1[1]) + square(c1[2]));
 
@@ -37,19 +43,25 @@ void coord_orient(
                       0,        0,  0, 1, Rz);
 
     matrix_mult(M1,  Rz, M2);
-    matrix_transpose(M2, 4, (*M));
+    matrix_transpose(M2, 4, M);
 }
 
+/*******************************************************************************
+ * coord_view
+ *
+ * RETURNS: N/A
+ */
+
 void coord_view(
-    coord c1,
-    coord c2,
+    Coord c1,
+    Coord c2,
     float theta,
-    matrix M
+    Matrix M
     )
 {
     float d, c1_y, c1_z;
-    coord cc0, cc1;
-    matrix Rx, Ry, Rz, M0, M1, T0;
+    Coord cc0, cc1;
+    Matrix Rx, Ry, Rz, M0, M1, T0;
 
     matrix_assign(     1,      0,      0, 0,
                        0,      1,      0, 0,
@@ -113,16 +125,22 @@ void coord_view(
    matrix_mult(M1,  Rz, M);
 }
 
+/*******************************************************************************
+ * coord_look
+ *
+ * RETURNS: N/A
+ */
+
 void coord_look(
-    coord c1,
-    coord c2,
-    matrix M
+    Coord c1,
+    Coord c2,
+    Matrix M
     )
 {
     float d, c1_y, c1_z, x, y;
-    coord cc0, cc1;
-    matrix Rx, Ry, Rz, M0, M1, T0;
-    coord rms,rms1 ;
+    Coord cc0, cc1;
+    Matrix Rx, Ry, Rz, M0, M1, T0;
+    Coord rms,rms1 ;
 
     matrix_assign(     1,      0,      0, 0,
                        0,      1,      0, 0,

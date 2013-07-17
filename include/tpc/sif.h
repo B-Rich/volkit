@@ -22,6 +22,10 @@
 ******************************************************************************/
 #ifndef _SIF_H
 #define _SIF_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -83,5 +87,9 @@ extern int sifExistentCounts(SIF *sif);
 #define initSIF sifInit
 #define setmemSIF sifSetmem
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

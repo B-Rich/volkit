@@ -7,11 +7,11 @@ extern "C" {
 
 #include "volren/coord.h"
 
-extern int edgevertices[12][2];
-extern int faceedges[6][4];
-extern int edgefaces[12][2];
-extern coord UnitCube[8];
-extern coord PlusMinusCube[8];
+extern const int CubeEdgeVertices[12][2];
+extern const int CubeFaceEdges[6][4];
+extern const int CubeEdgeFaces[12][2];
+extern const Coord UnitCube[8];
+extern const Coord PlusMinusCube[8];
 
 #ifdef __cplusplus
 }

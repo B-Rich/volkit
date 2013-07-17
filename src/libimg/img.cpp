@@ -6,11 +6,6 @@
 #include <string.h>
 #include <time.h>
 
-extern "C" {
-#include "ecat7.h"
-#include "swap.h"
-}
-
 #include "img/img.h"
 
 const char *Img::statusMessage[] =

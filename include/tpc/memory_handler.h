@@ -5,6 +5,10 @@
 #ifndef MEMORY_HANDLER
 #define MEMORY_HANDLER
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define DEBUG_BUFFER_BORDER 256
 /*#define DEBUG_MEMORY*/
 #define DEBUG_BUFFER_VALUE 69
@@ -18,6 +22,9 @@ void free_memory( void* memory );
 void true_free_memory( void* memory );
 void free_all_memory();
 
-
+#ifdef __cplusplus
+}
+#endif
 
 #endif
+

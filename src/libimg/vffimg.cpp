@@ -2,10 +2,7 @@
 #include <string.h>
 #include <stdint.h>
 
-extern "C" {
 #include "vff/vff.h"
-}
-
 #include "img/vffimg.h"
 
 const char *VffImg::imgmsg[] =

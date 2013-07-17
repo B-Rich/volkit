@@ -33,6 +33,10 @@
 ******************************************************************************/
 #ifndef _IFT_H
 #define _IFT_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -99,5 +103,9 @@ extern int iftDeleteItem(IFT *ift, int item);
 extern int iftReplaceNthValue(IFT *ift, int item, char *value);
 extern int iftdup(IFT *ift1, IFT *ift2);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

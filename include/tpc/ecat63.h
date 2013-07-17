@@ -23,6 +23,10 @@
 ******************************************************************************/
 #ifndef _ECAT63_H_
 #define _ECAT63_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 #define MatBLKSIZE 512
 #define MatFirstDirBlk 2
@@ -250,5 +254,9 @@ extern char *ecat63Datatype(short int dtype);
 extern char *ecat63Unit(short int dunit);
 extern void float2parts(float *buf);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

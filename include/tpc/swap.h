@@ -10,6 +10,10 @@
 ******************************************************************************/
 #ifndef _SWAP_H
 #define _SWAP_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 extern int little_endian();
 extern void swap(void *from, void *to, int size);
@@ -19,4 +23,9 @@ extern void swawip(void *buf, int size);
 /*****************************************************************************/
 extern void printf32bits(void *buf);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
 #endif
+
+#endif
+

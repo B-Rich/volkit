@@ -1,6 +1,10 @@
 #ifndef VFF_H
 #define VFF_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 
 /* Magic number */
@@ -55,6 +59,10 @@ typedef struct vff_mainheader
 
 int vffReadMainheader(FILE *fp, VFF_mainheader *h);
 void vffPrintMainheader(VFF_mainheader *h, FILE *fp);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

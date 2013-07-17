@@ -19,6 +19,10 @@
 ******************************************************************************/
 #ifndef _PETUNITS_H
 #define _PETUNITS_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 /** Max length of units string (+1), based on ECAT7 format */
 #ifndef MAX_UNITS_LEN
@@ -84,5 +88,9 @@ extern char *petTunit(int tunit);
 /*****************************************************************************/
 extern int cunitFromFilename(char *fname);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

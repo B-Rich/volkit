@@ -39,6 +39,10 @@
 ******************************************************************************/
 #ifndef _HALFLIFE_H
 #define _HALFLIFE_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 /** Isotope halflife in minutes */
 #define HL_O15 2.05 /* 123 s */
@@ -87,4 +91,9 @@ extern int hlIsotopeFromHalflife(double halflife);
 #define lambda2factor hlLambda2factor
 #define lambda2factor_float hlLambda2factor_float
 /*****************************************************************************/
+#ifdef __cplusplus
+}
 #endif
+
+#endif
+

@@ -14,6 +14,10 @@
 ******************************************************************************/
 #ifndef _ANALYZE_H
 #define _ANALYZE_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*****************************************************************************/
 /* Backup file extension */
 #ifndef BACKUP_EXTENSION
@@ -123,4 +127,9 @@ extern int anaWriteHeader(char *filename, ANALYZE_DSR *h);
 /*****************************************************************************/
 extern int anaPrintHeader(ANALYZE_DSR *h, FILE *fp);
 /*****************************************************************************/
+#ifdef __cplusplus
+}
 #endif
+
+#endif
+

@@ -14,12 +14,12 @@
  */
 
 static int get_plane_cube_intersect(
-    float a,                   /* in: Plane equation A (normal x) */
-    float b,                   /* in: Plane equation B (normal y) */
-    float c,                   /* in: Plane equation C (normal z) */
-    float d,                   /* in: Plane equation D (offset) */
-    coord tl[8],               /* out: Intersection vertices */
-    coord cpt[8]               /* in: Cube vertices */
+    float a,
+    float b,
+    float c,
+    float d,
+    Coord tl[8],
+    Coord cpt[8]
     )
 {
     int i, j, n;
@@ -37,13 +37,13 @@ static int get_plane_cube_intersect(
     i = 0;
     n = 0;
 
-    pleval = cpt[edgevertices[i][0]][0] * a + 
-             cpt[edgevertices[i][0]][1] * b +
-             cpt[edgevertices[i][0]][2] * c + d;
+    pleval = cpt[CubeEdgeVertices[0][0]][0] * a + 
+             cpt[CubeEdgeVertices[0][0]][1] * b +
+             cpt[CubeEdgeVertices[0][0]][2] * c + d;
 
-    plevalnxt = cpt[edgevertices[i][1]][0] * a + 
-                cpt[edgevertices[i][1]][1] * b +
-                cpt[edgevertices[i][1]][2] * c + d;
+    plevalnxt = cpt[CubeEdgeVertices[0][1]][0] * a + 
+                cpt[CubeEdgeVertices[0][1]][1] * b +
+                cpt[CubeEdgeVertices[0][1]][2] * c + d;
 
     /* If sign bits are different, endpoints of edge span slicing plane */
     span = signbit(pleval) ^ signbit(plevalnxt);
@@ -52,21 +52,21 @@ static int get_plane_cube_intersect(
     {
         i++;
 
-        pleval = cpt[edgevertices[i][0]][0] * a + 
-                 cpt[edgevertices[i][0]][1] * b +
-                 cpt[edgevertices[i][0]][2] * c + d;
+        pleval = cpt[CubeEdgeVertices[i][0]][0] * a + 
+                 cpt[CubeEdgeVertices[i][0]][1] * b +
+                 cpt[CubeEdgeVertices[i][0]][2] * c + d;
 
-        plevalnxt = cpt[edgevertices[i][1]][0] * a + 
-                    cpt[edgevertices[i][1]][1] * b +
-                    cpt[edgevertices[i][1]][2] * c + d;
+        plevalnxt = cpt[CubeEdgeVertices[i][1]][0] * a + 
+                    cpt[CubeEdgeVertices[i][1]][1] * b +
+                    cpt[CubeEdgeVertices[i][1]][2] * c + d;
 
         span = signbit(pleval) ^ signbit(plevalnxt);
     }
 
     if (i < 12)
     {
-        face = edgefaces[i][0];
-        lastface = edgefaces[i][1];
+        face     = CubeEdgeFaces[i][0];
+        lastface = CubeEdgeFaces[i][1];
         lastedge = -1;
 
         while (faces[lastface] < 2) 
@@ -74,27 +74,27 @@ static int get_plane_cube_intersect(
             j = 0;
             if (faces[face] > 1) 
             {
-                if (faces[edgefaces[lastedge][0]] < 2)
+                if (faces[CubeEdgeFaces[lastedge][0]] < 2)
                 {
-                    face = edgefaces[lastedge][0];
+                    face = CubeEdgeFaces[lastedge][0];
                 }
                 else
                 {
-                    face = edgefaces[lastedge][1];
+                    face = CubeEdgeFaces[lastedge][1];
                 }
             }
 
             while (faces[face] < 2)
             {
-                i = faceedges[face][j];
+                i = CubeFaceEdges[face][j];
 
-                pleval = cpt[edgevertices[i][0]][0] * a + 
-                         cpt[edgevertices[i][0]][1] * b +
-                         cpt[edgevertices[i][0]][2] * c + d;
+                pleval = cpt[CubeEdgeVertices[i][0]][0] * a + 
+                         cpt[CubeEdgeVertices[i][0]][1] * b +
+                         cpt[CubeEdgeVertices[i][0]][2] * c + d;
 
-                plevalnxt = cpt[edgevertices[i][1]][0] * a + 
-                            cpt[edgevertices[i][1]][1] * b +
-                            cpt[edgevertices[i][1]][2] * c + d;
+                plevalnxt = cpt[CubeEdgeVertices[i][1]][0] * a + 
+                            cpt[CubeEdgeVertices[i][1]][1] * b +
+                            cpt[CubeEdgeVertices[i][1]][2] * c + d;
 
                 span = signbit(pleval) ^ signbit(plevalnxt);
 
@@ -109,18 +109,18 @@ static int get_plane_cube_intersect(
                     t1 *= plevalnxt;
                     t2 = (1.0 - t1);
 
-                    tl[n][0] = cpt[edgevertices[i][0]][0] * t1 +
-                               cpt[edgevertices[i][1]][0] * t2;
+                    tl[n][0] = cpt[CubeEdgeVertices[i][0]][0] * t1 +
+                               cpt[CubeEdgeVertices[i][1]][0] * t2;
 
-                    tl[n][1] = cpt[edgevertices[i][0]][1] * t1 +
-                               cpt[edgevertices[i][1]][1] * t2;
+                    tl[n][1] = cpt[CubeEdgeVertices[i][0]][1] * t1 +
+                               cpt[CubeEdgeVertices[i][1]][1] * t2;
 
-                    tl[n][2] = cpt[edgevertices[i][0]][2] * t1 +
-                               cpt[edgevertices[i][1]][2] * t2;
+                    tl[n][2] = cpt[CubeEdgeVertices[i][0]][2] * t1 +
+                               cpt[CubeEdgeVertices[i][1]][2] * t2;
 
                     lastedge = i;
-                    faces[edgefaces[i][0]]++;
-                    faces[edgefaces[i][1]]++;
+                    faces[CubeEdgeFaces[i][0]]++;
+                    faces[CubeEdgeFaces[i][1]]++;
                     n++;
                 }
                 j++;
@@ -140,10 +140,10 @@ static int get_plane_cube_intersect(
 void get_brick_vertices(
     VRVolumeData *vd,
     Brick *br,
-    coord cpt[8]
+    Coord cpt[8]
     )
 {
-    static matrix BTRMat;
+    static Matrix BTRMat;
     int i;
 
     matrix_copy(IdentityMatrix, 4, BTRMat);
@@ -174,7 +174,7 @@ void get_brick_vertices(
 
 static void draw_slice(
     Brick *b,                  /* in: Brick to draw */
-    coord cpt[8],              /* in: Brick bounding box */
+    Coord cpt[8],              /* in: Brick bounding box */
     float cp[4]                /* in: Slice plane */
     )
 {
@@ -205,12 +205,12 @@ static void draw_slice(
  */
 
 void render_brick(
-    VRVolumeData *vd,          /* in: Volume data */
-    Brick *br,                 /* in: Brick to render */
-    float cp[4]                /* in: Slice plane */
+    VRVolumeData *vd,
+    Brick *br,
+    float cp[4]
     )
 {
-    coord cpt[8];
+    Coord cpt[8];
 
     get_brick_vertices(vd, br, cpt);
 
