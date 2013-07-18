@@ -20,7 +20,7 @@
 #define DEFAULT_WINDOW_WIDTH 400
 #define DEFAULT_WINDOW_HEIGHT 400
 
-#define NUM_BRICKS 1
+#define NUM_BRICKS 2
 
 #ifdef PLAY
 #define UPDATE_WINDOW_EVENT 99
@@ -83,9 +83,9 @@ void init_brick(
 
     if (data)
     {
-        int x0 = (int)(x * (float) img->getWidth());
-        int y0 = (int)(y * (float) img->getHeight());
-        int z0 = (int)(z * (float) img->getDepth());
+        int x0 = (float) img->getWidth() * x / (float) NUM_BRICKS;
+        int y0 = (float) img->getHeight() * y / (float) NUM_BRICKS;
+        int z0 = (float) img->getDepth() * z / (float) NUM_BRICKS;
         img->getData(data, &cmap, x0, w + x0, y0, h + y0, z0, d + z0);
         br->xOff = x;
         br->yOff = y;
@@ -118,7 +118,9 @@ void init(void)
     for (i = 0; i < NUM_BRICKS; i++)
     {
         init_brick(&br[i],
-                   (float) i * 1.0 / (float) NUM_BRICKS, 0.0, 0.0,
+                   (float) i,
+                   0.0,
+                   0.0,
                    img->getWidth() / NUM_BRICKS,
                    img->getHeight(),
                    img->getDepth());
