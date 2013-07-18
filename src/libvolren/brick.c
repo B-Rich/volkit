@@ -8,6 +8,67 @@
 #include "volren/volren.h"
 
 /*******************************************************************************
+ * get_brick_vertices - Get brick vertices in transformed space
+ *
+ * RETURNS: N/A
+ */
+
+static void get_brick_vertices(
+    Brick *br,
+    VRState *state,
+    Coord cpt[8],
+    VRVolumeData *vd,
+    Matrix RTTMat
+    )
+{
+    int i;
+    Matrix BTRMat;
+
+    /* Locate brick cube at the proper location and rotate it */
+    matrix_copy(IdentityMatrix, 4, BTRMat);
+    matrix_translate(1.0, 1.0, 1.0, BTRMat);
+    matrix_scale(0.5, 0.5, 0.5, BTRMat);
+    matrix_translate(br->xOff, br->yOff, br->zOff, BTRMat);
+    matrix_scale(1.0 / (float) vd->nxBricks,
+                 1.0 / (float) vd->nyBricks,
+                 1.0 / (float) vd->nzBricks, BTRMat);
+    matrix_scale(2.0, 2.0, 2.0, BTRMat);
+    matrix_translate(-1.0, -1.0, -1.0, BTRMat);
+    matrix_mult_safe(BTRMat, vd->VTRMat, BTRMat);
+
+    /* Transform unit cube */
+    for (i = 0; i < 8; i++)
+    {
+        coord_transform(PlusMinusCube[i], BTRMat, cpt[i]);
+    }
+
+    /* Store invers transformation so texture coords are in range [0.0 1.0] */
+    matrix_invert(BTRMat, RTTMat);
+    matrix_translate(1.0, 1.0, 1.0, RTTMat);
+    matrix_scale(0.5, 0.5, 0.5, RTTMat);
+    matrix_translate(br->txOff, br->tyOff, br->tzOff, RTTMat);
+    matrix_scale(br->txScl, br->tyScl, br->tzScl, RTTMat);
+}
+
+/*******************************************************************************
+ * load_brick - Load brick texture
+ *
+ * RETURNS: N/A
+ */
+
+static void load_brick(
+    VRState *state,
+    VRVolumeData *vd,
+    Brick *b
+    )
+{
+    if (b->texId)
+    {
+        glBindTexture(GL_TEXTURE_3D, b->texId);
+    }
+}
+
+/*******************************************************************************
  * get_plane_cube_intersect - Get intersection polygon for plane and cube
  *
  * RETURNS: Number of polygon vertices for intersection
@@ -132,49 +193,6 @@ static int get_plane_cube_intersect(
 }
 
 /*******************************************************************************
- * get_brick_vertices - Get brick vertices in transformed space
- *
- * RETURNS: N/A
- */
-
-static void get_brick_vertices(
-    Brick *br,
-    VRState *state,
-    Coord cpt[8],
-    VRVolumeData *vd,
-    Matrix RTTMat
-    )
-{
-    int i;
-    Matrix BTRMat;
-
-    /* Locate brick cube at the proper location and rotate it */
-    matrix_copy(IdentityMatrix, 4, BTRMat);
-    matrix_translate(1.0, 1.0, 1.0, BTRMat);
-    matrix_scale(0.5, 0.5, 0.5, BTRMat);
-    matrix_translate(br->xOff, br->yOff, br->zOff, BTRMat);
-    matrix_scale(1.0 / (float) vd->nxBricks,
-                 1.0 / (float) vd->nyBricks,
-                 1.0 / (float) vd->nzBricks, BTRMat);
-    matrix_scale(2.0, 2.0, 2.0, BTRMat);
-    matrix_translate(-1.0, -1.0, -1.0, BTRMat);
-    matrix_mult_safe(BTRMat, vd->VTRMat, BTRMat);
-
-    /* Transform unit cube */
-    for (i = 0; i < 8; i++)
-    {
-        coord_transform(PlusMinusCube[i], BTRMat, cpt[i]);
-    }
-
-    /* Store invers transformation so texture coords are in range [0.0 1.0] */
-    matrix_invert(BTRMat, RTTMat);
-    matrix_translate(1.0, 1.0, 1.0, RTTMat);
-    matrix_scale(0.5, 0.5, 0.5, RTTMat);
-    matrix_translate(br->txOff, br->tyOff, br->tzOff, RTTMat);
-    matrix_scale(br->txScl, br->tyScl, br->tzScl, RTTMat);
-}
-
-/*******************************************************************************
  * draw_slices - Draw slices that make up the brick
  *
  * RETURNS: N/A
@@ -262,6 +280,9 @@ void render_brick(
 
     /* Get vertices for brick */
     get_brick_vertices(b, state, cpt, vd, RTTMat);
+
+    /* Load brick texture */
+    load_brick(state, vd, b);
 
     /* Draw brick slices */
     draw_slices(b, state, cpt, RTTMat, direction);

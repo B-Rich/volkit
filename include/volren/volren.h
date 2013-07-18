@@ -11,6 +11,7 @@ extern "C" {
 typedef struct
 {
     float delta;                       /* Distance between two slices */
+    Matrix WTSMat;                     /* World-to-screen matrix */
 } VRView;
 
 typedef struct
@@ -20,8 +21,12 @@ typedef struct
 
 typedef struct
 {
+    Matrix VTWMat;                     /* Volume-to-world matrix */
     Matrix VTRMat;                     /* Volume-to-rotated matrix */
+    Brick **brick;                     /* Brick storage */
+    Brick **sbrick;                    /* Sorted bricks */
     int nxBricks, nyBricks, nzBricks;  /* Number of brick in each direction */
+    int nBricks;                       /* Total number of bricks */
 } VRVolumeData;
 
 /*******************************************************************************
@@ -35,6 +40,17 @@ void render_brick(
     VRVolumeData *vd,
     Brick *b,
     int direction
+    );
+
+/*******************************************************************************
+ * render_volume - Render volume
+ *
+ * RETURNS: N/A
+ */
+
+void render_volume(
+    VRState *state,
+    VRVolumeData *vd
     );
 
 #ifdef __cplusplus

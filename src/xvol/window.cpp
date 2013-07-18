@@ -20,19 +20,22 @@
 #define DEFAULT_WINDOW_WIDTH 400
 #define DEFAULT_WINDOW_HEIGHT 400
 
+#define NUM_BRICKS 1
+
+#ifdef PLAY
 #define UPDATE_WINDOW_EVENT 99
+#endif
 
 Display *dpy;
 Window win;
 Img *img = 0;
-uint32_t *imgData = 0;
+Brick br[NUM_BRICKS];
 Bool doubleBuffer = True;
 int window_width;
 int window_height;
 
 int load_image(const char *fn)
 {
-    ColorMap colorMap;
     int result = 1;
 
     img = ImgLoader::open(fn);
@@ -40,25 +43,12 @@ int load_image(const char *fn)
     if (img)
     {
         result = img->read(0);
-        if (result == 0)
-        {
-            imgData =
-             new uint32_t[img->getWidth() * img->getHeight() * img->getDepth()];
-            if (imgData)
-            {
-                img->getData(imgData, &colorMap);
-            }
-        }
-        else
-        {
-            result = -1;
-        }
     }
 
     return result;
 }
 
-int init_texture()
+int init_texture(int w, int h, int d, GLvoid *data)
 {
     GLuint id;
 
@@ -71,24 +61,69 @@ int init_texture()
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexImage3D(GL_TEXTURE_3D, 0,
-                 GL_RGBA, img->getWidth(), img->getHeight(), img->getDepth(), 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE, imgData);
+                 GL_RGBA, w, h, d, 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glBindTexture(GL_TEXTURE_3D, 0);
 
     return id;
 }
 
+void init_brick(
+    Brick *br,
+    float x,
+    float y,
+    float z,
+    int w,
+    int h,
+    int d
+    )
+{
+    ColorMap cmap;
+    uint32_t *data = new uint32_t[w * h * d];
+
+    if (data)
+    {
+        int x0 = (int)(x * (float) img->getWidth());
+        int y0 = (int)(y * (float) img->getHeight());
+        int z0 = (int)(z * (float) img->getDepth());
+        img->getData(data, &cmap, x0, w + x0, y0, h + y0, z0, d + z0);
+        br->xOff = x;
+        br->yOff = y;
+        br->zOff = z;
+        br->xRes = w;
+        br->yRes = h;
+        br->zRes = d;
+        br->texId = init_texture(br->xRes, br->yRes, br->zRes, data);
+        br->txScl = 1.0;
+        br->tyScl = 1.0;
+        br->tzScl = 1.0;
+        br->txOff = 0.0;
+        br->tyOff = 0.0;
+        br->tzOff = 0.0;
+    }
+}
+
 void init(void)
 {
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glViewport(0, 0, window_width, window_height);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  init_texture();
-  glEnable(GL_TEXTURE_3D);
+    int i;
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glViewport(0, 0, window_width, window_height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    for (i = 0; i < NUM_BRICKS; i++)
+    {
+        init_brick(&br[i],
+                   (float) i * 1.0 / (float) NUM_BRICKS, 0.0, 0.0,
+                   img->getWidth() / NUM_BRICKS,
+                   img->getHeight(),
+                   img->getDepth());
+    }
+    glEnable(GL_TEXTURE_3D);
 }
 
 void draw_brick(void)
@@ -97,32 +132,29 @@ void draw_brick(void)
     VRState state;
     VRView view;
     VRVolumeData vd;
-    Brick br;
 
     // Initialize state
     view.delta = 1.0 / img->getDepth();
+    matrix_copy(IdentityMatrix, 4, view.WTSMat);
     state.view = &view;
 
     // Initialize volume data
-    vd.nxBricks = 1;
+    vd.brick = (Brick **) malloc(sizeof(Brick *) * NUM_BRICKS);
+    vd.sbrick = (Brick **) malloc(sizeof(Brick *) * NUM_BRICKS);
+    for (i = 0; i < NUM_BRICKS; i++)
+    {
+        vd.brick[i] = &br[i];
+    }
+    vd.nxBricks = NUM_BRICKS;
     vd.nyBricks = 1;
     vd.nzBricks = 1;
+    vd.nBricks = NUM_BRICKS;
     matrix_copy(IdentityMatrix, 4, vd.VTRMat);
     //matrix_xrot(M_PI/2, vd.VTRMat);
     //matrix_yrot(3*M_PI/4, vd.VTRMat);
+    matrix_copy(IdentityMatrix, 4, vd.VTWMat);
 
-    // Initialize brick
-    br.xOff = 0.0;
-    br.yOff = 0.0;
-    br.zOff = 0.0;
-    br.txScl = 1.0;
-    br.tyScl = 1.0;
-    br.tzScl = 1.0;
-    br.txOff = 0.0;
-    br.tyOff = 0.0;
-    br.tzOff = 0.0;
-
-    render_brick(&state, &vd, &br, 1);
+    render_volume(&state, &vd);
 }
 
 void redraw(void)
@@ -131,14 +163,6 @@ void redraw(void)
 
   glColor3f(1.0, 1.0, 1.0);
   draw_brick();
-#if 0
-  glBegin(GL_QUADS);
-    glVertex2f(0.0, 0.0);
-    glVertex2f(1.0, 0.0);
-    glVertex2f(1.0, 1.0);
-    glVertex2f(0.0, 1.0);
-  glEnd();
-#endif
 
   if (doubleBuffer)
     glXSwapBuffers(dpy, win);
@@ -182,6 +206,7 @@ Colormap getSharableColormap(XVisualInfo *vi, Display *dpy)
   return cmap;
 }
 
+#ifdef PLAY
 void generateTimeoutEvent(Display *dpy, Window win)
 {
   XEvent event;
@@ -201,6 +226,7 @@ void generateTimeoutEvent(Display *dpy, Window win)
 
   XSendEvent(dpy, win, False, event_mask, &event);
 }
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -371,9 +397,11 @@ int main(int argc, char *argv[])
 	  if (event.xclient.data.l[0] == wmDeleteWindow) {
             exit(0);
           }
+#ifdef PLAY
 	  else if(event.xclient.data.l[0] == UPDATE_WINDOW_EVENT) {
             redraw();
           }
+#endif
           break;
       }
     } while (XPending(dpy));

@@ -2,6 +2,7 @@
 #define BRICK_H
 
 #include <GL/gl.h>
+#include "volren/coord.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -10,7 +11,8 @@ extern "C" {
 typedef struct
 {
     float xOff, yOff, zOff;    /* Brick offset coordinates */
-    float xRes, yRes, zRes;    /* Brick size in each dimension */
+    int xRes, yRes, zRes;      /* Brick size in each dimension */
+    Coord center;              /* Rotated location for brick */
     GLuint texId;              /* Texture id */
     float txScl, tyScl, tzScl; /* Texture scale */
     float txOff, tyOff, tzOff; /* Texture offset */
