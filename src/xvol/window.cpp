@@ -151,10 +151,10 @@ void draw_brick(void)
     vd.nyBricks = 1;
     vd.nzBricks = 1;
     vd.nBricks = NUM_BRICKS;
-    matrix_copy(IdentityMatrix, 4, vd.VTRMat);
-    //matrix_xrot(M_PI/2, vd.VTRMat);
-    //matrix_yrot(3*M_PI/4, vd.VTRMat);
     matrix_copy(IdentityMatrix, 4, vd.VTWMat);
+    matrix_xrot(M_PI/2, vd.VTWMat);
+    matrix_yrot(3*M_PI/4, vd.VTWMat);
+    matrix_copy(vd.VTWMat, 4, vd.VTRMat);
 
     render_volume(&state, &vd);
 }

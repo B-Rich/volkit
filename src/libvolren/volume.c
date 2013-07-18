@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 
 #include "volren/volren.h"
@@ -88,8 +89,9 @@ void render_volume(
     /* Sort bricks */
     sort_volume_bricks(state, 1, vd);
 
-    /* Render all briks */
-    for (i = 0; i < vd->nBricks; i++)
+    /* Render all bricks */
+    /* TODO: Check why this has to be drawn in reverse order */
+    for (i = vd->nBricks - 1; i >= 0; i--)
     {
         render_brick(state, vd, vd->sbrick[i], 1);
     }
