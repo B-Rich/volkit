@@ -41,6 +41,11 @@ ColorMap colorMap;
 float x_angle = 0.0;
 float y_angle = 0.0;
 int curr_frame = 0;
+VRState state;
+VRView view;
+VRPlaneData planeData;
+VRVolumeData vd;
+Brick *brick[NUM_BRICKS], *sbrick[NUM_BRICKS];
 
 int load_image(const char *fn)
 {
@@ -90,7 +95,7 @@ void init_brick(
     }
 }
 
-void init(void)
+void init()
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -127,39 +132,42 @@ void init(void)
     }
 }
 
-void draw_brick(void)
+void redraw()
 {
-    static VRState state;
-    static VRView view;
-    static VRPlaneData planeData;
-    static VRVolumeData vd;
-    static Brick *brick[NUM_BRICKS], *sbrick[NUM_BRICKS];
-
-    int i, n;
+    glClear(GL_COLOR_BUFFER_BIT);
 
     // Intialize view
     view.delta = 1.0 / (float) img->getDepth();
     matrix_copy(IdentityMatrix, 4, view.rotMat);
+    matrix_xrot(x_angle, view.rotMat);
+    matrix_yrot(y_angle, view.rotMat);
     matrix_transpose(view.rotMat, 4, view.invRotMat);
     matrix_copy(IdentityMatrix, 4, view.WTSMat);
 
     // Initialize plane data
-    planeData.nPlanes    = 0;
+    planeData.nPlanes         = 2;
+
     planeData.plane[0].active = 1;
-    planeData.plane[0].a = 0.0;
-    planeData.plane[0].b = 0.0;
-    planeData.plane[0].c = 0.0;
-    planeData.plane[0].d = -0.5;
+    planeData.plane[0].a      = 0.0;
+    planeData.plane[0].b      = 0.0;
+    planeData.plane[0].c      = 1.0;
+    planeData.plane[0].d      = 0.3;
+
+    planeData.plane[1].active = 1;
+    planeData.plane[1].a      = 1.0;
+    planeData.plane[1].b      = 0.0;
+    planeData.plane[1].c      = 0.0;
+    planeData.plane[1].d      = 0.4;
 
     // Initialize state
-    state.view = &view;
+    state.view      = &view;
     state.planeData = &planeData;
 
     // Initialize volume data
     vd.drawInterp = 1;
     vd.brick = brick;
     vd.sbrick = sbrick;
-    for (i = 0; i < NUM_BRICKS; i++)
+    for (int i = 0; i < NUM_BRICKS; i++)
     {
         vd.brick[i] = &br[i];
     }
@@ -167,30 +175,24 @@ void draw_brick(void)
     vd.nyBricks = Y_BRICKS;
     vd.nzBricks = Z_BRICKS;
     vd.nBricks = NUM_BRICKS;
-    matrix_copy(IdentityMatrix, 4, vd.rotMat);
+    matrix_copy(view.rotMat, 4, vd.rotMat);
     matrix_transpose(vd.rotMat, 4, vd.invRotMat);
     matrix_copy(IdentityMatrix, 4, vd.VTWMat);
-    matrix_xrot(x_angle, vd.VTWMat);
-    matrix_yrot(y_angle, vd.VTWMat);
+    matrix_mult_safe(vd.VTWMat, vd.invRotMat, vd.VTWMat);
     matrix_copy(vd.VTWMat, 4, vd.VTRMat);
 
     define_clip_planes(&state, NULL);
     enable_active_clip_planes(&state, MAX_CLIP_PLANES + 1);
 
     render_volume(&state, &vd);
-}
-
-void redraw(void)
-{
-  glClear(GL_COLOR_BUFFER_BIT);
-
-  glColor3f(1.0, 1.0, 1.0);
-  draw_brick();
-
-  if (doubleBuffer)
-    glXSwapBuffers(dpy, win);
-  else
-    glFlush();
+    if (doubleBuffer)
+    {
+        glXSwapBuffers(dpy, win);
+    }
+    else
+    {
+        glFlush();
+    }
 }
 
 Colormap getSharableColormap(XVisualInfo *vi, Display *dpy)
