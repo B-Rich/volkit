@@ -143,6 +143,14 @@ void draw_brick(void)
     matrix_transpose(view.rotMat, 4, view.invRotMat);
     matrix_copy(IdentityMatrix, 4, view.WTSMat);
 
+    // Initialize plane data
+    planeData.nPlanes    = 0;
+    planeData.plane[0].active = 1;
+    planeData.plane[0].a = 0.0;
+    planeData.plane[0].b = 0.0;
+    planeData.plane[0].c = 0.0;
+    planeData.plane[0].d = -0.5;
+
     // Initialize state
     state.view = &view;
     state.planeData = &planeData;
@@ -165,6 +173,9 @@ void draw_brick(void)
     matrix_xrot(x_angle, vd.VTWMat);
     matrix_yrot(y_angle, vd.VTWMat);
     matrix_copy(vd.VTWMat, 4, vd.VTRMat);
+
+    define_clip_planes(&state, NULL);
+    enable_active_clip_planes(&state, MAX_CLIP_PLANES + 1);
 
     render_volume(&state, &vd);
 }
