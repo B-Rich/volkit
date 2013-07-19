@@ -297,9 +297,9 @@ void Img::getHorizontalData(
     float numColors = float(cmap->getNumColors() - 1);
     float result;
 
-    for (int zi = z2 - 1; zi >= z1; zi--)
+    for (int zi = z1; zi < z2; zi++)
     {
-        for (int yi = y2 - 1; yi >= y1; yi--)
+        for (int yi = y1; yi < y2; yi++)
         {
             for (int xi = x1; xi < x2; xi++)
             {
@@ -349,9 +349,9 @@ void Img::getSagittalData(
     float numColors = float(cmap->getNumColors() - 1);
     float result;
 
-    for (int xi = x2 - 1; xi >= x1; xi--)
+    for (int xi = x1; xi < x2; xi++)
     {
-        for (int zi = z2 - 1; zi >= z1; zi--)
+        for (int zi = z1; zi < z2; zi++)
         {
             for (int yi = y1; yi < y2; yi++)
             {
@@ -401,9 +401,9 @@ void Img::getCoronalData(
     float numColors = float(cmap->getNumColors() - 1);
     float result;
 
-    for (int yi = y2 - 1; yi >= y1; yi--)
+    for (int yi = y1; yi < y2; yi++)
     {
-        for (int zi = z2 - 1; zi >= z1; zi--)
+        for (int zi = z1; zi < z2; zi++)
         {
             for (int xi = x1; xi < x2; xi++)
             {

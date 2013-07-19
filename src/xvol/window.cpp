@@ -20,7 +20,10 @@
 #define DEFAULT_WINDOW_WIDTH 400
 #define DEFAULT_WINDOW_HEIGHT 400
 
-#define NUM_BRICKS 2
+#define X_BRICKS 2
+#define Y_BRICKS 2
+#define Z_BRICKS 2
+#define NUM_BRICKS (X_BRICKS * Y_BRICKS * Z_BRICKS)
 
 #ifdef PLAY
 #define UPDATE_WINDOW_EVENT 99
@@ -66,9 +69,9 @@ void init_brick(
     br->data = malloc(sizeof(uint32_t) * w * h * d);
     if (br->data != NULL)
     {
-        int x0 = (int)((float) img->getWidth() * x / (float) NUM_BRICKS);
-        int y0 = (int)((float) img->getHeight() * y / (float) NUM_BRICKS);
-        int z0 = (int)((float) img->getDepth() * z / (float) NUM_BRICKS);
+        int x0 = (int)((float) img->getWidth() * x / (float) X_BRICKS);
+        int y0 = (int)((float) img->getHeight() * y / (float) Y_BRICKS);
+        int z0 = (int)((float) img->getDepth() * z / (float) Z_BRICKS);
         br->xOff = x;
         br->yOff = y;
         br->zOff = z;
@@ -89,8 +92,6 @@ void init_brick(
 
 void init(void)
 {
-    int i;
-
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glViewport(0, 0, window_width, window_height);
@@ -101,16 +102,26 @@ void init(void)
     glLoadIdentity();
     if (!initialized)
     {
-        for (i = 0; i < NUM_BRICKS; i++)
+        int brickWidth  = img->getWidth() / X_BRICKS;
+        int brickHeight = img->getHeight() / Y_BRICKS;
+        int brickDepth  = img->getDepth() / Z_BRICKS;
+        int brickCount  = 0;
+        for (int zi = 0; zi < Z_BRICKS; zi++)
         {
-            init_brick(&br[i],
-                       (float) i,
-                       0.0,
-                       0.0,
-                       img->getWidth() / NUM_BRICKS,
-                       img->getHeight(),
-                       img->getDepth());
-        }
+            for (int yi = 0; yi < Y_BRICKS; yi++)
+            {
+                for (int xi = 0; xi < X_BRICKS; xi++)
+                {
+                    init_brick(&br[brickCount++],
+                               (float) xi,
+                               (float) yi,
+                               (float) zi,
+                               brickWidth,
+                               brickHeight,
+                               brickDepth);
+                } // End for xi
+            } // End for yi
+        } // End for zi
         glEnable(GL_TEXTURE_3D);
         initialized = true;
     }
@@ -137,9 +148,9 @@ void draw_brick(void)
     {
         vd.brick[i] = &br[i];
     }
-    vd.nxBricks = NUM_BRICKS;
-    vd.nyBricks = 1;
-    vd.nzBricks = 1;
+    vd.nxBricks = X_BRICKS;
+    vd.nyBricks = Y_BRICKS;
+    vd.nzBricks = Z_BRICKS;
     vd.nBricks = NUM_BRICKS;
     matrix_copy(IdentityMatrix, 4, vd.VTWMat);
     matrix_xrot(x_angle, vd.VTWMat);
