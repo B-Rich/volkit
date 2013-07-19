@@ -37,6 +37,7 @@ int window_height;
 ColorMap colorMap;
 float x_angle = 0.0;
 float y_angle = 0.0;
+int curr_frame = 0;
 
 int load_image(const char *fn)
 {
@@ -52,26 +53,6 @@ int load_image(const char *fn)
     return result;
 }
 
-int init_texture(int w, int h, int d, GLvoid *data)
-{
-    GLuint id;
-
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_3D, id);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexImage3D(GL_TEXTURE_3D, 0,
-                 GL_RGBA, w, h, d, 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE, data);
-    glBindTexture(GL_TEXTURE_3D, 0);
-
-    return id;
-}
-
 void init_brick(
     Brick *br,
     float x,
@@ -82,27 +63,27 @@ void init_brick(
     int d
     )
 {
-    uint32_t *data = new uint32_t[w * h * d];
-
-    if (data)
+    br->data = malloc(sizeof(uint32_t) * w * h * d);
+    if (br->data != NULL)
     {
         int x0 = (int)((float) img->getWidth() * x / (float) NUM_BRICKS);
         int y0 = (int)((float) img->getHeight() * y / (float) NUM_BRICKS);
         int z0 = (int)((float) img->getDepth() * z / (float) NUM_BRICKS);
-        img->getData(data, &colorMap, x0, w + x0, y0, h + y0, z0, d + z0);
         br->xOff = x;
         br->yOff = y;
         br->zOff = z;
         br->xRes = w;
         br->yRes = h;
         br->zRes = d;
-        br->texId = init_texture(br->xRes, br->yRes, br->zRes, data);
+        glGenTextures(1, &br->texId);
         br->txScl = 1.0;
         br->tyScl = 1.0;
         br->tzScl = 1.0;
         br->txOff = 0.0;
         br->tyOff = 0.0;
         br->tzOff = 0.0;
+        img->getData((uint32_t *) br->data, &colorMap,
+                     x0, w + x0, y0, h + y0, z0, d + z0);
     }
 }
 
@@ -141,15 +122,17 @@ void draw_brick(void)
     VRState state;
     VRView view;
     VRVolumeData vd;
+    static Brick *brick[NUM_BRICKS], *sbrick[NUM_BRICKS];
 
     // Initialize state
-    view.delta = 1.0 / img->getDepth();
+    view.delta = 1.0 / (float) img->getDepth();
     matrix_copy(IdentityMatrix, 4, view.WTSMat);
     state.view = &view;
 
     // Initialize volume data
-    vd.brick = (Brick **) malloc(sizeof(Brick *) * NUM_BRICKS);
-    vd.sbrick = (Brick **) malloc(sizeof(Brick *) * NUM_BRICKS);
+    vd.drawInterp = 1;
+    vd.brick = brick;
+    vd.sbrick = sbrick;
     for (i = 0; i < NUM_BRICKS; i++)
     {
         vd.brick[i] = &br[i];
@@ -405,6 +388,28 @@ int main(int argc, char *argv[])
           break;
         case KeyPress:
 	  ks = XLookupKeysym((XKeyEvent *) &event, 0);
+          if (ks == XK_Tab || ks == XK_BackSpace)
+          {
+              if (ks == XK_Tab)
+              {
+                  if (++curr_frame > (img->getFrameNr() - 1))
+                  {
+                      curr_frame = img->getFrameNr() - 1;
+                  }
+              }
+              else if (ks == XK_BackSpace)
+              {
+                  if (--curr_frame < 0)
+                  {
+                      curr_frame = 0;
+                  }
+              }
+              printf("Frame: %d\n", curr_frame);
+              img->read(curr_frame);
+              initialized = false;
+              init();
+              redraw();
+          }
           if (ks == XK_Left)
           {
               y_angle += 0.1;

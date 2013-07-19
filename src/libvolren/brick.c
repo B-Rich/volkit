@@ -51,7 +51,7 @@ static void get_brick_vertices(
 }
 
 /*******************************************************************************
- * load_brick - Load brick texture
+ * load_brick - Load brick into texture memory
  *
  * RETURNS: N/A
  */
@@ -65,6 +65,27 @@ static void load_brick(
     if (b->texId)
     {
         glBindTexture(GL_TEXTURE_3D, b->texId);
+        if (vd->drawInterp)
+        {
+            glTexParameteri(GL_TEXTURE_3D_EXT,
+                            GL_TEXTURE_MIN_FILTER,
+                            GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_3D_EXT,
+                            GL_TEXTURE_MAG_FILTER,
+                            GL_LINEAR);
+        }
+        else
+        {
+            glTexParameteri(GL_TEXTURE_3D_EXT,
+                            GL_TEXTURE_MIN_FILTER,
+                            GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_3D_EXT,
+                            GL_TEXTURE_MAG_FILTER,
+                            GL_NEAREST);
+        }
+        glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA,
+                     b->xRes, b->yRes, b->zRes, 0, GL_RGBA,
+                     GL_UNSIGNED_BYTE, b->data);
     }
 }
 
@@ -281,7 +302,7 @@ void render_brick(
     /* Get vertices for brick */
     get_brick_vertices(b, state, cpt, vd, RTTMat);
 
-    /* Load brick texture */
+    /* Load brick into texture memory */
     load_brick(state, vd, b);
 
     /* Draw brick slices */

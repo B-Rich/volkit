@@ -21,6 +21,7 @@ typedef struct
 
 typedef struct
 {
+    int drawInterp;                    /* Draw interpolated textures */
     Matrix VTWMat;                     /* Volume-to-world matrix */
     Matrix VTRMat;                     /* Volume-to-rotated matrix */
     Brick **brick;                     /* Brick storage */

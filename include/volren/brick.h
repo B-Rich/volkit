@@ -16,6 +16,7 @@ typedef struct
     GLuint texId;              /* Texture id */
     float txScl, tyScl, tzScl; /* Texture scale */
     float txOff, tyOff, tzOff; /* Texture offset */
+    GLvoid *data;              /* Texture data buffer */
 } Brick;
 
 #ifdef __cplusplus
