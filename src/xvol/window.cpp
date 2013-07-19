@@ -29,10 +29,14 @@
 Display *dpy;
 Window win;
 Img *img = 0;
+bool initialized = false;
 Brick br[NUM_BRICKS];
 Bool doubleBuffer = True;
 int window_width;
 int window_height;
+ColorMap colorMap;
+float x_angle = 0.0;
+float y_angle = 0.0;
 
 int load_image(const char *fn)
 {
@@ -78,15 +82,14 @@ void init_brick(
     int d
     )
 {
-    ColorMap cmap;
     uint32_t *data = new uint32_t[w * h * d];
 
     if (data)
     {
-        int x0 = (float) img->getWidth() * x / (float) NUM_BRICKS;
-        int y0 = (float) img->getHeight() * y / (float) NUM_BRICKS;
-        int z0 = (float) img->getDepth() * z / (float) NUM_BRICKS;
-        img->getData(data, &cmap, x0, w + x0, y0, h + y0, z0, d + z0);
+        int x0 = (int)((float) img->getWidth() * x / (float) NUM_BRICKS);
+        int y0 = (int)((float) img->getHeight() * y / (float) NUM_BRICKS);
+        int z0 = (int)((float) img->getDepth() * z / (float) NUM_BRICKS);
+        img->getData(data, &colorMap, x0, w + x0, y0, h + y0, z0, d + z0);
         br->xOff = x;
         br->yOff = y;
         br->zOff = z;
@@ -115,17 +118,21 @@ void init(void)
     glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    for (i = 0; i < NUM_BRICKS; i++)
+    if (!initialized)
     {
-        init_brick(&br[i],
-                   (float) i,
-                   0.0,
-                   0.0,
-                   img->getWidth() / NUM_BRICKS,
-                   img->getHeight(),
-                   img->getDepth());
+        for (i = 0; i < NUM_BRICKS; i++)
+        {
+            init_brick(&br[i],
+                       (float) i,
+                       0.0,
+                       0.0,
+                       img->getWidth() / NUM_BRICKS,
+                       img->getHeight(),
+                       img->getDepth());
+        }
+        glEnable(GL_TEXTURE_3D);
+        initialized = true;
     }
-    glEnable(GL_TEXTURE_3D);
 }
 
 void draw_brick(void)
@@ -152,8 +159,8 @@ void draw_brick(void)
     vd.nzBricks = 1;
     vd.nBricks = NUM_BRICKS;
     matrix_copy(IdentityMatrix, 4, vd.VTWMat);
-    matrix_xrot(M_PI/2, vd.VTWMat);
-    matrix_yrot(3*M_PI/4, vd.VTWMat);
+    matrix_xrot(x_angle, vd.VTWMat);
+    matrix_yrot(y_angle, vd.VTWMat);
     matrix_copy(vd.VTWMat, 4, vd.VTRMat);
 
     render_volume(&state, &vd);
@@ -372,6 +379,15 @@ int main(int argc, char *argv[])
       return 1;
   }
 
+  if (argc > 2)
+  {
+    if (colorMap.loadColormap(argv[2]) != 0)
+    {
+      fprintf(stderr, "Error - Unable to load colormap %s\n", argv[2]);
+      return 1;
+    }
+  }
+
   /* Draw window */
   XMapWindow(dpy, win);
 
@@ -381,19 +397,34 @@ int main(int argc, char *argv[])
       XNextEvent(dpy, &event);
       switch(event.type) {
         case ConfigureNotify:
-          width = event.xconfigure.width;
-          height = event.xconfigure.height;
+          window_width = event.xconfigure.width;
+          window_height = event.xconfigure.height;
           init();
         case Expose:
 	  redraw();
           break;
         case KeyPress:
 	  ks = XLookupKeysym((XKeyEvent *) &event, 0);
-	  redraw();
-          break;
-        case KeyRelease:
-	  ks = XLookupKeysym((XKeyEvent *) &event, 0);
-	  redraw();
+          if (ks == XK_Left)
+          {
+              y_angle += 0.1;
+	      redraw();
+          }
+          else if (ks == XK_Right)
+          {
+              y_angle -= 0.1;
+	      redraw();
+          }
+          if (ks == XK_Down)
+          {
+              x_angle += 0.1;
+	      redraw();
+          }
+          else if (ks == XK_Up)
+          {
+              x_angle -= 0.1;
+	      redraw();
+          }
           break;
         case ClientMessage:
 	  if (event.xclient.data.l[0] == wmDeleteWindow) {
