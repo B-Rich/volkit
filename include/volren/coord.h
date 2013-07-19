@@ -1,13 +1,13 @@
 #ifndef COORD_H
 #define COORD_H
 
-#include <stdio.h>
-#include "volren/scalar.h"
-#include "volren/matrix.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <stdio.h>
+#include "volren/scalar.h"
+#include "volren/matrix.h"
 
 typedef float Coord[3];
 

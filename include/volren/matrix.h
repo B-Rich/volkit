@@ -1,13 +1,13 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
 
 typedef float Matrix[4][4];
 

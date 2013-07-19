@@ -1,12 +1,12 @@
 #ifndef BRICK_H
 #define BRICK_H
 
-#include <GL/gl.h>
-#include "volren/coord.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <GL/gl.h>
+#include "volren/coord.h"
 
 typedef struct
 {
@@ -18,6 +18,22 @@ typedef struct
     float txOff, tyOff, tzOff; /* Texture offset */
     GLvoid *data;              /* Texture data buffer */
 } Brick;
+
+struct _VRState;
+struct _VRVolumeData;
+
+/*******************************************************************************
+ * render_brick - Render brick
+ *
+ * RETURNS: N/A
+ */
+
+void render_brick(
+    struct _VRState *state,
+    struct _VRVolumeData *vd,
+    Brick *b,
+    int direction
+    );
 
 #ifdef __cplusplus
 }

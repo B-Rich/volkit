@@ -1,11 +1,11 @@
 #ifndef SCALAR_H
 #define SCALAR_H
 
-#include <math.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <math.h>
 
 /*******************************************************************************
  * square - Calculate square of number

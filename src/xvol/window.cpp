@@ -129,16 +129,23 @@ void init(void)
 
 void draw_brick(void)
 {
-    int i, n;
-    VRState state;
-    VRView view;
-    VRVolumeData vd;
+    static VRState state;
+    static VRView view;
+    static VRPlaneData planeData;
+    static VRVolumeData vd;
     static Brick *brick[NUM_BRICKS], *sbrick[NUM_BRICKS];
 
-    // Initialize state
+    int i, n;
+
+    // Intialize view
     view.delta = 1.0 / (float) img->getDepth();
+    matrix_copy(IdentityMatrix, 4, view.rotMat);
+    matrix_transpose(view.rotMat, 4, view.invRotMat);
     matrix_copy(IdentityMatrix, 4, view.WTSMat);
+
+    // Initialize state
     state.view = &view;
+    state.planeData = &planeData;
 
     // Initialize volume data
     vd.drawInterp = 1;
@@ -152,6 +159,8 @@ void draw_brick(void)
     vd.nyBricks = Y_BRICKS;
     vd.nzBricks = Z_BRICKS;
     vd.nBricks = NUM_BRICKS;
+    matrix_copy(IdentityMatrix, 4, vd.rotMat);
+    matrix_transpose(vd.rotMat, 4, vd.invRotMat);
     matrix_copy(IdentityMatrix, 4, vd.VTWMat);
     matrix_xrot(x_angle, vd.VTWMat);
     matrix_yrot(y_angle, vd.VTWMat);
