@@ -237,7 +237,7 @@ static void draw_slices(
     float delta = state->view->delta;
     float dz = delta * (float) direction;
 
-    /* Restore texture coordinate space to range [0.0, 1.0] */
+    /* Restore texture coordinate space to range [0.0 1.0] */
     glMatrixMode(GL_TEXTURE);
     glLoadMatrixf((GLfloat *) RTTMat);
     glMatrixMode(GL_MODELVIEW);

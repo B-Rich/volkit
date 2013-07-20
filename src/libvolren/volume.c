@@ -15,7 +15,7 @@ void build_volume_matrix(
     VRVolumeData *vd
     )
 {
-    /* Build the Volume-To-World matrix */
+    /* Build the Volume-to-world matrix */
     matrix_copy(IdentityMatrix, 4, vd->VTWMat);
     matrix_scale(vd->xScl, vd->yScl, vd->zScl, vd->VTWMat);
     matrix_scale(vd->uxScl, vd->uyScl, vd->uzScl, vd->VTWMat);
@@ -23,7 +23,7 @@ void build_volume_matrix(
     matrix_translate(vd->xTrn, vd->yTrn, vd->zTrn, vd->VTWMat);
     matrix_invert(vd->VTWMat, vd->WTVMat);
 
-    /* Build the Volume-To-Rotated matrix */
+    /* Build the Volume-to-rotated matrix */
     matrix_mult(vd->VTWMat, state->view->invRotMat, vd->VTRMat);
     matrix_invert(vd->VTRMat, vd->RTVMat);
 }
