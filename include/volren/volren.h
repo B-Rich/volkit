@@ -18,6 +18,11 @@ typedef struct
     Matrix rotMat;                     /* Global rotation matrix */
     Matrix invRotMat;                  /* Inverted global rotation matrix */
 
+    Matrix RTCMat;                     /* Rotated-to-camera matrix */
+    Matrix WTCMat;                     /* World-to-camera matrix */
+    Matrix CTWMat;                     /* Camera-to-world matrix */
+    Matrix CTSMat;                     /* Camera-to-screen matrix */
+    Matrix STCMat;                     /* Screen-to-camera matrix */
     Matrix WTSMat;                     /* World-to-screen matrix */
 } VRView;
 
@@ -40,11 +45,16 @@ typedef struct _VRVolumeData
 
     int    drawInterp;                   /* Draw interpolated textures */
 
+    float  xTrn, yTrn, zTrn;             /* Volume translation */
+    float  uxScl, uyScl, uzScl;          /* Volume scaling */
+
     Matrix rotMat;                       /* Global rotation matrix */
     Matrix invRotMat;                    /* Inverted global rotation matrix */
 
     Matrix VTWMat;                       /* Volume-to-world matrix */
+    Matrix WTVMat;                       /* World-to-volume matrix */
     Matrix VTRMat;                       /* Volume-to-rotated matrix */
+    Matrix RTVMat;                       /* Rotated-to-volume matrix */
 
     Brick  **brick;                      /* Brick storage */
     Brick  **sbrick;                     /* Sorted bricks */
@@ -53,14 +63,15 @@ typedef struct _VRVolumeData
 } VRVolumeData;
 
 /*******************************************************************************
- * render_volume - Render volume
+ * render_volumes - Render volumes
  *
  * RETURNS: N/A
  */
 
-void render_volume(
+void render_volumes(
     VRState *state,
-    VRVolumeData *vd
+    VRVolumeData *volumes,
+    int nVolumes
     );
 
 #ifdef __cplusplus

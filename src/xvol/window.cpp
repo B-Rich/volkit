@@ -149,7 +149,9 @@ void redraw()
     matrix_xrot(x_angle, view.rotMat);
     matrix_yrot(y_angle, view.rotMat);
     matrix_transpose(view.rotMat, 4, view.invRotMat);
-    matrix_copy(IdentityMatrix, 4, view.WTSMat);
+    matrix_copy(IdentityMatrix, 4, view.RTCMat);
+    matrix_copy(IdentityMatrix, 4, view.CTSMat);
+    matrix_copy(IdentityMatrix, 4, view.STCMat);
 
     // Initialize plane data
     planeData.nPlanes         = 2;
@@ -180,6 +182,13 @@ void redraw()
 
     vd.drawInterp = 1;
 
+    vd.xTrn       = 0.0;
+    vd.yTrn       = 0.0;
+    vd.zTrn       = 0.0;
+    vd.uxScl      = 1.0;
+    vd.uyScl      = 1.0;
+    vd.uzScl      = 1.0;
+
     vd.brick      = brick;
     vd.sbrick     = sbrick;
     for (int i = 0; i < NUM_BRICKS; i++)
@@ -191,16 +200,11 @@ void redraw()
     vd.nzBricks   = Z_BRICKS;
     vd.nBricks    = NUM_BRICKS;
 
-    matrix_copy(view.rotMat, 4, vd.rotMat);
+    matrix_copy(IdentityMatrix, 4, vd.rotMat);
     matrix_transpose(vd.rotMat, 4, vd.invRotMat);
-    matrix_copy(IdentityMatrix, 4, vd.VTWMat);
-    matrix_mult_safe(vd.VTWMat, vd.invRotMat, vd.VTWMat);
-    matrix_copy(vd.VTWMat, 4, vd.VTRMat);
 
-    define_clip_planes(&state, NULL);
-    enable_active_clip_planes(&state, MAX_CLIP_PLANES + 1);
+    render_volumes(&state, &vd, 1);
 
-    render_volume(&state, &vd);
     if (doubleBuffer)
     {
         glXSwapBuffers(dpy, win);

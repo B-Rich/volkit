@@ -1,7 +1,38 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "volren/matrix.h"
 #include "volren/volren.h"
+
+/*******************************************************************************
+ * build_volume_matrix - Setup volume matrices
+ *
+ * RETURNS: N/A
+ */
+
+void build_volume_matrix(
+    VRState *state,
+    VRVolumeData *vd
+    )
+{
+    /* Build the Volume-To-World matrix */
+    matrix_copy(IdentityMatrix, 4, vd->VTWMat);
+    matrix_scale(vd->xScl, vd->yScl, vd->zScl, vd->VTWMat);
+    matrix_scale(vd->uxScl, vd->uyScl, vd->uzScl, vd->VTWMat);
+    matrix_mult_safe(vd->VTWMat, vd->invRotMat, vd->VTWMat);
+    matrix_translate(vd->xTrn, vd->yTrn, vd->zTrn, vd->VTWMat);
+    matrix_invert(vd->VTWMat, vd->WTVMat);
+
+    /* Build the Volume-To-Rotated matrix */
+    matrix_mult(vd->VTWMat, state->view->invRotMat, vd->VTRMat);
+    matrix_invert(vd->VTRMat, vd->RTVMat);
+}
+
+/*******************************************************************************
+ * sort_bricks - Sort bricks in correct order for rendering
+ *
+ * RETURNS: N/A
+ */
 
 static void sort_bricks(
     int l,
@@ -40,6 +71,12 @@ static void sort_bricks(
     }
 }
 
+/*******************************************************************************
+ * sort_volume_bricks - Calculate brick location as sort for rendering
+ *
+ * RETURNS: N/A
+ */
+
 static void sort_volume_bricks(
     VRState *state,
     int direction,
@@ -74,26 +111,52 @@ static void sort_volume_bricks(
 }
 
 /*******************************************************************************
- * render_volume - Render volume
+ * render_volumes - Render volumes
  *
  * RETURNS: N/A
  */
 
-void render_volume(
+void render_volumes(
     VRState *state,
-    VRVolumeData *vd
+    VRVolumeData *volumes,
+    int nVolumes
     )
 {
-    int i;
+    int i, j;
+    VRVolumeData *vd;
 
-    /* Sort bricks */
-    sort_volume_bricks(state, 1, vd);
+    /* Setup clipping planes */
+    define_clip_planes(state, NULL);
+    enable_active_clip_planes(state, -1);
 
-    /* Render all bricks */
-    /* TODO: Check why this has to be drawn in reverse order */
-    for (i = vd->nBricks - 1; i >= 0; i--)
+    /* Build world-to-camera matrix */
+    matrix_mult(state->view->invRotMat,
+                state->view->RTCMat,
+                state->view->WTCMat);
+    matrix_invert(state->view->WTCMat, state->view->CTWMat);
+
+    /* Build world-to-screen matrix */
+    matrix_mult(state->view->WTCMat,
+                state->view->CTSMat,
+                state->view->WTSMat);
+
+    for (i = 0; i < nVolumes; i++)
     {
-        render_brick(state, vd, vd->sbrick[i], 1);
+        /* Get current volume data */
+        vd = &volumes[i];
+
+        /* Build per volume matrices */
+        build_volume_matrix(state, vd);
+
+        /* Sort bricks */
+        sort_volume_bricks(state, 1, vd);
+
+        /* Render all bricks */
+        /* TODO: Check why this has to be drawn in reverse order */
+        for (j = vd->nBricks - 1; j >= 0; j--)
+        {
+            render_brick(state, vd, vd->sbrick[j], 1);
+        }
     }
 }
 
