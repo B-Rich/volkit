@@ -125,10 +125,6 @@ void render_volumes(
     int i, j;
     VRVolumeData *vd;
 
-    /* Setup clipping planes */
-    define_clip_planes(state, NULL);
-    enable_active_clip_planes(state, -1);
-
     /* Build world-to-camera matrix */
     matrix_mult(state->view->invRotMat,
                 state->view->RTCMat,
@@ -139,6 +135,13 @@ void render_volumes(
     matrix_mult(state->view->WTCMat,
                 state->view->CTSMat,
                 state->view->WTSMat);
+
+    /* Load global scale matrix, other transformations will be done by hand */
+    glLoadMatrixf((GLfloat*) state->view->RTCMat);
+
+    /* Setup clipping planes */
+    define_clip_planes(state, NULL);
+    enable_active_clip_planes(state, -1);
 
     for (i = 0; i < nVolumes; i++)
     {

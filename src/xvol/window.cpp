@@ -150,6 +150,7 @@ void redraw()
     matrix_yrot(y_angle, view.rotMat);
     matrix_transpose(view.rotMat, 4, view.invRotMat);
     matrix_copy(IdentityMatrix, 4, view.RTCMat);
+    //matrix_scale(0.5, 0.5, 0.5, view.RTCMat);
     matrix_copy(IdentityMatrix, 4, view.CTSMat);
     matrix_copy(IdentityMatrix, 4, view.STCMat);
 
