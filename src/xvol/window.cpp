@@ -151,13 +151,13 @@ void redraw()
     planeData.plane[0].a      = 0.0;
     planeData.plane[0].b      = 0.0;
     planeData.plane[0].c      = 1.0;
-    planeData.plane[0].d      = 0.3;
+    planeData.plane[0].d      = 0.1;
 
     planeData.plane[1].active = 1;
     planeData.plane[1].a      = 1.0;
     planeData.plane[1].b      = 0.0;
     planeData.plane[1].c      = 0.0;
-    planeData.plane[1].d      = 0.4;
+    planeData.plane[1].d      = 0.2;
 
     // Initialize state
     state.view      = &view;

@@ -16,6 +16,14 @@ extern "C" {
 #define square(x)              ((x) * (x))
 
 /*******************************************************************************
+ * sign - Return sign of number
+ *
+ * RETURNS: Sign-bit for number
+ */
+
+#define sign(x)                (((x) > 0.0) ? 1 : (((x) < 0.0) ? -1 : 0))
+
+/*******************************************************************************
  * power_of_two - Determine if integer is a power-of-two
  *
  * RETURNS: 1 if power-of-two, otherwise 0
