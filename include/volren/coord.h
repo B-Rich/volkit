@@ -6,6 +6,7 @@ extern "C" {
 #endif
 
 #include <stdio.h>
+#include <math.h>
 #include "volren/scalar.h"
 #include "volren/matrix.h"
 
@@ -251,7 +252,7 @@ typedef float Coord[3];
     __B = (c1)[0] - (c0)[0];                                                   \
     __C = ((c1)[0] - (c0)[0])*(c0)[1] + ((c0)[1] - (c1)[1])*(c0)[0];           \
                                                                                \
-    SIDE = sign(__A * (pt)[0] + __B * (pt)[1] - __C);                          \
+    SIDE = signbit(__A * (pt)[0] + __B * (pt)[1] - __C);                       \
 }
 
 /*******************************************************************************

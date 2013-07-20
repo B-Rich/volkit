@@ -12,9 +12,9 @@ typedef struct
 {
     float a, b, c, d;          /* Plane equation: ax + by + cz - d = 0 */
     float minD, maxD;          /* Plane extents */
-    int facing;                /* The plane is facing the viewer */
-    int active;                /* The plane is active */
-    int loopDir;               /* Direction in which the plane is looping */
+    int   facing;              /* The plane is facing the viewer */
+    int   active;              /* The plane is active */
+    int   loopDir;             /* Direction in which the plane is looping */
 } Plane;
 
 struct _VRState;

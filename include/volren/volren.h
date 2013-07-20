@@ -13,7 +13,7 @@ extern "C" {
 
 typedef struct
 {
-    float delta;                       /* Distance between two slices */
+    float  delta;                      /* Distance between two slices */
 
     Matrix rotMat;                     /* Global rotation matrix */
     Matrix invRotMat;                  /* Inverted global rotation matrix */
@@ -24,29 +24,32 @@ typedef struct
 typedef struct
 {
     Plane plane[MAX_CLIP_PLANES];      /* Clip planes */
-    int nPlanes;                       /* Number of active clip planes */
+    int   nPlanes;                     /* Number of active clip planes */
 } VRPlaneData;
 
 typedef struct _VRState
 {
-    VRView *view;                      /* View specific parameters */
+    VRView      *view;                 /* View specific parameters */
     VRPlaneData *planeData;            /* Clipping plane parameters */
 } VRState;
 
 typedef struct _VRVolumeData
 {
-    int drawInterp;                    /* Draw interpolated textures */
+    int    xRes, yRes, zRes;             /* Volume resolution */
+    float  xScl, yScl, zScl;             /* Voxel spacing */
 
-    Matrix rotMat;                     /* Global rotation matrix */
-    Matrix invRotMat;                  /* Inverted global rotation matrix */
+    int    drawInterp;                   /* Draw interpolated textures */
 
-    Matrix VTWMat;                     /* Volume-to-world matrix */
-    Matrix VTRMat;                     /* Volume-to-rotated matrix */
+    Matrix rotMat;                       /* Global rotation matrix */
+    Matrix invRotMat;                    /* Inverted global rotation matrix */
 
-    Brick **brick;                     /* Brick storage */
-    Brick **sbrick;                    /* Sorted bricks */
-    int nxBricks, nyBricks, nzBricks;  /* Number of brick in each direction */
-    int nBricks;                       /* Total number of bricks */
+    Matrix VTWMat;                       /* Volume-to-world matrix */
+    Matrix VTRMat;                       /* Volume-to-rotated matrix */
+
+    Brick  **brick;                      /* Brick storage */
+    Brick  **sbrick;                     /* Sorted bricks */
+    int    nxBricks, nyBricks, nzBricks; /* Number of bricks per axis */
+    int    nBricks;                      /* Total number of bricks */
 } VRVolumeData;
 
 /*******************************************************************************

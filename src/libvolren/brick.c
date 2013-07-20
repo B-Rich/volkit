@@ -128,7 +128,7 @@ static int get_plane_cube_intersect(
                 cpt[CubeEdgeVertices[0][1]][2] * c + d;
 
     /* If sign bits are different, endpoints of edge span slicing plane */
-    span = sign(pleval) ^ sign(plevalnxt);
+    span = signbit(pleval) ^ signbit(plevalnxt);
 
     while (i < 12 && !span) 
     {
@@ -142,7 +142,7 @@ static int get_plane_cube_intersect(
                     cpt[CubeEdgeVertices[i][1]][1] * b +
                     cpt[CubeEdgeVertices[i][1]][2] * c + d;
 
-        span = sign(pleval) ^ sign(plevalnxt);
+        span = signbit(pleval) ^ signbit(plevalnxt);
     }
 
     if (i < 12)
@@ -178,7 +178,7 @@ static int get_plane_cube_intersect(
                             cpt[CubeEdgeVertices[i][1]][1] * b +
                             cpt[CubeEdgeVertices[i][1]][2] * c + d;
 
-                span = sign(pleval) ^ sign(plevalnxt);
+                span = signbit(pleval) ^ signbit(plevalnxt);
 
                 if ((lastedge != i) && span)
                 {

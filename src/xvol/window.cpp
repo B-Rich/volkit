@@ -77,19 +77,26 @@ void init_brick(
         int x0 = (int)((float) img->getWidth() * x / (float) X_BRICKS);
         int y0 = (int)((float) img->getHeight() * y / (float) Y_BRICKS);
         int z0 = (int)((float) img->getDepth() * z / (float) Z_BRICKS);
+
         br->xOff = x;
         br->yOff = y;
         br->zOff = z;
         br->xRes = w;
         br->yRes = h;
         br->zRes = d;
+        br->xScl = 1.0;
+        br->yScl = 1.0;
+        br->zScl = 1.0;
+
         glGenTextures(1, &br->texId);
+
         br->txScl = 1.0;
         br->tyScl = 1.0;
         br->tzScl = 1.0;
         br->txOff = 0.0;
         br->tyOff = 0.0;
         br->tzOff = 0.0;
+
         img->getData((uint32_t *) br->data, &colorMap,
                      x0, w + x0, y0, h + y0, z0, d + z0);
     }
@@ -164,17 +171,26 @@ void redraw()
     state.planeData = &planeData;
 
     // Initialize volume data
+    vd.xRes       = img->getWidth();
+    vd.yRes       = img->getHeight();
+    vd.zRes       = img->getDepth();
+    vd.xScl       = 1.0;
+    vd.yScl       = 1.0;
+    vd.zScl       = 1.0;
+
     vd.drawInterp = 1;
-    vd.brick = brick;
-    vd.sbrick = sbrick;
+
+    vd.brick      = brick;
+    vd.sbrick     = sbrick;
     for (int i = 0; i < NUM_BRICKS; i++)
     {
         vd.brick[i] = &br[i];
     }
-    vd.nxBricks = X_BRICKS;
-    vd.nyBricks = Y_BRICKS;
-    vd.nzBricks = Z_BRICKS;
-    vd.nBricks = NUM_BRICKS;
+    vd.nxBricks   = X_BRICKS;
+    vd.nyBricks   = Y_BRICKS;
+    vd.nzBricks   = Z_BRICKS;
+    vd.nBricks    = NUM_BRICKS;
+
     matrix_copy(view.rotMat, 4, vd.rotMat);
     matrix_transpose(vd.rotMat, 4, vd.invRotMat);
     matrix_copy(IdentityMatrix, 4, vd.VTWMat);

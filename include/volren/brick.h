@@ -10,13 +10,18 @@ extern "C" {
 
 typedef struct
 {
-    float xOff, yOff, zOff;    /* Brick offset coordinates */
-    int xRes, yRes, zRes;      /* Brick size in each dimension */
-    Coord center;              /* Rotated location for brick */
-    GLuint texId;              /* Texture id */
-    float txScl, tyScl, tzScl; /* Texture scale */
-    float txOff, tyOff, tzOff; /* Texture offset */
-    GLvoid *data;              /* Texture data buffer */
+    float xOff, yOff, zOff;      /* Brick offset coordinates */
+    int   xRes, yRes, zRes;      /* Brick size in each dimension */
+    float xScl, yScl, zScl;      /* Voxel size */
+
+    Coord  center;               /* Rotated location for brick */
+
+    GLuint texId;                /* Texture id */
+
+    float  txScl, tyScl, tzScl;  /* Texture scale */
+    float  txOff, tyOff, tzOff;  /* Texture offset */
+
+    GLvoid *data;                /* Texture data buffer */
 } Brick;
 
 struct _VRState;
