@@ -1,11 +1,11 @@
-IF(OPENGL_FOUND)
+IF(OPENGL_FOUND AND XMU_FOUND)
     INCLUDE_DIRECTORIES(
         ${ATLAS_SOURCE_DIR}/../include
         ${OPENGL_INCLUDE_DIR}
         )
 
     SET(xvol_SOURCES
-        window.cpp
+        xvol.cpp
     )
 
     ADD_EXECUTABLE(xvol
@@ -14,11 +14,12 @@ IF(OPENGL_FOUND)
 
     TARGET_LINK_LIBRARIES(xvol
         volren img vff tpcimgio tpcmisc
-        ${OPENGL_LIBRARIES} Xmu
+        ${OPENGL_LIBRARIES}
+        ${XMU_LIBRARY}
         )
 ELSE()
     MESSAGE(STATUS
-        "\n\n   WARNING: No OpenGL -- 'xvol' will not be built!\n"
+        "\n\n   WARNING: No OpenGL or Xmu -- 'xvol' will not be built!\n"
         )
 ENDIF()
 
