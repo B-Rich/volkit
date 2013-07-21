@@ -181,6 +181,7 @@ void redraw()
     matrix_transpose(view->rotMat, 4, view->invRotMat);
 
     // Perform world scaling
+    matrix_copy(IdentityMatrix, 4, view->RTCMat);
     //matrix_scale(0.5, 0.5, 0.5, view->RTCMat);
 
     render_volumes(&state, vd, 1);
