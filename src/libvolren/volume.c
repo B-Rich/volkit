@@ -1,16 +1,88 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "volren/matrix.h"
 #include "volren/volren.h"
 
 /*******************************************************************************
- * build_volume_matrix - Setup volume matrices
+ * create_volume - Create volume data
+ *
+ * RETURNS: Pointer to volume data or NULL
+ */
+
+VRVolumeData* create_volume(
+    int nBricks
+    )
+{
+    VRVolumeData *vd;
+
+    vd = (VRVolumeData *) malloc(sizeof(VRVolumeData) +
+                                 sizeof(Brick *) * nBricks * 2);
+    if (vd != NULL)
+    {
+        vd->xRes     = 0;
+        vd->yRes     = 0;
+        vd->zRes     = 0;
+        vd->brick    = (Brick **) &vd[1];
+        vd->sbrick   = &vd->brick[nBricks];
+        vd->nxBricks = 0;
+        vd->nyBricks = 0;
+        vd->nzBricks = 0;
+        vd->nBricks  = 0;
+        init_volume(vd);
+    }
+
+    return vd;
+}
+
+/*******************************************************************************
+ * init_volume - Initialize volume data
  *
  * RETURNS: N/A
  */
 
-void build_volume_matrix(
+void init_volume(
+    VRVolumeData *vd
+    )
+{
+    vd->drawInterp = 1;
+
+    vd->xScl       = 1.0;
+    vd->yScl       = 1.0;
+    vd->zScl       = 1.0;
+
+    vd->xTrn       = 0.0;
+    vd->yTrn       = 0.0;
+    vd->zTrn       = 0.0;
+    vd->uxScl      = 1.0;
+    vd->uyScl      = 1.0;
+    vd->uzScl      = 1.0;
+
+    matrix_copy(IdentityMatrix, 4, vd->invRotMat);
+    matrix_copy(IdentityMatrix, 4, vd->invRotMat);
+}
+
+/*******************************************************************************
+ * delete_volume - Delete volume data
+ *
+ * RETURNS: N/A
+ */
+
+void delete_volume(
+    VRVolumeData *vd
+    )
+{
+    free(vd);
+}
+
+/*******************************************************************************
+ * update_volume_matrix - Setup volume matrices
+ *
+ * RETURNS: N/A
+ */
+
+static void update_volume_matrix(
     VRState *state,
     VRVolumeData *vd
     )
@@ -148,8 +220,8 @@ void render_volumes(
         /* Get current volume data */
         vd = &volumes[i];
 
-        /* Build per volume matrices */
-        build_volume_matrix(state, vd);
+        /* Update per volume matrices */
+        update_volume_matrix(state, vd);
 
         /* Sort bricks */
         sort_volume_bricks(state, 1, vd);

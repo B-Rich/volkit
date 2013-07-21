@@ -7,6 +7,76 @@
 #include "volren/matrix.h"
 #include "volren/volren.h"
 
+/******************************************************************************
+ * create_plane - Create plane
+ *
+ * RETURNS: Point to plane or NULL
+ */
+
+Plane* create_plane(
+    float a,
+    float b,
+    float c,
+    float d,
+    int active,
+    int loopDir
+    )
+{
+    Plane *pl;
+
+    pl = (Plane *) malloc(sizeof(Plane));
+    if (pl != NULL)
+    {
+        init_plane(pl, a, b, c, d, active, loopDir);
+    }
+
+    return pl;
+}
+
+/******************************************************************************
+ * init_plane - Initialize plane
+ *
+ * RETURNS: N/A
+ */
+
+void init_plane(
+    Plane *pl,
+    float a,
+    float b,
+    float c,
+    float d,
+    int active,
+    int loopDir
+    )
+{
+    Coord n;
+
+    n[0] = a;
+    n[1] = b;
+    n[2] = c;
+    coord_normalize(n, n);
+
+    pl->a       = n[0];
+    pl->b       = n[1];
+    pl->c       = n[2];
+    pl->d       = d;
+    pl->active  = active;
+    pl->loopDir = loopDir;
+}
+
+/******************************************************************************
+ * delete_plane - Delete plane
+ *
+ * RETURNS: N/A
+ */
+
+void delete_plane(
+    Plane *pl
+    )
+{
+    free(pl);
+}
+
 /*******************************************************************************
  * find_points_on_plane - Determin 3 independet point on plane defined by n & d
  *

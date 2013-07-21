@@ -44,7 +44,7 @@ int curr_frame = 0;
 VRState state;
 VRView view;
 VRPlaneData planeData;
-VRVolumeData vd;
+VRVolumeData *vd;
 Brick *brick[NUM_BRICKS], *sbrick[NUM_BRICKS];
 
 int load_image(const char *fn)
@@ -59,6 +59,25 @@ int load_image(const char *fn)
     }
 
     return result;
+}
+
+int startup()
+{
+    // Initialize volume data
+    vd = create_volume(NUM_BRICKS);
+    vd->xRes       = img->getWidth();
+    vd->yRes       = img->getHeight();
+    vd->zRes       = img->getDepth();
+
+    for (int i = 0; i < NUM_BRICKS; i++)
+    {
+        vd->brick[i] = &br[i];
+    }
+
+    vd->nxBricks   = X_BRICKS;
+    vd->nyBricks   = Y_BRICKS;
+    vd->nzBricks   = Z_BRICKS;
+    vd->nBricks    = NUM_BRICKS;
 }
 
 void init_brick(
@@ -155,56 +174,15 @@ void redraw()
     matrix_copy(IdentityMatrix, 4, view.STCMat);
 
     // Initialize plane data
-    planeData.nPlanes         = 2;
-
-    planeData.plane[0].active = 1;
-    planeData.plane[0].a      = 0.0;
-    planeData.plane[0].b      = 0.0;
-    planeData.plane[0].c      = 1.0;
-    planeData.plane[0].d      = 0.1;
-
-    planeData.plane[1].active = 1;
-    planeData.plane[1].a      = 1.0;
-    planeData.plane[1].b      = 0.0;
-    planeData.plane[1].c      = 0.0;
-    planeData.plane[1].d      = 0.2;
+    planeData.nPlanes = 2;
+    init_plane(&planeData.plane[0], 0.0, 0.0, 1.0, 0.1, 1, 0);
+    init_plane(&planeData.plane[1], 1.0, 0.0, 0.0, 0.2, 1, 0);
 
     // Initialize state
     state.view      = &view;
     state.planeData = &planeData;
 
-    // Initialize volume data
-    vd.xRes       = img->getWidth();
-    vd.yRes       = img->getHeight();
-    vd.zRes       = img->getDepth();
-    vd.xScl       = 1.0;
-    vd.yScl       = 1.0;
-    vd.zScl       = 1.0;
-
-    vd.drawInterp = 1;
-
-    vd.xTrn       = 0.0;
-    vd.yTrn       = 0.0;
-    vd.zTrn       = 0.0;
-    vd.uxScl      = 1.0;
-    vd.uyScl      = 1.0;
-    vd.uzScl      = 1.0;
-
-    vd.brick      = brick;
-    vd.sbrick     = sbrick;
-    for (int i = 0; i < NUM_BRICKS; i++)
-    {
-        vd.brick[i] = &br[i];
-    }
-    vd.nxBricks   = X_BRICKS;
-    vd.nyBricks   = Y_BRICKS;
-    vd.nzBricks   = Z_BRICKS;
-    vd.nBricks    = NUM_BRICKS;
-
-    matrix_copy(IdentityMatrix, 4, vd.rotMat);
-    matrix_transpose(vd.rotMat, 4, vd.invRotMat);
-
-    render_volumes(&state, &vd, 1);
+    render_volumes(&state, vd, 1);
 
     if (doubleBuffer)
     {
@@ -424,6 +402,8 @@ int main(int argc, char *argv[])
       return 1;
     }
   }
+
+  startup();
 
   /* Draw window */
   XMapWindow(dpy, win);

@@ -20,6 +20,47 @@ typedef struct
 struct _VRState;
 
 /******************************************************************************
+ * create_plane - Create plane
+ *
+ * RETURNS: Point to plane or NULL
+ */
+
+Plane* create_plane(
+    float a,
+    float b,
+    float c,
+    float d,
+    int active,
+    int loopDir
+    );
+
+/******************************************************************************
+ * init_plane - Initialize plane
+ *
+ * RETURNS: N/A
+ */
+
+void init_plane(
+    Plane *pl,
+    float a,
+    float b,
+    float c,
+    float d,
+    int active,
+    int loopDir
+    );
+
+/******************************************************************************
+ * delete_plane - Delete plane
+ *
+ * RETURNS: N/A
+ */
+
+void delete_plane(
+    Plane *pl
+    );
+
+/******************************************************************************
  * define_clip_planes - Flush clipping planes to renderer
  *
  * RETURNS: N/A
