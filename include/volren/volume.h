@@ -1,5 +1,9 @@
-#ifndef VOLUME_H
-#define VOLUME_H
+#ifndef VR_VOLUME_H
+#define VR_VOLUME_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include "volren/matrix.h"
 #include "volren/brick.h"
@@ -71,6 +75,10 @@ void render_volumes(
     VRVolumeData *volumes,
     int nVolumes
     );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

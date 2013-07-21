@@ -1,5 +1,5 @@
-#ifndef BRICK_H
-#define BRICK_H
+#ifndef VR_BRICK_H
+#define VR_BRICK_H
 
 #ifdef __cplusplus
 extern "C" {

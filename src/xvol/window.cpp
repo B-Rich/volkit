@@ -42,7 +42,7 @@ float x_angle = 0.0;
 float y_angle = 0.0;
 int curr_frame = 0;
 VRState state;
-VRView view;
+VRView *view;
 VRPlaneData planeData;
 VRVolumeData *vd;
 Brick *brick[NUM_BRICKS], *sbrick[NUM_BRICKS];
@@ -63,6 +63,18 @@ int load_image(const char *fn)
 
 int startup()
 {
+    // Intialize view
+    view = create_view(img->getDepth());
+
+    // Initialize plane data
+    planeData.nPlanes = 2;
+    init_plane(&planeData.plane[0], 0.0, 0.0, 1.0, 0.1, 1, 0);
+    init_plane(&planeData.plane[1], 1.0, 0.0, 0.0, 0.2, 1, 0);
+
+    // Initialize state
+    state.view      = view;
+    state.planeData = &planeData;
+
     // Initialize volume data
     vd = create_volume(NUM_BRICKS);
     vd->xRes       = img->getWidth();
@@ -162,25 +174,14 @@ void redraw()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // Intialize view
-    view.delta = 1.0 / (float) img->getDepth();
-    matrix_copy(IdentityMatrix, 4, view.rotMat);
-    matrix_xrot(x_angle, view.rotMat);
-    matrix_yrot(y_angle, view.rotMat);
-    matrix_transpose(view.rotMat, 4, view.invRotMat);
-    matrix_copy(IdentityMatrix, 4, view.RTCMat);
-    //matrix_scale(0.5, 0.5, 0.5, view.RTCMat);
-    matrix_copy(IdentityMatrix, 4, view.CTSMat);
-    matrix_copy(IdentityMatrix, 4, view.STCMat);
+    // Perform world rotation
+    matrix_copy(IdentityMatrix, 4, view->rotMat);
+    matrix_xrot(x_angle, view->rotMat);
+    matrix_yrot(y_angle, view->rotMat);
+    matrix_transpose(view->rotMat, 4, view->invRotMat);
 
-    // Initialize plane data
-    planeData.nPlanes = 2;
-    init_plane(&planeData.plane[0], 0.0, 0.0, 1.0, 0.1, 1, 0);
-    init_plane(&planeData.plane[1], 1.0, 0.0, 0.0, 0.2, 1, 0);
-
-    // Initialize state
-    state.view      = &view;
-    state.planeData = &planeData;
+    // Perform world scaling
+    //matrix_scale(0.5, 0.5, 0.5, view->RTCMat);
 
     render_volumes(&state, vd, 1);
 

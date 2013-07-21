@@ -6,25 +6,11 @@ extern "C" {
 #endif
 
 #include "volren/matrix.h"
+#include "volren/view.h"
 #include "volren/plane.h"
 #include "volren/volume.h"
 
 #define MAX_CLIP_PLANES        6       /* Maximum number of clipping planes */
-
-typedef struct
-{
-    float  delta;                      /* Distance between two slices */
-
-    Matrix rotMat;                     /* Global rotation matrix */
-    Matrix invRotMat;                  /* Inverted global rotation matrix */
-
-    Matrix RTCMat;                     /* Rotated-to-camera matrix */
-    Matrix WTCMat;                     /* World-to-camera matrix */
-    Matrix CTWMat;                     /* Camera-to-world matrix */
-    Matrix CTSMat;                     /* Camera-to-screen matrix */
-    Matrix STCMat;                     /* Screen-to-camera matrix */
-    Matrix WTSMat;                     /* World-to-screen matrix */
-} VRView;
 
 typedef struct
 {
