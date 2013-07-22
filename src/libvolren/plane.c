@@ -135,7 +135,7 @@ static void find_points_on_plane(
 
 void define_clip_planes(
     VRState *state,
-    float *ucp
+    float ucp[][4]
     )
 {
     int i, j;
@@ -204,7 +204,7 @@ void define_clip_planes(
         {
             for (j = 0; j < 4; j++)
             {
-	        ucp[i * 4 + j] = (float) cp[i][j];
+	        ucp[i][j] = (float) cp[i][j];
             }
         }
     }

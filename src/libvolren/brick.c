@@ -4,6 +4,7 @@
 
 #include "cube.h"
 #include "volren/matrix.h"
+#include "volren/plane.h"
 #include "volren/brick.h"
 #include "volren/volren.h"
 
@@ -242,7 +243,6 @@ static void draw_slices(
     Brick *b,
     VRState *state,
     Coord cpt[8],
-    Matrix RTTMat,
     int direction
     )
 {
@@ -255,11 +255,6 @@ static void draw_slices(
     /* Get slice distance from state */
     float delta = state->view->delta;
     float dz = delta * (float) direction;
-
-    /* Restore texture coordinate space to range [0.0 1.0] */
-    glMatrixMode(GL_TEXTURE);
-    glLoadMatrixf((GLfloat *) RTTMat);
-    glMatrixMode(GL_MODELVIEW);
 
     min_z =  HUGE;
     max_z = -HUGE;
@@ -303,6 +298,38 @@ static void draw_slices(
 }
 
 /*******************************************************************************
+ * render_plane - Render slice on clipping plane
+ *
+ * RETURNS: N/A
+ */
+
+static void render_plane(
+    VRState *state,
+    Brick *b,
+    Coord cpt[8],
+    float cp[4]
+    )
+{
+    int j, n;
+    GLfloat p[8][3];
+
+    /* Get vertices for plane */
+    n = get_plane_cube_intersect(cp[0], cp[1], cp[2], cp[3], p, cpt);
+
+    if (n > 2)
+    {
+        /* Draw plane */
+        glBegin(GL_POLYGON);
+        for (j = 0; j < n; j++)
+        {
+            glTexCoord3fv(p[j]);
+            glVertex3fv(p[j]);
+        }
+        glEnd();
+    }
+}
+
+/*******************************************************************************
  * render_brick - Render brick
  *
  * RETURNS: N/A
@@ -315,16 +342,55 @@ void render_brick(
     int direction
     )
 {
+    int i;
     Matrix RTTMat;
     Coord cpt[8];
+    float cp[MAX_CLIP_PLANES][4];
 
     /* Get vertices for brick */
     get_brick_vertices(b, state, cpt, vd, RTTMat);
+
+    /* Restore texture coordinate space to range [0.0 1.0] */
+    glMatrixMode(GL_TEXTURE);
+    glLoadMatrixf((GLfloat *) RTTMat);
+    glMatrixMode(GL_MODELVIEW);
+
+    /* If slice mode, get clipping plane and restore for volume rendering */
+    if (state->mode->sliceMode)
+    {
+        define_clip_planes(state, cp);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
 
     /* Load brick into texture memory */
     load_brick(state, vd, b);
 
     /* Draw brick slices */
-    draw_slices(b, state, cpt, RTTMat, direction);
+    draw_slices(b, state, cpt, direction);
+
+    if (state->mode->sliceMode)
+    {
+        glBlendFunc(GL_ONE, GL_SRC_COLOR);
+
+        /* Draw all clipping planes */
+        for (i = 0; i < state->planeData->nPlanes; i++)
+        {
+            /* Only draw plane if it is facing the viewer */
+            if (state->planeData->plane[i].facing == PLANE_FACING_TOWARDS)
+            {
+                /* Enable all clipping planes except the current one */
+                enable_active_clip_planes(state, i);
+
+                /* Draw current plane */
+                render_plane(state, b, cpt, cp[i]);
+
+                /* Disable all clipping planes */
+                disable_all_clip_planes(state);
+            }
+        }
+
+        /* Re-enable all clipping planes */
+        enable_active_clip_planes(state, -1);
+    }
 }
 

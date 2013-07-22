@@ -1,2 +1,1 @@
-Atlas
-Software tools for PET brain scan image analysis
+Volume Rendering and Analysis Toolkit

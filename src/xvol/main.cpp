@@ -43,6 +43,7 @@ float y_angle = 0.0;
 int curr_frame = 0;
 VRState state;
 VRView *view;
+VRMode mode;
 VRPlaneData planeData;
 VRVolumeData *vd;
 Brick *brick[NUM_BRICKS], *sbrick[NUM_BRICKS];
@@ -66,6 +67,9 @@ int startup()
     // Intialize view
     view = create_view(img->getDepth());
 
+    // Initialize mode
+    mode.sliceMode = 1;
+
     // Initialize plane data
     planeData.nPlanes = 2;
     init_plane(&planeData.plane[0], 0.0, 0.0, 1.0, 0.1, 1, 0);
@@ -73,6 +77,7 @@ int startup()
 
     // Initialize state
     state.view      = view;
+    state.mode      = &mode;
     state.planeData = &planeData;
 
     // Initialize volume data
@@ -137,6 +142,8 @@ void init()
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.01);
     glViewport(0, 0, window_width, window_height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();

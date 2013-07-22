@@ -68,7 +68,7 @@ void delete_plane(
 
 void define_clip_planes(
     struct _VRState *state,
-    float *ucp
+    float ucp[][4]
     );
 
 /*******************************************************************************

@@ -7,6 +7,7 @@ extern "C" {
 
 #include "volren/matrix.h"
 #include "volren/view.h"
+#include "volren/mode.h"
 #include "volren/plane.h"
 #include "volren/volume.h"
 
@@ -21,6 +22,7 @@ typedef struct
 typedef struct _VRState
 {
     VRView      *view;                 /* View specific parameters */
+    VRMode      *mode;                 /* Rendering mode parameters */
     VRPlaneData *planeData;            /* Clipping plane parameters */
 } VRState;
 
