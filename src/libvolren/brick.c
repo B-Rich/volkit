@@ -370,7 +370,7 @@ void render_brick(
 
     if (state->mode->sliceMode)
     {
-        glBlendFunc(GL_ONE, GL_SRC_COLOR);
+        glBlendFunc(GL_ONE, GL_ZERO);
 
         /* Draw all clipping planes */
         for (i = 0; i < state->planeData->nPlanes; i++)

@@ -1,14 +1,6 @@
-#ifndef VR_MODE_H
-#define VR_MODE_H
+#include <stdlib.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-typedef struct
-{
-    int sliceMode;             /* Draw slice at clip plane */
-} VRMode;
+#include "volren/mode.h"
 
 /*******************************************************************************
  * create_mode - Create mode object
@@ -18,7 +10,18 @@ typedef struct
 
 VRMode* create_mode(
     int sliceMode
-    );
+    )
+{
+    VRMode *mode;
+
+    mode = (VRMode *) malloc(sizeof(VRMode));
+    if (mode != NULL)
+    {
+        init_mode(mode, sliceMode);
+    }
+
+    return mode;
+}
 
 /*******************************************************************************
  * init_mode - Initialize mode object
@@ -29,7 +32,10 @@ VRMode* create_mode(
 void init_mode(
     VRMode *mode,
     int sliceMode
-    );
+    )
+{
+    mode->sliceMode = sliceMode;
+}
 
 /*******************************************************************************
  * init_delete - Delete mode object
@@ -39,11 +45,8 @@ void init_mode(
 
 void delete_mode(
     VRMode *mode
-    );
-
-#ifdef __cplusplus
+    )
+{
+    free(mode);
 }
-#endif
-
-#endif
 

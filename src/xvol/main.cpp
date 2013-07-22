@@ -17,13 +17,14 @@
 #include "volren/matrix.h"
 #include "volren/coord.h"
 
-#define DEFAULT_WINDOW_WIDTH 400
+#define DEFAULT_WINDOW_WIDTH  400
 #define DEFAULT_WINDOW_HEIGHT 400
 
-#define X_BRICKS 2
-#define Y_BRICKS 2
-#define Z_BRICKS 2
-#define NUM_BRICKS (X_BRICKS * Y_BRICKS * Z_BRICKS)
+#define SLICE_MODE            1
+#define X_BRICKS              2
+#define Y_BRICKS              2
+#define Z_BRICKS              2
+#define NUM_BRICKS            (X_BRICKS * Y_BRICKS * Z_BRICKS)
 
 #ifdef PLAY
 #define UPDATE_WINDOW_EVENT 99
@@ -31,21 +32,18 @@
 
 Display *dpy;
 Window win;
-Img *img = 0;
-bool initialized = false;
-Brick br[NUM_BRICKS];
-Bool doubleBuffer = True;
 int window_width;
 int window_height;
+Img *img = 0;
 ColorMap colorMap;
+bool initialized = false;
+Bool doubleBuffer = True;
 float x_angle = 0.0;
 float y_angle = 0.0;
 int curr_frame = 0;
-VRState state;
-VRView *view;
-VRMode mode;
-VRPlaneData planeData;
+VRState *state;
 VRVolumeData *vd;
+Brick br[NUM_BRICKS];
 Brick *brick[NUM_BRICKS], *sbrick[NUM_BRICKS];
 
 int load_image(const char *fn)
@@ -64,23 +62,17 @@ int load_image(const char *fn)
 
 int startup()
 {
-    // Intialize view
-    view = create_view(img->getDepth());
-
-    // Initialize mode
-    mode.sliceMode = 1;
+    VRPlaneData planeData;
 
     // Initialize plane data
     planeData.nPlanes = 2;
     init_plane(&planeData.plane[0], 0.0, 0.0, 1.0, 0.1, 1, 0);
     init_plane(&planeData.plane[1], 1.0, 0.0, 0.0, 0.2, 1, 0);
 
-    // Initialize state
-    state.view      = view;
-    state.mode      = &mode;
-    state.planeData = &planeData;
+    // Create state
+    state = create_state(img->getDepth(), SLICE_MODE, &planeData);
 
-    // Initialize volume data
+    // Create volume data
     vd = create_volume(NUM_BRICKS);
     vd->xRes       = img->getWidth();
     vd->yRes       = img->getHeight();
@@ -181,16 +173,16 @@ void redraw()
     glClear(GL_COLOR_BUFFER_BIT);
 
     // Perform world rotation
-    matrix_copy(IdentityMatrix, 4, view->rotMat);
-    matrix_xrot(x_angle, view->rotMat);
-    matrix_yrot(y_angle, view->rotMat);
-    matrix_transpose(view->rotMat, 4, view->invRotMat);
+    matrix_copy(IdentityMatrix, 4, state->view->rotMat);
+    matrix_xrot(x_angle, state->view->rotMat);
+    matrix_yrot(y_angle, state->view->rotMat);
+    matrix_transpose(state->view->rotMat, 4, state->view->invRotMat);
 
     // Perform world scaling
-    matrix_copy(IdentityMatrix, 4, view->RTCMat);
-    //matrix_scale(0.5, 0.5, 0.5, view->RTCMat);
+    matrix_copy(IdentityMatrix, 4, state->view->RTCMat);
+    //matrix_scale(0.5, 0.5, 0.5, state->view->RTCMat);
 
-    render_volumes(&state, vd, 1);
+    render_volumes(state, vd, 1);
 
     if (doubleBuffer)
     {
@@ -475,6 +467,7 @@ int main(int argc, char *argv[])
           break;
         case ClientMessage:
 	  if (event.xclient.data.l[0] == wmDeleteWindow) {
+            delete_state(state);
             exit(0);
           }
 #ifdef PLAY
