@@ -13,7 +13,7 @@ IF(OPENGL_FOUND AND XMU_FOUND)
         )
 
     TARGET_LINK_LIBRARIES(xvol
-        volren img vff tpcimgio tpcmisc
+        volren volimg vff tpcimgio tpcmisc
         ${OPENGL_LIBRARIES}
         ${XMU_LIBRARY}
         )

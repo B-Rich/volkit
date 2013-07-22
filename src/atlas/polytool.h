@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "img/line2.h"
+#include "volimg/line2.h"
 #include "tool.h"
 
 class PolyTool : public Tool

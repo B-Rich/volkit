@@ -3,7 +3,7 @@
 
 #include "ecat7.h"
 
-#include "img/img.h"
+#include "volimg/img.h"
 
 class Ecat7Img : public Img
 {

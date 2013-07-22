@@ -1,7 +1,7 @@
 #ifndef SAMPLETOOL_H
 #define SAMPLETOOL_H
 
-#include "img/point2.h"
+#include "volimg/point2.h"
 
 #include "tool.h"
 

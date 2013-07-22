@@ -1,8 +1,8 @@
 #include <string>
 
-#include "img/vffimg.h"
-#include "img/ecat7img.h"
-#include "img/imgloader.h"
+#include "volimg/vffimg.h"
+#include "volimg/ecat7img.h"
+#include "volimg/imgloader.h"
 
 Img* ImgLoader::open(const char *fname)
 {

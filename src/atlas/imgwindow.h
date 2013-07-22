@@ -5,8 +5,8 @@
 
 #include <stdint.h>
 
-#include "img/colormap.h"
-#include "img/img.h"
+#include "volimg/colormap.h"
+#include "volimg/img.h"
 #include "tool.h"
 #include "imgparams.h"
 

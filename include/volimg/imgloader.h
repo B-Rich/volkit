@@ -1,7 +1,7 @@
 #ifndef IMGLOADER_H
 #define IMGLOEADER_H
 
-#include "img.h"
+#include "volimg/img.h"
 
 class ImgLoader
 {

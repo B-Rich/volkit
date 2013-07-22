@@ -11,8 +11,8 @@
 #include <X11/Xmu/StdCmap.h>
 #include <X11/keysym.h>
 
-#include "img/imgloader.h"
-#include "img/colormap.h"
+#include "volimg/imgloader.h"
+#include "volimg/colormap.h"
 #include "volren/volren.h"
 #include "volren/matrix.h"
 #include "volren/coord.h"

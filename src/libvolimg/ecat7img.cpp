@@ -8,8 +8,8 @@
 #include "ecat7.h"
 #include "swap.h"
 
-#include "img/img.h"
-#include "img/ecat7img.h"
+#include "volimg/img.h"
+#include "volimg/ecat7img.h"
 
 const char *Ecat7Img::imgmsg[] =
 {

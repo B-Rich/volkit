@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 #include "vff/vff.h"
-#include "img/vffimg.h"
+#include "volimg/vffimg.h"
 
 const char *VffImg::imgmsg[] =
 {

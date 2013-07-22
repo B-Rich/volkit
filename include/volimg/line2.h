@@ -1,7 +1,7 @@
 #ifndef LINE2_H
 #define LINE2_H
 
-#include "img/point2.h"
+#include "volimg/point2.h"
 
 class Line2
 {

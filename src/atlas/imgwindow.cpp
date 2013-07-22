@@ -4,9 +4,7 @@
 #include <iostream>
 #include <string>
 
-#include "img/imgloader.h"
-#include "img/vffimg.h"
-#include "img/ecat7img.h"
+#include "volimg/imgloader.h"
 #include "polytool.h"
 #include "sampletool.h"
 #include "imgwidget.h"

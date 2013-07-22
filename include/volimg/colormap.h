@@ -34,21 +34,21 @@ public:
     {
         if (!initialized) return 0;
         if (i >= nColors || i < 0) return 0;
-        return (uint8_t) (col[i].r * weight);
+        return uint8_t(col[i].r * weight);
     }
 
     inline uint8_t g(int i)
     {
         if (!initialized) return 0;
         if (i >= nColors || i < 0) return 0;
-        return (uint8_t) (col[i].g * weight);
+        return uint8_t(col[i].g * weight);
     }
 
     inline uint8_t b(int i)
     {
         if (!initialized) return 0;
         if (i >= nColors || i < 0) return 0;
-        return (uint8_t) (col[i].b * weight);
+        return uint8_t(col[i].b * weight);
     }
 
 private:

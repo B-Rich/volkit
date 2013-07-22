@@ -2,7 +2,7 @@
 #define VFFIMG_H
 
 #include "vff/vff.h"
-#include "img/img.h"
+#include "volimg/img.h"
 
 class VffImg : public Img
 {

@@ -26,7 +26,7 @@ IF(QT4_FOUND AND OPENGL_FOUND AND GLEW_FOUND)
         )
 
     TARGET_LINK_LIBRARIES(atlas
-        img vff tpcimgio tpcmisc
+        volimg vff tpcimgio tpcmisc
         ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES}
         )
 ELSE()

@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <time.h>
 
-#include "img/colormap.h"
+#include "volimg/colormap.h"
 
 #define MAX_STUDYNR_LEN	80
 

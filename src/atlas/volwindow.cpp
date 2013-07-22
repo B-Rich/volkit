@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-#include "img/imgloader.h"
+#include "volimg/imgloader.h"
 #include "volwidget.h"
 #include "volwindow.h"
 

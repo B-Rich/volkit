@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "img/colormap.h"
+#include "volimg/colormap.h"
 
 ColorMap::ColorMap(float w)
 {

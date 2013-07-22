@@ -1,7 +1,7 @@
 #ifndef TOOL_H
 #define TOOL_H
 
-#include "img/line2.h"
+#include "volimg/line2.h"
 
 class Tool
 {

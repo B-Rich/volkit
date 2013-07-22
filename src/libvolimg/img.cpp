@@ -6,7 +6,7 @@
 #include <string.h>
 #include <time.h>
 
-#include "img/img.h"
+#include "volimg/img.h"
 
 const char *Img::statusMessage[] =
 {
