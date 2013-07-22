@@ -165,7 +165,6 @@ void init()
                 } // End for xi
             } // End for yi
         } // End for zi
-        glEnable(GL_TEXTURE_3D);
         initialized = true;
     }
 }

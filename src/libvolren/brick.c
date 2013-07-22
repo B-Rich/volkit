@@ -51,6 +51,23 @@ static void get_brick_vertices(
 }
 
 /*******************************************************************************
+ * enable_brick - Enable brick texture
+ *
+ * RETURNS: N/A
+ */
+
+static void enable_brick(
+    VRState *state,
+    Brick *b
+    )
+{
+    if (b->texId)
+    {
+        glEnable(GL_TEXTURE_3D);
+    }
+}
+
+/*******************************************************************************
  * load_brick - Load brick into texture memory
  *
  * RETURNS: N/A
@@ -87,6 +104,8 @@ static void load_brick(
                      b->xRes, b->yRes, b->zRes, 0, GL_RGBA,
                      GL_UNSIGNED_BYTE, b->data);
     }
+
+    enable_brick(state, b);
 }
 
 /*******************************************************************************
