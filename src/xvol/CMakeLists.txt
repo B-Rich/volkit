@@ -5,7 +5,7 @@ IF(OPENGL_FOUND AND XMU_FOUND)
         )
 
     SET(xvol_SOURCES
-        xvol.cpp
+        main.cpp
     )
 
     ADD_EXECUTABLE(xvol
