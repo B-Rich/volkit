@@ -3,12 +3,12 @@
 #include "volren/state.h"
 
 /*******************************************************************************
- * create_state - Create renderer state object
+ * vr_create_state - Create renderer state object
  *
  * RETURNS: Pointer to state or NULL
  */
 
-VRState* create_state(
+VRState* vr_create_state(
     int slices,
     int sliceMode,
     VRPlaneData *planeData
@@ -29,19 +29,19 @@ VRState* create_state(
         state->planeData = (VRPlaneData *) &state->mode[1];
 
         /* Initialize members */
-        init_state(state, slices, sliceMode, planeData);
+        vr_init_state(state, slices, sliceMode, planeData);
     }
 
     return state;
 }
 
 /*******************************************************************************
- * init_state - Initialize renderer state
+ * vr_init_state - Initialize renderer state
  *
  * RETURNS: N/A
  */
 
-void init_state(
+void vr_init_state(
     VRState *state,
     int slices,
     int sliceMode,
@@ -50,38 +50,44 @@ void init_state(
 {
     int i;
 
-    init_view(state->view, slices);
-    init_mode(state->mode, sliceMode);
+    vr_init_view(state->view, slices);
+    vr_init_mode(state->mode, sliceMode);
     if (planeData != NULL)
     {
         state->planeData->nPlanes = planeData->nPlanes;
         for (i = 0; i < planeData->nPlanes; i++)
         {
-            init_plane(&state->planeData->plane[i],
-                       planeData->plane[i].a,
-                       planeData->plane[i].b,
-                       planeData->plane[i].c,
-                       planeData->plane[i].d,
-                       planeData->plane[i].active,
-                       planeData->plane[i].loopDir);
+            vr_init_plane(&state->planeData->plane[i],
+                         planeData->plane[i].a,
+                         planeData->plane[i].b,
+                         planeData->plane[i].c,
+                         planeData->plane[i].d,
+                         planeData->plane[i].active,
+                         planeData->plane[i].loopDir);
         }
     }
     else
     {
         for (i = 0; i < MAX_CLIP_PLANES; i++)
         {
-            init_plane(&state->planeData->plane[i], 0.0, 0.0, 0.0, 0.0, 0, 0);
+            vr_init_plane(&state->planeData->plane[i],
+                          0.0,
+                          0.0,
+                          0.0,
+                          0.0,
+                          0,
+                          0);
         }
     }
 }
 
 /*******************************************************************************
- * delete_state - Delete renderer state
+ * vr_delete_state - Delete renderer state
  *
  * RETURNS: N/A
  */
 
-void delete_state(
+void vr_delete_state(
     VRState *state
     )
 {

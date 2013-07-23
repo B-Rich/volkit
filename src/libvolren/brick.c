@@ -234,12 +234,12 @@ static int get_plane_cube_intersect(
 }
 
 /*******************************************************************************
- * draw_slices - Draw slices that make up the brick
+ * render_slices - Render slices that make up the brick
  *
  * RETURNS: N/A
  */
 
-static void draw_slices(
+static void render_slices(
     Brick *b,
     VRState *state,
     Coord cpt[8],
@@ -330,12 +330,12 @@ static void render_plane(
 }
 
 /*******************************************************************************
- * render_brick - Render brick
+ * vr_render_brick - Render brick
  *
  * RETURNS: N/A
  */
 
-void render_brick(
+void vr_render_brick(
     VRState *state,
     VRVolumeData *vd,
     Brick *b,
@@ -358,7 +358,7 @@ void render_brick(
     /* If slice mode, get clipping plane and restore for volume rendering */
     if (state->mode->sliceMode)
     {
-        define_clip_planes(state, cp);
+        vr_define_clip_planes(state, cp);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
@@ -366,7 +366,7 @@ void render_brick(
     load_brick(state, vd, b);
 
     /* Draw brick slices */
-    draw_slices(b, state, cpt, direction);
+    render_slices(b, state, cpt, direction);
 
     if (state->mode->sliceMode)
     {
@@ -379,18 +379,18 @@ void render_brick(
             if (state->planeData->plane[i].facing == PLANE_FACING_TOWARDS)
             {
                 /* Enable all clipping planes except the current one */
-                enable_active_clip_planes(state, i);
+                vr_enable_active_clip_planes(state, i);
 
                 /* Draw current plane */
                 render_plane(state, b, cpt, cp[i]);
 
                 /* Disable all clipping planes */
-                disable_all_clip_planes(state);
+                vr_disable_all_clip_planes(state);
             }
         }
 
         /* Re-enable all clipping planes */
-        enable_active_clip_planes(state, -1);
+        vr_enable_active_clip_planes(state, -1);
     }
 }
 

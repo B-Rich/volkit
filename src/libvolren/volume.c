@@ -6,12 +6,12 @@
 #include "volren/volren.h"
 
 /*******************************************************************************
- * create_volume - Create volume data
+ * vr_create_volume - Create volume data
  *
  * RETURNS: Pointer to volume data or NULL
  */
 
-VRVolumeData* create_volume(
+VRVolumeData* vr_create_volume(
     int nBricks
     )
 {
@@ -30,19 +30,19 @@ VRVolumeData* create_volume(
         vd->nyBricks = 0;
         vd->nzBricks = 0;
         vd->nBricks  = 0;
-        init_volume(vd);
+        vr_init_volume(vd);
     }
 
     return vd;
 }
 
 /*******************************************************************************
- * init_volume - Initialize volume data
+ * vr_init_volume - Initialize volume data
  *
  * RETURNS: N/A
  */
 
-void init_volume(
+void vr_init_volume(
     VRVolumeData *vd
     )
 {
@@ -64,12 +64,12 @@ void init_volume(
 }
 
 /*******************************************************************************
- * delete_volume - Delete volume data
+ * vr_delete_volume - Delete volume data
  *
  * RETURNS: N/A
  */
 
-void delete_volume(
+void vr_delete_volume(
     VRVolumeData *vd
     )
 {
@@ -183,12 +183,12 @@ static void sort_volume_bricks(
 }
 
 /*******************************************************************************
- * render_volumes - Render volumes
+ * vr_render_volumes - Render volumes
  *
  * RETURNS: N/A
  */
 
-void render_volumes(
+void vr_render_volumes(
     VRState *state,
     VRVolumeData *volumes,
     int nVolumes
@@ -212,8 +212,8 @@ void render_volumes(
     glLoadMatrixf((GLfloat*) state->view->RTCMat);
 
     /* Setup clipping planes */
-    define_clip_planes(state, NULL);
-    enable_active_clip_planes(state, -1);
+    vr_define_clip_planes(state, NULL);
+    vr_enable_active_clip_planes(state, -1);
 
     for (i = 0; i < nVolumes; i++)
     {
@@ -230,7 +230,7 @@ void render_volumes(
         /* TODO: Check why this has to be drawn in reverse order */
         for (j = vd->nBricks - 1; j >= 0; j--)
         {
-            render_brick(state, vd, vd->sbrick[j], 1);
+            vr_render_brick(state, vd, vd->sbrick[j], 1);
         }
     }
 }

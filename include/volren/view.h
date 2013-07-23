@@ -26,34 +26,14 @@ typedef struct
 } VRView;
 
 /*******************************************************************************
- * create_view - Create view
- *
- * RETURNS: Pointer to view of NULL
- */
-
-VRView* create_view(
-    int slices
-    );
-
-/*******************************************************************************
- * init_view - Initialize view
+ * vr_init_view - Initialize view
  *
  * RETURNS: N/A
  */
 
-void init_view(
+void vr_init_view(
     VRView *view,
     int slices
-    );
-
-/*******************************************************************************
- * delete_view - Delete view
- *
- * RETURNS: N/A
- */
-
-void delete_view(
-    VRView *view
     );
 
 #ifdef __cplusplus

@@ -20,27 +20,12 @@ typedef struct
 struct _VRState;
 
 /******************************************************************************
- * create_plane - Create plane
- *
- * RETURNS: Point to plane or NULL
- */
-
-Plane* create_plane(
-    float a,
-    float b,
-    float c,
-    float d,
-    int active,
-    int loopDir
-    );
-
-/******************************************************************************
- * init_plane - Initialize plane
+ * vr_init_plane - Initialize plane
  *
  * RETURNS: N/A
  */
 
-void init_plane(
+void vr_init_plane(
     Plane *pl,
     float a,
     float b,
@@ -51,44 +36,34 @@ void init_plane(
     );
 
 /******************************************************************************
- * delete_plane - Delete plane
+ * vr_define_clip_planes - Flush clipping planes to renderer
  *
  * RETURNS: N/A
  */
 
-void delete_plane(
-    Plane *pl
-    );
-
-/******************************************************************************
- * define_clip_planes - Flush clipping planes to renderer
- *
- * RETURNS: N/A
- */
-
-void define_clip_planes(
+void vr_define_clip_planes(
     struct _VRState *state,
     float ucp[][4]
     );
 
 /*******************************************************************************
- * enable_active_clip_planes - Enable all active clip planes
+ * vr_enable_active_clip_planes - Enable all active clip planes
  *
  * RETURNS: N/A
  */
 
-void enable_active_clip_planes(
+void vr_enable_active_clip_planes(
     struct _VRState *state,
     int exclude
     );
 
 /*******************************************************************************
- * disable_all_clip_planes - Disable all clip planes
+ * vr_disable_all_clip_planes - Disable all clip planes
  *
  * RETURNS: N/A
  */
 
-void disable_all_clip_planes(
+void vr_disable_all_clip_planes(
     struct _VRState *state
     );
 

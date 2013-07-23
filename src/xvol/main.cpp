@@ -66,14 +66,14 @@ int startup()
 
     // Initialize plane data
     planeData.nPlanes = 2;
-    init_plane(&planeData.plane[0], 0.0, 0.0, 1.0, 0.1, 1, 0);
-    init_plane(&planeData.plane[1], 1.0, 0.0, 0.0, 0.2, 1, 0);
+    vr_init_plane(&planeData.plane[0], 0.0, 0.0, 1.0, 0.1, 1, 0);
+    vr_init_plane(&planeData.plane[1], 1.0, 0.0, 0.0, 0.2, 1, 0);
 
     // Create state
-    state = create_state(img->getDepth(), SLICE_MODE, &planeData);
+    state = vr_create_state(img->getDepth(), SLICE_MODE, &planeData);
 
     // Create volume data
-    vd = create_volume(NUM_BRICKS);
+    vd             = vr_create_volume(NUM_BRICKS);
     vd->xRes       = img->getWidth();
     vd->yRes       = img->getHeight();
     vd->zRes       = img->getDepth();
@@ -182,7 +182,7 @@ void redraw()
     matrix_copy(IdentityMatrix, 4, state->view->RTCMat);
     //matrix_scale(0.5, 0.5, 0.5, state->view->RTCMat);
 
-    render_volumes(state, vd, 1);
+    vr_render_volumes(state, vd, 1);
 
     if (doubleBuffer)
     {
@@ -467,7 +467,7 @@ int main(int argc, char *argv[])
           break;
         case ClientMessage:
 	  if (event.xclient.data.l[0] == wmDeleteWindow) {
-            delete_state(state);
+            vr_delete_state(state);
             exit(0);
           }
 #ifdef PLAY

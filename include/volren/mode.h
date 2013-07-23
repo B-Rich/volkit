@@ -11,34 +11,14 @@ typedef struct
 } VRMode;
 
 /*******************************************************************************
- * create_mode - Create mode object
- *
- * RETURNS: Pointer to mode of NULL
- */
-
-VRMode* create_mode(
-    int sliceMode
-    );
-
-/*******************************************************************************
- * init_mode - Initialize mode object
+ * vr_init_mode - Initialize mode object
  *
  * RETURNS: N/A
  */
 
-void init_mode(
+void vr_init_mode(
     VRMode *mode,
     int sliceMode
-    );
-
-/*******************************************************************************
- * init_delete - Delete mode object
- *
- * RETURNS: N/A
- */
-
-void delete_mode(
-    VRMode *mode
     );
 
 #ifdef __cplusplus

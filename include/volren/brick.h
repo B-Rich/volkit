@@ -28,12 +28,12 @@ struct _VRState;
 struct _VRVolumeData;
 
 /*******************************************************************************
- * render_brick - Render brick
+ * vr_render_brick - Render brick
  *
  * RETURNS: N/A
  */
 
-void render_brick(
+void vr_render_brick(
     struct _VRState *state,
     struct _VRVolumeData *vd,
     Brick *b,

@@ -26,24 +26,24 @@ typedef struct _VRState
 } VRState;
 
 /*******************************************************************************
- * create_state - Create renderer state object
+ * vr_create_state - Create renderer state object
  *
  * RETURNS: Pointer to state or NULL
  */
 
-VRState* create_state(
+VRState* vr_create_state(
     int slices,
     int sliceMode,
     VRPlaneData *planeData
     );
 
 /*******************************************************************************
- * init_state - Initialize renderer state
+ * vr_init_state - Initialize renderer state
  *
  * RETURNS: N/A
  */
 
-void init_state(
+void vr_init_state(
     VRState *state,
     int slices,
     int sliceMode,
@@ -51,12 +51,12 @@ void init_state(
     );
 
 /*******************************************************************************
- * delete_state - Delete renderer state
+ * vr_delete_state - Delete renderer state
  * 
  * RETURNS: N/A
  */
  
-void delete_state(
+void vr_delete_state(
     VRState *state
     );
 

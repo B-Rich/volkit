@@ -35,42 +35,42 @@ typedef struct _VRVolumeData
 struct _VRState;
 
 /*******************************************************************************
- * create_volume - Create volume data
+ * vr_create_volume - Create volume data
  *
  * RETURNS: Pointer to volume data or NULL
  */
 
-VRVolumeData* create_volume(
+VRVolumeData* vr_create_volume(
     int nBricks
     );
 
 /*******************************************************************************
- * init_volume - Initialize volume data
+ * vr_init_volume - Initialize volume data
  *
  * RETURNS: N/A
  */
 
-void init_volume(
+void vr_init_volume(
     VRVolumeData *vd
     );
 
 /*******************************************************************************
- * delete_volume - Delete volume data
+ * vr_delete_volume - Delete volume data
  *
  * RETURNS: N/A
  */
 
-void delete_volume(
+void vr_delete_volume(
     VRVolumeData *vd
     );
 
 /*******************************************************************************
- * render_volumes - Render volumes
+ * vr_render_volumes - Render volumes
  *
  * RETURNS: N/A
  */
 
-void render_volumes(
+void vr_render_volumes(
     struct _VRState *state,
     VRVolumeData *volumes,
     int nVolumes

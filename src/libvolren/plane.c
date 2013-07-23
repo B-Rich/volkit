@@ -8,38 +8,12 @@
 #include "volren/volren.h"
 
 /******************************************************************************
- * create_plane - Create plane
- *
- * RETURNS: Point to plane or NULL
- */
-
-Plane* create_plane(
-    float a,
-    float b,
-    float c,
-    float d,
-    int active,
-    int loopDir
-    )
-{
-    Plane *pl;
-
-    pl = (Plane *) malloc(sizeof(Plane));
-    if (pl != NULL)
-    {
-        init_plane(pl, a, b, c, d, active, loopDir);
-    }
-
-    return pl;
-}
-
-/******************************************************************************
- * init_plane - Initialize plane
+ * vr_init_plane - Initialize plane
  *
  * RETURNS: N/A
  */
 
-void init_plane(
+void vr_init_plane(
     Plane *pl,
     float a,
     float b,
@@ -62,19 +36,6 @@ void init_plane(
     pl->d       = d;
     pl->active  = active;
     pl->loopDir = loopDir;
-}
-
-/******************************************************************************
- * delete_plane - Delete plane
- *
- * RETURNS: N/A
- */
-
-void delete_plane(
-    Plane *pl
-    )
-{
-    free(pl);
 }
 
 /*******************************************************************************
@@ -128,12 +89,12 @@ static void find_points_on_plane(
 }
 
 /******************************************************************************
- * define_clip_planes - Flush clipping planes to renderer
+ * vr_define_clip_planes - Flush clipping planes to renderer
  *
  * RETURNS: N/A
  */
 
-void define_clip_planes(
+void vr_define_clip_planes(
     VRState *state,
     float ucp[][4]
     )
@@ -211,12 +172,12 @@ void define_clip_planes(
 }
 
 /*******************************************************************************
- * enable_active_clip_planes - Enable all active clip planes
+ * vr_enable_active_clip_planes - Enable all active clip planes
  *
  * RETURNS: N/A
  */
 
-void enable_active_clip_planes(
+void vr_enable_active_clip_planes(
     VRState *state,
     int exclude
     )
@@ -237,12 +198,12 @@ void enable_active_clip_planes(
 }
 
 /*******************************************************************************
- * disable_all_clip_planes - Disable all clip planes
+ * vr_disable_all_clip_planes - Disable all clip planes
  *
  * RETURNS: N/A
  */
 
-void disable_all_clip_planes(
+void vr_disable_all_clip_planes(
     VRState *state
     )
 {
