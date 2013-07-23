@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "volren/matrix.h"
+#include "volgeo/matrix.h"
 #include "volren/view.h"
 #include "volren/mode.h"
 #include "volren/plane.h"

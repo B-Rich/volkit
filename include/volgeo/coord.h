@@ -1,5 +1,5 @@
-#ifndef COORD_H
-#define COORD_H
+#ifndef VG_COORD_H
+#define VG_COORD_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -7,8 +7,8 @@ extern "C" {
 
 #include <stdio.h>
 #include <math.h>
-#include "volren/scalar.h"
-#include "volren/matrix.h"
+#include "volgeo/scalar.h"
+#include "volgeo/matrix.h"
 
 typedef float Coord[3];
 

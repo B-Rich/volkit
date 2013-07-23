@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 #include <GL/gl.h>
-#include "volren/coord.h"
+#include "volgeo/coord.h"
 
 typedef struct
 {

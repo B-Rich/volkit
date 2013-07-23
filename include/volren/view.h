@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "volren/matrix.h"
+#include "volgeo/matrix.h"
 
 #define VIEW_SLICE_FACTOR      1.0     /* Slices distance factor */
 

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "volren/matrix.h"
+#include "volgeo/matrix.h"
 #include "volren/volren.h"
 
 /*******************************************************************************

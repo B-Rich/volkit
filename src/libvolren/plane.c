@@ -3,8 +3,8 @@
 #include <math.h>
 #include <GL/gl.h>
 
-#include "volren/coord.h"
-#include "volren/matrix.h"
+#include "volgeo/coord.h"
+#include "volgeo/matrix.h"
 #include "volren/volren.h"
 
 /******************************************************************************

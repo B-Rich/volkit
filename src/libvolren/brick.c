@@ -2,8 +2,8 @@
 #include <math.h>
 #include <GL/gl.h>
 
-#include "cube.h"
-#include "volren/matrix.h"
+#include "volgeo/cube.h"
+#include "volgeo/matrix.h"
 #include "volren/plane.h"
 #include "volren/brick.h"
 #include "volren/volren.h"

@@ -1,5 +1,5 @@
-#ifndef MATRIX_H
-#define MATRIX_H
+#ifndef VG_MATRIX_H
+#define VG_MATRIX_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -279,7 +279,7 @@ typedef float Matrix[4][4];
     matrix_mult_safe(A, b, A);                                                 \
 }
 
-extern Matrix IdentityMatrix;
+extern const Matrix IdentityMatrix;
 
 /*******************************************************************************
  * matrix_invert - Invert 4x4 matrix

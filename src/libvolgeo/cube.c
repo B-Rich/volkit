@@ -1,4 +1,4 @@
-#include "cube.h"
+#include "volgeo/cube.h"
 
 const int CubeEdgeVertices[12][2] =
 {

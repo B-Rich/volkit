@@ -1,11 +1,11 @@
-#ifndef CUBE_H
-#define CUBE_H
+#ifndef VG_CUBE_H
+#define VG_CUBE_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "volren/coord.h"
+#include "volgeo/coord.h"
 
 extern const int CubeEdgeVertices[12][2];
 extern const int CubeFaceEdges[6][4];

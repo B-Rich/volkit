@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-#include "volren/matrix.h"
+#include "volgeo/matrix.h"
 
-Matrix IdentityMatrix =
+const Matrix IdentityMatrix =
 {
     { 1.0, 0.0, 0.0, 0.0 },
     { 0.0, 1.0, 0.0, 0.0 },

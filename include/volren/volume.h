@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "volren/matrix.h"
+#include "volgeo/matrix.h"
 #include "volren/brick.h"
 
 typedef struct _VRVolumeData

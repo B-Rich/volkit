@@ -14,8 +14,8 @@
 #include "volimg/imgloader.h"
 #include "volimg/colormap.h"
 #include "volren/volren.h"
-#include "volren/matrix.h"
-#include "volren/coord.h"
+#include "volgeo/matrix.h"
+#include "volgeo/coord.h"
 
 #define DEFAULT_WINDOW_WIDTH  400
 #define DEFAULT_WINDOW_HEIGHT 400
