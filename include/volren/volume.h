@@ -41,7 +41,13 @@ struct _VRState;
  */
 
 VRVolumeData* vr_create_volume(
-    int nBricks
+    int xRes,
+    int yRes,
+    int zRes,
+    int nxBricks,
+    int nyBricks,
+    int nzBricks,
+    int drawInterp
     );
 
 /*******************************************************************************
@@ -51,7 +57,8 @@ VRVolumeData* vr_create_volume(
  */
 
 void vr_init_volume(
-    VRVolumeData *vd
+    VRVolumeData *vd,
+    int drawInterp
     );
 
 /*******************************************************************************

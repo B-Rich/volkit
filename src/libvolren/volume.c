@@ -12,25 +12,43 @@
  */
 
 VRVolumeData* vr_create_volume(
-    int nBricks
+    int xRes,
+    int yRes,
+    int zRes,
+    int nxBricks,
+    int nyBricks,
+    int nzBricks,
+    int drawInterp
     )
 {
+    int i, nBricks;
     VRVolumeData *vd;
+    Brick *b;
 
+    nBricks = nxBricks * nyBricks * nzBricks;
     vd = (VRVolumeData *) malloc(sizeof(VRVolumeData) +
-                                 sizeof(Brick *) * nBricks * 2);
+                                 sizeof(Brick *) * nBricks * 2 +
+                                 sizeof(Brick) * nBricks);
     if (vd != NULL)
     {
-        vd->xRes     = 0;
-        vd->yRes     = 0;
-        vd->zRes     = 0;
+        vd->xRes     = xRes;
+        vd->yRes     = yRes;
+        vd->zRes     = zRes;
         vd->brick    = (Brick **) &vd[1];
         vd->sbrick   = &vd->brick[nBricks];
-        vd->nxBricks = 0;
-        vd->nyBricks = 0;
-        vd->nzBricks = 0;
-        vd->nBricks  = 0;
-        vr_init_volume(vd);
+
+        vr_init_volume(vd, drawInterp);
+
+        b = (Brick *) &vd->sbrick[nBricks];
+        for (i = 0; i < nBricks; i++)
+        {
+            vd->brick[i] = &b[i];
+        }
+
+        vd->nxBricks = nxBricks;
+        vd->nyBricks = nyBricks;
+        vd->nzBricks = nzBricks;
+        vd->nBricks  = nBricks;
     }
 
     return vd;
@@ -43,10 +61,11 @@ VRVolumeData* vr_create_volume(
  */
 
 void vr_init_volume(
-    VRVolumeData *vd
+    VRVolumeData *vd,
+    int drawInterp
     )
 {
-    vd->drawInterp = 1;
+    vd->drawInterp = drawInterp;
 
     vd->xScl       = 1.0;
     vd->yScl       = 1.0;

@@ -21,10 +21,10 @@
 #define DEFAULT_WINDOW_HEIGHT 400
 
 #define SLICE_MODE            1
+#define DRAW_INTERP           1
 #define X_BRICKS              2
 #define Y_BRICKS              2
 #define Z_BRICKS              2
-#define NUM_BRICKS            (X_BRICKS * Y_BRICKS * Z_BRICKS)
 
 #ifdef PLAY
 #define UPDATE_WINDOW_EVENT 99
@@ -43,8 +43,6 @@ float y_angle = 0.0;
 int curr_frame = 0;
 VRState *state;
 VRVolumeData *vd;
-Brick br[NUM_BRICKS];
-Brick *brick[NUM_BRICKS], *sbrick[NUM_BRICKS];
 
 int load_image(const char *fn)
 {
@@ -73,20 +71,13 @@ int startup()
     state = vr_create_state(img->getDepth(), SLICE_MODE, &planeData);
 
     // Create volume data
-    vd             = vr_create_volume(NUM_BRICKS);
-    vd->xRes       = img->getWidth();
-    vd->yRes       = img->getHeight();
-    vd->zRes       = img->getDepth();
-
-    for (int i = 0; i < NUM_BRICKS; i++)
-    {
-        vd->brick[i] = &br[i];
-    }
-
-    vd->nxBricks   = X_BRICKS;
-    vd->nyBricks   = Y_BRICKS;
-    vd->nzBricks   = Z_BRICKS;
-    vd->nBricks    = NUM_BRICKS;
+    vd = vr_create_volume(img->getWidth(),
+                          img->getHeight(),
+                          img->getDepth(),
+                          X_BRICKS,
+                          Y_BRICKS,
+                          Z_BRICKS,
+                          DRAW_INTERP);
 }
 
 void init_brick(
@@ -154,7 +145,7 @@ void init()
             {
                 for (int xi = 0; xi < X_BRICKS; xi++)
                 {
-                    init_brick(&br[brickCount++],
+                    init_brick(vd->brick[brickCount++],
                                (float) xi,
                                (float) yi,
                                (float) zi,
@@ -467,6 +458,7 @@ int main(int argc, char *argv[])
           break;
         case ClientMessage:
 	  if (event.xclient.data.l[0] == wmDeleteWindow) {
+            vr_delete_volume(vd);
             vr_delete_state(state);
             exit(0);
           }
