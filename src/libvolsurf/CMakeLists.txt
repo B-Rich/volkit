@@ -1,4 +1,4 @@
 ADD_LIBRARY(volsurf
-    polygonise.c
+    polygonise.c drawsurf.c
     )
 
