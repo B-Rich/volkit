@@ -4,22 +4,15 @@ IF(OPENGL_FOUND AND XMU_FOUND)
         ${OPENGL_INCLUDE_DIR}
         )
 
-    SET(xvol_SOURCES
-        main.cpp
-    )
-
-    ADD_EXECUTABLE(xvol
-        ${xvol_SOURCES}
-        )
-
-    TARGET_LINK_LIBRARIES(xvol
+    ADD_EXECUTABLE(xvolren xvolren.cpp)
+    TARGET_LINK_LIBRARIES(xvolren
         volren volgeo volimg vff tpcimgio tpcmisc
         ${OPENGL_LIBRARIES}
         ${XMU_LIBRARY}
         )
 ELSE()
     MESSAGE(STATUS
-        "\n\n   WARNING: No OpenGL or Xmu -- 'xvol' will not be built!\n"
+        "\n\n   WARNING: No OpenGL or Xmu -- 'xvolren' will not be built!\n"
         )
 ENDIF()
 
