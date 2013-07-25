@@ -5,6 +5,50 @@
 
 #include "volsurf/polygonise.h"
 
+#define SIGMA                  (0.00001)
+
+/*******************************************************************************
+ * coord_value_interp -
+ *
+ * Get a point between two points in the same ratio as
+ * threshold is between valp1 and valp2
+ *
+ * RETURNS: N/A
+ */
+
+static void coord_value_interp(
+    float threshold,
+    Coord p1,
+    Coord p2,
+    float valp1,
+    float valp2,
+    Coord p
+    )
+{
+    float mu;
+
+    if (fabs(threshold - valp1) < SIGMA)
+    {
+        coord_assign(p1, p);
+    }
+    else if (fabs(threshold - valp2) < SIGMA)
+    {
+        coord_assign(p2, p);
+    }
+    else if (fabs(valp1 - valp2) < SIGMA)
+    {
+        coord_assign(p1, p);
+    }
+    else
+    {
+        mu = (threshold - valp1) / (valp2 - valp1);
+        coord_fill(p1[0] + mu * (p2[0] - p1[0]),
+                   p1[1] + mu * (p2[1] - p1[1]),
+                   p1[2] + mu * (p2[2] - p1[2]),
+                   p);
+    }
+}
+
 /*******************************************************************************
  * vs_polygonise_cube -
  *

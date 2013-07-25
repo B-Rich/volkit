@@ -359,24 +359,6 @@ void coord_look(
     Matrix M
     );
 
-/*******************************************************************************
- * coord_value_interp -
- *
- * Get a point between two points in the same ratio as
- * threshold is between valp1 and valp2
- *
- * RETURNS: N/A
- */
-
-void coord_value_interp(
-    float threshold,
-    Coord p1,
-    Coord p2,
-    float valp1,
-    float valp2,
-    Coord p
-    );
-
 #ifdef __cplusplus
 }
 #endif
