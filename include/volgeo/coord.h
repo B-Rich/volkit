@@ -141,7 +141,7 @@ typedef float Coord[3];
 }
 
 /*******************************************************************************
- * coord_norm - Normalize vector
+ * coord_normalize - Normalize vector
  *
  * RETURNS: N/A
  */
@@ -152,6 +152,21 @@ typedef float Coord[3];
                                                                                \
     coord_norm(c1, __magnitude);                                               \
     coord_div(c1, __magnitude, C2);                                            \
+}
+
+/*******************************************************************************
+ * coord_normal - Calculate normal at point given two other poins on surface
+ *
+ * RETURNS: N/A
+ */
+
+#define coord_normal(c, c1, c2, C3)                                            \
+{                                                                              \
+    Coord __ca, __cb;                                                          \
+                                                                               \
+    coord_sub(c1, c, __ca);                                                    \
+    coord_sub(c2, c, __cb);                                                    \
+    coord_cross_product(__ca, __cb, C3);                                       \
 }
 
 /*******************************************************************************
@@ -342,6 +357,24 @@ void coord_look(
     Coord c1,
     Coord c2,
     Matrix M
+    );
+
+/*******************************************************************************
+ * coord_value_interp -
+ *
+ * Get a point between two points in the same ratio as
+ * threshold is between valp1 and valp2
+ *
+ * RETURNS: N/A
+ */
+
+void coord_value_interp(
+    float threshold,
+    Coord p1,
+    Coord p2,
+    float valp1,
+    float valp2,
+    Coord p
     );
 
 #ifdef __cplusplus

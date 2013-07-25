@@ -1,5 +1,8 @@
 #include "volgeo/coord.h"
 
+#define SIGMA1                 (0.00001)
+#define SIGMA2                 (0.000001)
+
 /*******************************************************************************
  * coord_orient
  *
@@ -72,7 +75,7 @@ void coord_view(
 
     d = sqrt(square(cc0[1]) + square(cc0[2]));
 
-    if (d > 0.00001)
+    if (d > SIGMA1)
     {
         d = 1.0 / d;              
 
@@ -97,7 +100,7 @@ void coord_view(
 
     d = sqrt(square(cc1[0]) + square(cc1[2]));
 
-    if (d > 0.000001)
+    if (d > SIGMA2)
     {
         d = 1.0 / d;
 
@@ -151,7 +154,7 @@ void coord_look(
 
     d = sqrt(square(cc0[1]) + square(cc0[2]));
 
-    if (d > 0.00001)
+    if (d > SIGMA1)
     {
         d = 1.0 / d;              
 
@@ -173,7 +176,7 @@ void coord_look(
 
     d = sqrt(square(cc1[0]) + square(cc1[2]));
 
-    if (d > 0.000001)
+    if (d > SIGMA2)
     {
         d = 1.0 / d;
 
@@ -213,5 +216,47 @@ void coord_look(
 
     matrix_mult(M1,  Rz, M0);
     matrix_mult(T0,  M0, M);
+}
+
+/*******************************************************************************
+ * coord_value_interp -
+ *
+ * Get a point between two points in the same ratio as
+ * threshold is between valp1 and valp2
+ *
+ * RETURNS: N/A
+ */
+
+void coord_value_interp(
+    float threshold,
+    Coord p1,
+    Coord p2,
+    float valp1,
+    float valp2,
+    Coord p
+    )
+{
+    float mu;
+
+    if (fabs(threshold - valp1) < SIGMA1)
+    {
+        coord_assign(p1, p);
+    }
+    else if (fabs(threshold - valp2) < SIGMA1)
+    {
+        coord_assign(p2, p);
+    }
+    else if (fabs(valp1 - valp2) < SIGMA1)
+    {
+        coord_assign(p1, p);
+    }
+    else
+    {
+        mu = (threshold - valp1) / (valp2 - valp1);
+        coord_fill(p1[0] + mu * (p2[0] - p1[0]),
+                   p1[1] + mu * (p2[1] - p1[1]),
+                   p1[2] + mu * (p2[2] - p1[2]),
+                   p);
+    }
 }
 
