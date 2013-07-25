@@ -10,6 +10,14 @@ IF(OPENGL_FOUND AND XMU_FOUND)
         ${OPENGL_LIBRARIES}
         ${XMU_LIBRARY}
         )
+
+    ADD_EXECUTABLE(xvolsurf xvolsurf.cpp)
+    TARGET_LINK_LIBRARIES(xvolsurf
+        volsurf volgeo volimg vff tpcimgio tpcmisc
+        ${OPENGL_LIBRARIES}
+        ${XMU_LIBRARY}
+        )
+
 ELSE()
     MESSAGE(STATUS
         "\n\n   WARNING: No OpenGL or Xmu -- 'xvolren' will not be built!\n"
