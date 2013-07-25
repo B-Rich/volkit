@@ -21,6 +21,7 @@
 #define MAX_LEVEL             2000
 #define MIN_LEVEL             0
 #define STEP_LEVEL            10
+#define STEP_ANGLE            2.0
 
 #define UPDATE_WINDOW_EVENT 99
 
@@ -59,7 +60,7 @@ int startup()
 
     grid.nx = 100; grid.ny = 75; grid.nz = 50;
     grid.dx = 0.02; grid.dy = 0.02; grid.dz = 0.02;
-    grid.rx = 1; grid.ry = 1; grid.rz = 1;
+    grid.rx = 4; grid.ry = 4; grid.rz = 4;
     grid.data = new uint32_t[grid.nx * grid.ny * grid.nz];
     for (k = 0; k < grid.nz; k++)
     {
@@ -79,19 +80,35 @@ int startup()
 
 void init()
 {
+    GLfloat globalambient[4] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat white[4] = {1.0, 1.0, 1.0, 1.0};
+    GLfloat p[4] = {0.707, 0.707, 0.0, 0.0};
+
     glViewport(0, 0, window_width, window_height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glFrustum(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glTranslatef(-1.0, -1.0, 0.0);
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, globalambient);
+    //glEnable(GL_LIGHT0);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, white);
+    glLightfv(GL_LIGHT1, GL_POSITION, p);
+    glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHTING);
+
+
 }
 
 void redraw()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    glLoadIdentity();
+    glRotatef(x_angle, 1.0, 0.0, 0.0);
+    glRotatef(y_angle, 0.0, 1.0, 0.0);
+    glTranslatef(-1.0, -1.0, -1.0);
     glColor3f(1.0, 1.0, 1.0);
     vs_draw_iso_surface(&grid, curr_level);
 
@@ -423,23 +440,23 @@ SingleBufferOverride:
 
                     if (ks == XK_Left)
                     {
-                        y_angle += 0.1;
+                        y_angle += STEP_ANGLE;
                         postRedraw = 1;
                     }
                     else if (ks == XK_Right)
                     {
-                        y_angle -= 0.1;
+                        y_angle -= STEP_ANGLE;
                         postRedraw = 1;
                     }
 
                     if (ks == XK_Down)
                     {
-                        x_angle += 0.1;
+                        x_angle += STEP_ANGLE;
                         postRedraw = 1;
                     }
                     else if (ks == XK_Up)
                     {
-                        x_angle -= 0.1;
+                        x_angle -= STEP_ANGLE;
                         postRedraw = 1;
                     }
                     break;
