@@ -78,12 +78,14 @@ int startup()
     }
 }
 
+
 void init()
 {
-    GLfloat globalambient[4] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat globalambient[4] = {0.3, 0.3, 0.3, 1.0};
     GLfloat white[4] = {1.0, 1.0, 1.0, 1.0};
     GLfloat p[4] = {0.707, 0.707, 0.0, 0.0};
 
+    glEnable(GL_DEPTH_TEST);
     glViewport(0, 0, window_width, window_height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -97,8 +99,6 @@ void init()
     glLightfv(GL_LIGHT1, GL_POSITION, p);
     glEnable(GL_LIGHT1);
     glEnable(GL_LIGHTING);
-
-
 }
 
 void redraw()
@@ -106,6 +106,7 @@ void redraw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
+    glScalef(0.5, 0.5, 0.5);
     glRotatef(x_angle, 1.0, 0.0, 0.0);
     glRotatef(y_angle, 0.0, 1.0, 0.0);
     glTranslatef(-1.0, -1.0, -1.0);
