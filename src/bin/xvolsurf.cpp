@@ -33,12 +33,11 @@ Window win;
 int window_width;
 int window_height;
 Img *img = 0;
-ColorMap colorMap;
 bool initialized = false;
 Bool doubleBuffer = True;
 float x_angle = 0.0;
 float y_angle = 0.0;
-float curr_level = (MAX_LEVEL - MIN_LEVEL) / 2.0;
+float curr_level = (MAX_LEVEL - MIN_LEVEL) / 4.0;
 int curr_res = 4;
 Grid grid;
 
@@ -85,6 +84,18 @@ int default_volume()
     }
 }
 
+void init_image()
+{
+    grid.nx = img->getWidth();
+    grid.ny = img->getHeight();
+    grid.nz = img->getDepth();
+    grid.dx = 2.0 / float(grid.nx);
+    grid.dy = 2.0 / float(grid.ny);
+    grid.dz = 2.0 / float(grid.nz);
+    grid.data = new float[grid.nx * grid.ny * grid.nz];
+    img->getData(grid.data);
+}
+
 void set_res(int res)
 {
     grid.rx = res;
@@ -121,7 +132,6 @@ void redraw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
-    glScalef(0.5, 0.5, 0.5);
     glRotatef(x_angle, 1.0, 0.0, 0.0);
     glRotatef(y_angle, 0.0, 1.0, 0.0);
     glTranslatef(-1.0, -1.0, -1.0);
@@ -391,25 +401,20 @@ SingleBufferOverride:
         return 1;
     }
 
-#ifdef NOT_YET
-    /* Load image */
-    if (load_image(argv[1]) != 0)
+    if (argc > 1)
     {
-        fprintf(stderr, "Error - Unable to load image %s\n", argv[1]);
-        return 1;
-    }
-
-    if (argc > 2)
-    {
-        if (colorMap.loadColormap(argv[2]) != 0)
+        if (load_image(argv[1]) != 0)
         {
-            fprintf(stderr, "Error - Unable to load colormap %s\n", argv[2]);
+            fprintf(stderr, "Error - Unable to load image %s\n", argv[1]);
             return 1;
         }
+        init_image();
     }
-#endif
-
-    default_volume();
+    else
+    {
+        printf("No image given, using sample volume\n");
+        default_volume();
+    }
 
     /* Draw window */
     XMapWindow(dpy, win);

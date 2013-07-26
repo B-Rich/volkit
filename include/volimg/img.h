@@ -72,6 +72,13 @@ public:
         int z1 = 0, int z2 = -1
         );
 
+    void getData(
+        float *buf,
+        int x1 = 0, int x2 = -1,
+        int y1 = 0, int y2 = -1,
+        int z1 = 0, int z2 = -1
+        );
+
     void setOrientation(Orientation o) { imgOrientation = o; }
     void setLimits(float low, float high);
     void setTransparency(Transparency transparency)
