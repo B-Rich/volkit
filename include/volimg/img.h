@@ -65,15 +65,15 @@ public:
     int getDepth();
 
     void getData(
-        uint32_t *buf,
-        ColorMap *cmap,
+        float *buf,
         int x1 = 0, int x2 = -1,
         int y1 = 0, int y2 = -1,
         int z1 = 0, int z2 = -1
         );
 
     void getData(
-        float *buf,
+        uint32_t *buf,
+        ColorMap *cmap,
         int x1 = 0, int x2 = -1,
         int y1 = 0, int y2 = -1,
         int z1 = 0, int z2 = -1
@@ -194,6 +194,27 @@ protected:
 
 private:
     void getHorizontalData(
+        float *buf,
+        int x1, int x2,
+        int y1, int y2,
+        int z1, int z2
+        );
+
+    void getSagittalData(
+        float *buf,
+        int y1, int y2,
+        int z1, int z2,
+        int x1, int x2
+        );
+
+    void getCoronalData(
+        float *buf,
+        int x1, int x2,
+        int z1, int z2,
+        int y1, int y2
+        );
+
+    void getHorizontalData(
         uint32_t *buf,
         ColorMap *cmap,
         int x1, int x2,
@@ -216,7 +237,6 @@ private:
         int z1, int z2,
         int y1, int y2
         );
-
 
     // Status strings
     static const char *statusMessage[];

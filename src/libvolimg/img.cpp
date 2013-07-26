@@ -246,6 +246,107 @@ int Img::getDepth()
 }
 
 void Img::getData(
+    float *buf,
+    int x1, int x2,
+    int y1, int y2,
+    int z1, int z2
+    )
+{
+    if (x2 < 0)
+    {
+        x2 = getWidth();
+    }
+
+    if (y2 < 0)
+    {
+        y2 = getHeight();
+    }
+
+    if (z2 < 0)
+    {
+        z2 = getDepth();
+    }
+
+    switch(imgOrientation)
+    {
+        case ORIENTATION_HORIZONTAL:
+            getHorizontalData(buf, x1, x2, y1, y2, z1, z2);
+            break;
+
+        case ORIENTATION_SAGITTAL:
+            getSagittalData(buf, x1, x2, y1, y2, z1, z2);
+            break;
+
+        case ORIENTATION_CORONAL:
+            getCoronalData(buf, x1, x2, y1, y2, z1, z2);
+            break;
+    }
+}
+
+void Img::getHorizontalData(
+    float *buf,
+    int x1, int x2,
+    int y1, int y2,
+    int z1, int z2
+    )
+{
+    float *img = buf;
+
+    for (int zi = z1; zi < z2; zi++)
+    {
+        for (int yi = y1; yi < y2; yi++)
+        {
+            for (int xi = x1; xi < x2; xi++)
+            {
+                *buf++ = m[zi][yi][xi];
+            } // End for xi
+        } // End for yi
+    } // End for zi
+}
+
+void Img::getSagittalData(
+    float *buf,
+    int y1, int y2,
+    int z1, int z2,
+    int x1, int x2
+    )
+{
+    float *img = buf;
+
+    for (int xi = x1; xi < x2; xi++)
+    {
+        for (int zi = z1; zi < z2; zi++)
+        {
+            for (int yi = y1; yi < y2; yi++)
+            {
+                *img++ = m[zi][yi][xi];
+            } // End for yi
+        } // End for zi
+    } // End for xi
+}
+
+void Img::getCoronalData(
+    float *buf,
+    int x1, int x2,
+    int z1, int z2,
+    int y1, int y2
+    )
+{
+    float *img = buf;
+
+    for (int yi = y1; yi < y2; yi++)
+    {
+        for (int zi = z1; zi < z2; zi++)
+        {
+            for (int xi = x1; xi < x2; xi++)
+            {
+                *img++ = m[zi][yi][xi];
+            } // End for xi
+        } // End for zi
+    } // End for yi
+}
+
+void Img::getData(
     uint32_t *buf,
     ColorMap *cmap,
     int x1, int x2,
@@ -440,38 +541,3 @@ void Img::getCoronalData(
     } // End for yi
 }
 
-void Img::getData(
-    float *buf,
-    int x1, int x2,
-    int y1, int y2,
-    int z1, int z2
-    )
-{
-    float *img = buf;
-
-    if (x2 < 0)
-    {
-        x2 = getWidth();
-    }
-
-    if (y2 < 0)
-    {
-        y2 = getHeight();
-    }
-
-    if (z2 < 0)
-    {
-        z2 = getDepth();
-    }
-
-    for (int zi = z1; zi < z2; zi++)
-    {
-        for (int yi = y1; yi < y2; yi++)
-        {
-            for (int xi = x1; xi < x2; xi++)
-            {
-                *buf++ = m[zi][yi][xi];
-            } // End for xi
-        } // End for yi
-    } // End for zi
-}
