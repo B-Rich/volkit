@@ -5,13 +5,11 @@
 extern "C" {
 #endif
 
-#include <stdint.h>
-
 typedef struct {
-    uint32_t *data;
-    int      nx, ny, nz;
-    float    dx, dy, dz;
-    int      rx, ry, rz;
+    float *data;
+    int    nx, ny, nz;
+    float  dx, dy, dz;
+    int    rx, ry, rz;
 } Grid;
 
 /*******************************************************************************

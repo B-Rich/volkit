@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <stdint.h>
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -17,14 +16,17 @@
 #include "volimg/colormap.h"
 #include "volsurf/volsurf.h"
 
-#define DEFAULT_WINDOW_WIDTH  400
-#define DEFAULT_WINDOW_HEIGHT 400
-#define MAX_LEVEL             2000
-#define MIN_LEVEL             0
-#define STEP_LEVEL            10
-#define STEP_ANGLE            2.0
+#define DEFAULT_WINDOW_WIDTH      400
+#define DEFAULT_WINDOW_HEIGHT     400
+#define DFSCALE               32000.0
+#define MAX_LEVEL             65535.0
+#define MIN_LEVEL                 0.0
+#define MAX_RES                   100
+#define MIN_RES                     1
+#define STEP_LEVEL               50.0
+#define STEP_ANGLE                2.0
 
-#define UPDATE_WINDOW_EVENT 99
+#define UPDATE_WINDOW_EVENT        99
 
 Display *dpy;
 Window win;
@@ -36,7 +38,8 @@ bool initialized = false;
 Bool doubleBuffer = True;
 float x_angle = 0.0;
 float y_angle = 0.0;
-float curr_level = 700;
+float curr_level = (MAX_LEVEL - MIN_LEVEL) / 2.0;
+int curr_res = 4;
 Grid grid;
 
 int load_image(const char *fn)
@@ -53,32 +56,41 @@ int load_image(const char *fn)
     return result;
 }
 
-int startup()
+int default_volume()
 {
     int i, j, k;
     float dx, dy, dz;
     int index = 0;
 
-    grid.nx = 100; grid.ny = 75; grid.nz = 50;
-    grid.dx = 0.02; grid.dy = 0.02; grid.dz = 0.04;
-    grid.rx = 4; grid.ry = 4; grid.rz = 4;
-    grid.data = new uint32_t[grid.nx * grid.ny * grid.nz];
+    grid.nx = 100;
+    grid.ny = 75;
+    grid.nz = 50;
+    grid.dx = 2.0 / float(grid.nx);
+    grid.dy = 2.0 / float(grid.ny);
+    grid.dz = 2.0 / float(grid.nz);
+    grid.data = new float[grid.nx * grid.ny * grid.nz];
     for (k = 0; k < grid.nz; k++)
     {
-        dz = 2 * (k - grid.nz / 2) / float(grid.nz);
+        dz = 2.0 * (k - grid.nz / 2.0) / float(grid.nz);
         for (j = 0; j < grid.ny; j++)
         {
-            dy = 2 * (j - grid.ny / 2) / float(grid.ny);
+            dy = 2.0 * (j - grid.ny / 2.0) / float(grid.ny);
             for (i = 0; i < grid.nx; i++)
             {
-                dx = 2 * (i - grid.nx / 2) / float(grid.nx);
-                grid.data[index] = 1000 * sqrt(dx * dx + dy * dy + dz * dz);
+                dx = 2.0 * (i - grid.nx / 2.0) / float(grid.nx);
+                grid.data[index] = DFSCALE * sqrt(dx * dx + dy * dy + dz * dz);
                 index++;
             }
         }
     }
 }
 
+void set_res(int res)
+{
+    grid.rx = res;
+    grid.ry = res;
+    grid.rz = res;
+}
 
 void init()
 {
@@ -100,6 +112,8 @@ void init()
     glLightfv(GL_LIGHT1, GL_POSITION, p);
     glEnable(GL_LIGHT1);
     glEnable(GL_LIGHTING);
+
+    set_res(curr_res);
 }
 
 void redraw()
@@ -395,7 +409,7 @@ SingleBufferOverride:
     }
 #endif
 
-    startup();
+    default_volume();
 
     /* Draw window */
     XMapWindow(dpy, win);
@@ -438,6 +452,27 @@ SingleBufferOverride:
                         }
                         printf("Level: %g\n", curr_level);
                         init();
+                        postRedraw = 1;
+                    }
+
+                    if (ks == XK_a || ks == XK_z)
+                    {
+                        if (ks == XK_a)
+                        {
+                            if (--curr_res < MIN_RES)
+                            {
+                                curr_res = MIN_RES;
+                            }
+                        }
+                        if (ks == XK_z)
+                        {
+                            if (++curr_res > MAX_RES)
+                            {
+                                curr_res = MAX_RES;
+                            }
+                        }
+                        set_res(curr_res);
+                        printf("Resolution: %d\n", curr_res);
                         postRedraw = 1;
                     }
 

@@ -51,49 +51,49 @@ void vs_draw_iso_surface(
                 cell.p[0][1] = j  * grid->dy;
                 cell.p[0][2] = k  * grid->dz;
                 index        = k  * nxny + j * grid->nx + i;
-                cell.val[0]  = (float) grid->data[index];
+                cell.val[0]  = grid->data[index];
 
                 cell.p[1][0] = ii * grid->dx;
                 cell.p[1][1] = j  * grid->dy;
                 cell.p[1][2] = k  * grid->dz;
                 index        = k  * nxny + j * grid->nx + ii;
-                cell.val[1]  = (float) grid->data[index];
+                cell.val[1]  = grid->data[index];
 
                 cell.p[2][0] = ii * grid->dx;
                 cell.p[2][1] = j  * grid->dy;
                 cell.p[2][2] = kk * grid->dz;
                 index        = kk * nxny + j * grid->nx + ii;
-                cell.val[2]  = (float) grid->data[index];
+                cell.val[2]  = grid->data[index];
 
                 cell.p[3][0] = i  * grid->dx;
                 cell.p[3][1] = j  * grid->dy;
                 cell.p[3][2] = kk * grid->dz;
                 index        = kk * nxny + j * grid->nx + i;
-                cell.val[3]  = (float) grid->data[index];
+                cell.val[3]  = grid->data[index];
 
                 cell.p[4][0] = i  * grid->dx;
                 cell.p[4][1] = jj * grid->dy;
                 cell.p[4][2] = k  * grid->dz;
                 index        = k  * nxny + jj * grid->nx + i;
-                cell.val[4]  = (float) grid->data[index];
+                cell.val[4]  = grid->data[index];
 
                 cell.p[5][0] = ii * grid->dx;
                 cell.p[5][1] = jj * grid->dy;
                 cell.p[5][2] = k  * grid->dz;
                 index        = k  * nxny + jj * grid->nx + ii;
-                cell.val[5]  = (float) grid->data[index];
+                cell.val[5]  = grid->data[index];
 
                 cell.p[6][0] = ii * grid->dx;
                 cell.p[6][1] = jj * grid->dy;
                 cell.p[6][2] = kk * grid->dz;
                 index        = kk * nxny + jj * grid->nx + ii;
-                cell.val[6]  = (float) grid->data[index];
+                cell.val[6]  = grid->data[index];
 
                 cell.p[7][0] = i  * grid->dx;
                 cell.p[7][1] = jj * grid->dy;
                 cell.p[7][2] = kk * grid->dz;
                 index        = kk * nxny + jj * grid->nx + i;
-                cell.val[7]  = (float) grid->data[index];
+                cell.val[7]  = grid->data[index];
 
                 ntri = vs_polygonise_cube(&cell, isolevel, tri);
                 for (t = 0; t < ntri; t++)
