@@ -414,7 +414,7 @@ SingleBufferOverride:
                         CWBorderPixel | CWColormap | CWEventMask, &swa);
 
     /* Setup window properties */
-    XSetStandardProperties(dpy, win, "xvol", argv[0],
+    XSetStandardProperties(dpy, win, "Volkit Render", argv[0],
                            None, argv, argc, &sizeHints);
     wmHints = XAllocWMHints();
     wmHints->initial_state = iconic ? IconicState : NormalState;

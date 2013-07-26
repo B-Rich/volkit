@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 #include <GL/gl.h>
+#include <GL/glu.h>
 #include <GL/glx.h>
 
 #include <X11/Xlib.h>
@@ -195,6 +196,7 @@ int main(int argc, char *argv[])
     XSizeHints sizeHints = {0};
     int configuration[] = {
         GLX_DOUBLEBUFFER,
+        GLX_DEPTH_SIZE, 16,
         GLX_RGBA,
         GLX_RED_SIZE, 1, GLX_GREEN_SIZE, 1, GLX_BLUE_SIZE,
         1, None
@@ -354,7 +356,7 @@ SingleBufferOverride:
                         CWBorderPixel | CWColormap | CWEventMask, &swa);
 
     /* Setup window properties */
-    XSetStandardProperties(dpy, win, "xvol", argv[0],
+    XSetStandardProperties(dpy, win, "Volkit Surface", argv[0],
                            None, argv, argc, &sizeHints);
     wmHints = XAllocWMHints();
     wmHints->initial_state = iconic ? IconicState : NormalState;
