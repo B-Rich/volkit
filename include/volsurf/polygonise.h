@@ -8,10 +8,11 @@ extern "C" {
 #include "volgeo/coord.h"
 
 typedef struct {
-    Coord p[8];
-    Coord n[8];
-    float val[8];
-} GridCell;
+    float *data;
+    int    nx, ny, nz;
+    float  dx, dy, dz;
+    int    rx, ry, rz;
+} Grid;
 
 typedef struct {
     Coord p[3];                /* Vertices */
@@ -20,21 +21,15 @@ typedef struct {
 } Triangle;
 
 /*******************************************************************************
- * vs_polygonise_cube -
+ * vs_polygonise_grid - Generate iso surface from grid
  *
- * Given a grid cell and an isolevel, calculate the triangular
- * facets requied to represent the isosurface through the cell.
- * Return the number of triangular facets, the array "triangles"
- * will be loaded up with the vertices at most 5 triangular facets.
- * 0 will be returned if the grid cell is either totally above
- * of totally below the isolevel.
- *
- * RETURNS: Number of triangles or zero
+ * RETURNS: Number of triangles
  */
 
-int vs_polygonise_cube(
-    GridCell *g,
+int vs_polygonise_grid(
+    Grid *grid,
     float isolevel,
+    int maxtri,
     Triangle *tri
     );
 

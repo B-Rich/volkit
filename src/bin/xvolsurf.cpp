@@ -40,6 +40,8 @@ float y_angle = 0.0;
 float curr_level = (MAX_LEVEL - MIN_LEVEL) / 4.0;
 int curr_res = 4;
 Grid grid;
+Triangle *tri = 0;
+int ntri = 0, maxtri = 0;
 
 int load_image(const char *fn)
 {
@@ -53,6 +55,17 @@ int load_image(const char *fn)
     }
 
     return result;
+}
+
+int startup()
+{
+    maxtri = grid.nx * grid.ny * grid.nz * 6;
+    tri = (Triangle *) malloc(sizeof(Triangle) * maxtri);
+    if (!tri)
+    {
+        fprintf(stderr, "Out of memory\n");
+        exit(1);
+    }
 }
 
 int default_volume()
@@ -125,6 +138,7 @@ void init()
     glEnable(GL_LIGHTING);
 
     set_res(curr_res);
+    ntri = vs_polygonise_grid(&grid, curr_level, maxtri, tri);
 }
 
 void redraw()
@@ -136,7 +150,7 @@ void redraw()
     glRotatef(y_angle, 0.0, 1.0, 0.0);
     glTranslatef(-1.0, -1.0, -1.0);
     glColor3f(1.0, 1.0, 1.0);
-    vs_draw_iso_surface(&grid, curr_level);
+    vs_draw_surface(ntri, tri);
 
     if (doubleBuffer)
     {
@@ -416,6 +430,8 @@ SingleBufferOverride:
         default_volume();
     }
 
+    startup();
+
     /* Draw window */
     XMapWindow(dpy, win);
 
@@ -477,6 +493,7 @@ SingleBufferOverride:
                             }
                         }
                         set_res(curr_res);
+                        init();
                         printf("Resolution: %d\n", curr_res);
                         postRedraw = 1;
                     }
@@ -507,6 +524,8 @@ SingleBufferOverride:
                 case ClientMessage:
                     if (event.xclient.data.l[0] == wmDeleteWindow)
                     {
+                        delete tri;
+                        delete grid.data;
                         exit(0);
                     }
                     else if(event.xclient.data.l[0] == UPDATE_WINDOW_EVENT)

@@ -4,8 +4,15 @@
  */
 
 #include "volsurf/polygonise.h"
+#include "volsurf/volsurf.h"
 
 #define SIGMA                  (0.00001)
+
+typedef struct {
+    Coord p[8];
+    Coord n[8];
+    float val[8];
+} GridCell;
 
 /*******************************************************************************
  * coord_value_interp -
@@ -50,7 +57,7 @@ static void coord_value_interp(
 }
 
 /*******************************************************************************
- * vs_polygonise_cube -
+ * vs_polygonise_grid_cell -
  *
  * Given a grid cell and an isolevel, calculate the triangular
  * facets requied to represent the isosurface through the cell.
@@ -62,7 +69,7 @@ static void coord_value_interp(
  * RETURNS: Number of triangles or zero
  */
 
-int vs_polygonise_cube(
+static int vs_polygonise_grid_cell(
     GridCell *g,
     float isolevel,
     Triangle *tri
@@ -582,5 +589,122 @@ int vs_polygonise_cube(
    }
 
    return ntri;
+}
+
+/*******************************************************************************
+ * vs_polygonise_grid - Generate iso surface from grid
+ *
+ * RETURNS: Number of triangles
+ */
+
+int vs_polygonise_grid(
+    Grid *grid,
+    float isolevel,
+    int maxtri,
+    Triangle *tri
+    )
+{
+    int i, j, k, ii, jj, kk;
+    int t, n, index;
+    GridCell cell;
+    long nxny;
+    Coord normal;
+    Triangle *ptri;
+    int ntri = 0;
+
+    nxny = grid->nx * grid->ny;
+
+    for (i = 0; i < grid->nx - 1; i += grid->rx)
+    {
+        if ((ii = i + grid->rx) >= grid->nx)
+        {
+            ii = grid->nx - 1;
+        }
+
+        for (j = 0; j < grid->ny - 1; j += grid->ry)
+        {
+            if ((jj = j + grid->ry) >= grid->ny)
+            {
+                jj = grid->ny - 1;
+            }
+
+            for (k = 0; k < grid->nz - 1; k += grid->rz)
+            {
+                if ((kk = k + grid->rz) >= grid->nz)
+                {
+                    kk = grid->nz - 1;
+                }
+
+                cell.p[0][0] = i  * grid->dx;
+                cell.p[0][1] = j  * grid->dy;
+                cell.p[0][2] = k  * grid->dz;
+                index        = k  * nxny + j * grid->nx + i;
+                cell.val[0]  = grid->data[index];
+
+                cell.p[1][0] = ii * grid->dx;
+                cell.p[1][1] = j  * grid->dy;
+                cell.p[1][2] = k  * grid->dz;
+                index        = k  * nxny + j * grid->nx + ii;
+                cell.val[1]  = grid->data[index];
+
+                cell.p[2][0] = ii * grid->dx;
+                cell.p[2][1] = j  * grid->dy;
+                cell.p[2][2] = kk * grid->dz;
+                index        = kk * nxny + j * grid->nx + ii;
+                cell.val[2]  = grid->data[index];
+
+                cell.p[3][0] = i  * grid->dx;
+                cell.p[3][1] = j  * grid->dy;
+                cell.p[3][2] = kk * grid->dz;
+                index        = kk * nxny + j * grid->nx + i;
+                cell.val[3]  = grid->data[index];
+
+                cell.p[4][0] = i  * grid->dx;
+                cell.p[4][1] = jj * grid->dy;
+                cell.p[4][2] = k  * grid->dz;
+                index        = k  * nxny + jj * grid->nx + i;
+                cell.val[4]  = grid->data[index];
+
+                cell.p[5][0] = ii * grid->dx;
+                cell.p[5][1] = jj * grid->dy;
+                cell.p[5][2] = k  * grid->dz;
+                index        = k  * nxny + jj * grid->nx + ii;
+                cell.val[5]  = grid->data[index];
+
+                cell.p[6][0] = ii * grid->dx;
+                cell.p[6][1] = jj * grid->dy;
+                cell.p[6][2] = kk * grid->dz;
+                index        = kk * nxny + jj * grid->nx + ii;
+                cell.val[6]  = grid->data[index];
+
+                cell.p[7][0] = i  * grid->dx;
+                cell.p[7][1] = jj * grid->dy;
+                cell.p[7][2] = kk * grid->dz;
+                index        = kk * nxny + jj * grid->nx + i;
+                cell.val[7]  = grid->data[index];
+
+                ptri = &tri[ntri];
+                n = vs_polygonise_grid_cell(&cell, isolevel, ptri);
+                if ((ntri + n) > maxtri)
+                {
+                    return ntri;
+                }
+                ntri += n;
+                for (t = 0; t < n; t++)
+                {
+                    coord_normal(ptri[t].p[0],
+                                 ptri[t].p[1],
+                                 ptri[t].p[2],
+                                 normal);
+                    coord_normalize(normal, ptri[t].n[0]);
+                }
+
+            } /* End for k */
+
+        } /* End for j */
+
+    } /* End for i */
+
+    return ntri;
 }
 

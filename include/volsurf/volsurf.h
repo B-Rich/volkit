@@ -5,22 +5,17 @@
 extern "C" {
 #endif
 
-typedef struct {
-    float *data;
-    int    nx, ny, nz;
-    float  dx, dy, dz;
-    int    rx, ry, rz;
-} Grid;
+#include "volsurf/polygonise.h"
 
 /*******************************************************************************
- * vs_draw_iso_surface - Draw the isosurface facets
+ * vs_draw_surface - Draw surface facets
  *
  * RETURNS: N/A
  */
 
-void vs_draw_iso_surface(
-    Grid *grid,
-    float isolevel
+void vs_draw_surface(
+    int ntri,
+    Triangle *tri
     );
 
 #ifdef __cplusplus
