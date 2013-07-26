@@ -20,7 +20,7 @@
 #define DEFAULT_WINDOW_WIDTH  400
 #define DEFAULT_WINDOW_HEIGHT 400
 
-#define SLICE_MODE            1
+#define SLICE_MODE            0
 #define DRAW_INTERP           1
 #define X_BRICKS              2
 #define Y_BRICKS              2
@@ -435,20 +435,29 @@ SingleBufferOverride:
         return 1;
     }
 
-    /* Load image */
-    if (load_image(argv[1]) != 0)
+    if (argc > 1)
     {
-        fprintf(stderr, "Error - Unable to load image %s\n", argv[1]);
-        return 1;
-    }
-
-    if (argc > 2)
-    {
-        if (colorMap.loadColormap(argv[2]) != 0)
+        /* Load image */
+        if (load_image(argv[1]) != 0)
         {
-            fprintf(stderr, "Error - Unable to load colormap %s\n", argv[2]);
+            fprintf(stderr, "Error - Unable to load image %s\n", argv[1]);
             return 1;
         }
+        curr_frame = img->getFrameNr() / 2;
+
+        if (argc > 2)
+        {
+            if (colorMap.loadColormap(argv[2]) != 0)
+            {
+                fprintf(stderr, "Error - Unable to load colormap %s\n", argv[2]);
+                return 1;
+            }
+        }
+    }
+    else
+    {
+        fprintf(stderr, "Usage is: %s <image> [colormap]\n", argv[0]);
+        return 1;
     }
 
     startup();
@@ -494,6 +503,20 @@ SingleBufferOverride:
                         img->read(curr_frame);
                         initialized = false;
                         init();
+                        postRedraw = 1;
+                    }
+
+                    if (ks == XK_a)
+                    {
+                        if (!state->mode->sliceMode)
+                        {
+                            state->mode->sliceMode = 1;
+                        }
+                        else
+                        {
+                            state->mode->sliceMode = 0;
+                        }
+                        printf("Slice mode: %d\n", state->mode->sliceMode);
                         postRedraw = 1;
                     }
 

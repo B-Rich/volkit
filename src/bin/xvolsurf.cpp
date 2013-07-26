@@ -33,12 +33,12 @@ Window win;
 int window_width;
 int window_height;
 Img *img = 0;
-bool initialized = false;
 Bool doubleBuffer = True;
 float x_angle = 0.0;
 float y_angle = 0.0;
 float curr_level = (MAX_LEVEL - MIN_LEVEL) / 4.0;
 int curr_res = 4;
+int curr_frame = 0;
 Grid grid;
 Triangle *tri = 0;
 int ntri = 0, maxtri = 0;
@@ -68,36 +68,7 @@ int startup()
     }
 }
 
-int default_volume()
-{
-    int i, j, k;
-    float dx, dy, dz;
-    int index = 0;
-
-    grid.nx = 100;
-    grid.ny = 75;
-    grid.nz = 50;
-    grid.dx = 2.0 / float(grid.nx);
-    grid.dy = 2.0 / float(grid.ny);
-    grid.dz = 2.0 / float(grid.nz);
-    grid.data = new float[grid.nx * grid.ny * grid.nz];
-    for (k = 0; k < grid.nz; k++)
-    {
-        dz = 2.0 * (k - grid.nz / 2.0) / float(grid.nz);
-        for (j = 0; j < grid.ny; j++)
-        {
-            dy = 2.0 * (j - grid.ny / 2.0) / float(grid.ny);
-            for (i = 0; i < grid.nx; i++)
-            {
-                dx = 2.0 * (i - grid.nx / 2.0) / float(grid.nx);
-                grid.data[index] = DFSCALE * sqrt(dx * dx + dy * dy + dz * dz);
-                index++;
-            }
-        }
-    }
-}
-
-void init_image()
+void init()
 {
     grid.nx = img->getWidth();
     grid.ny = img->getHeight();
@@ -109,18 +80,18 @@ void init_image()
     img->getData(grid.data);
 }
 
-void set_res(int res)
+void set_res()
 {
-    grid.rx = res;
-    grid.ry = res;
-    grid.rz = res;
+    grid.rx = curr_res;
+    grid.ry = curr_res;
+    grid.rz = curr_res;
 }
 
-void init()
+void configure()
 {
-    GLfloat globalambient[4] = {0.3, 0.3, 0.3, 1.0};
+    GLfloat gray[4] = {0.5, 0.5, 0.5, 1.0};
     GLfloat white[4] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat p[4] = {0.707, 0.707, 0.0, 0.0};
+    GLfloat p[4] = {0.0, 0.0, 1.0, 0.0};
 
     glEnable(GL_DEPTH_TEST);
     glViewport(0, 0, window_width, window_height);
@@ -130,14 +101,14 @@ void init()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glLightfv(GL_LIGHT0, GL_AMBIENT, globalambient);
-    //glEnable(GL_LIGHT0);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, white);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, gray);
     glLightfv(GL_LIGHT1, GL_POSITION, p);
     glEnable(GL_LIGHT1);
     glEnable(GL_LIGHTING);
 
-    set_res(curr_res);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, white);
+
+    set_res();
     ntri = vs_polygonise_grid(&grid, curr_level, maxtri, tri);
 }
 
@@ -149,7 +120,7 @@ void redraw()
     glRotatef(x_angle, 1.0, 0.0, 0.0);
     glRotatef(y_angle, 0.0, 1.0, 0.0);
     glTranslatef(-1.0, -1.0, -1.0);
-    glColor3f(1.0, 1.0, 1.0);
+    //glColor3f(1.0, 1.0, 1.0);
     vs_draw_surface(ntri, tri);
 
     if (doubleBuffer)
@@ -252,7 +223,9 @@ int main(int argc, char *argv[])
     int width = DEFAULT_WINDOW_WIDTH;
     int height = DEFAULT_WINDOW_HEIGHT;
     char *extensions;
-    int postRedraw = 0;
+    bool postInit = false;
+    bool postConfigure = false;
+    bool postRedraw = false;
 
     /* Process command line */
     for (i = 0; i < argc; i++)
@@ -422,12 +395,13 @@ SingleBufferOverride:
             fprintf(stderr, "Error - Unable to load image %s\n", argv[1]);
             return 1;
         }
-        init_image();
+        curr_frame = img->getFrameNr() / 2;
+        init();
     }
     else
     {
-        printf("No image given, using sample volume\n");
-        default_volume();
+        fprintf(stderr, "Usage: %s <image>\n", argv[0]);
+        return 1;
     }
 
     startup();
@@ -444,18 +418,18 @@ SingleBufferOverride:
                 case ConfigureNotify:
                     window_width = event.xconfigure.width;
                     window_height = event.xconfigure.height;
-                    init();
+                    postConfigure = true;
                     /* Fall trough */
 
                 case Expose:
-                    postRedraw = 1;
+                    postRedraw = true;
                     break;
 
                 case KeyPress:
                     ks = XLookupKeysym((XKeyEvent *) &event, 0);
-                    if (ks == XK_Tab || ks == XK_BackSpace)
+                    if (ks == XK_plus || ks == XK_minus)
                     {
-                        if (ks == XK_Tab)
+                        if (ks == XK_plus)
                         {
                             curr_level += STEP_LEVEL;
                             if (curr_level > MAX_LEVEL)
@@ -463,7 +437,7 @@ SingleBufferOverride:
                                 curr_level = MAX_LEVEL;
                             }
                         }
-                        else if (ks == XK_BackSpace)
+                        else if (ks == XK_minus)
                         {
                             curr_level -= STEP_LEVEL;
                             if (curr_level < MIN_LEVEL)
@@ -472,8 +446,8 @@ SingleBufferOverride:
                             }
                         }
                         printf("Level: %g\n", curr_level);
-                        init();
-                        postRedraw = 1;
+                        postConfigure = true;
+                        postRedraw = true;
                     }
 
                     if (ks == XK_a || ks == XK_z)
@@ -492,32 +466,54 @@ SingleBufferOverride:
                                 curr_res = MAX_RES;
                             }
                         }
-                        set_res(curr_res);
-                        init();
+                        postConfigure = true;
                         printf("Resolution: %d\n", curr_res);
-                        postRedraw = 1;
+                        postRedraw = true;
+                    }
+
+                    if (ks == XK_Tab || ks == XK_BackSpace)
+                    {
+                        if (ks == XK_Tab)
+                        {
+                            if (++curr_frame > (img->getFrameNr() - 1))
+                            {
+                                curr_frame = img->getFrameNr() - 1;
+                            }
+                        }
+                        else if (ks == XK_BackSpace)
+                        {
+                            if (--curr_frame < 0)
+                            {
+                                curr_frame = 0;
+                            }
+                        }
+                        printf("Frame: %d\n", curr_frame);
+                        img->read(curr_frame);
+                        postInit = true;
+                        postConfigure = true;
+                        postRedraw = true;
                     }
 
                     if (ks == XK_Left)
                     {
                         y_angle += STEP_ANGLE;
-                        postRedraw = 1;
+                        postRedraw = true;
                     }
                     else if (ks == XK_Right)
                     {
                         y_angle -= STEP_ANGLE;
-                        postRedraw = 1;
+                        postRedraw = true;
                     }
 
                     if (ks == XK_Down)
                     {
                         x_angle += STEP_ANGLE;
-                        postRedraw = 1;
+                        postRedraw = true;
                     }
                     else if (ks == XK_Up)
                     {
                         x_angle -= STEP_ANGLE;
-                        postRedraw = 1;
+                        postRedraw = true;
                     }
                     break;
 
@@ -530,17 +526,28 @@ SingleBufferOverride:
                     }
                     else if(event.xclient.data.l[0] == UPDATE_WINDOW_EVENT)
                     {
-                        postRedraw = 1;
+                        postRedraw = true;
                     }
                     break;
             }
 
         } while (XPending(dpy));
 
+        if (postInit)
+        {
+            init();
+            postInit = false;
+        }
+        if (postConfigure)
+        {
+            configure();
+            postConfigure = false;
+        }
+
         if (postRedraw)
         {
             redraw();
-            postRedraw = 0;
+            postRedraw = false;
         }
     }
 

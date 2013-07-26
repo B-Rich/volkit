@@ -355,11 +355,10 @@ void vr_render_brick(
     glLoadMatrixf((GLfloat *) RTTMat);
     glMatrixMode(GL_MODELVIEW);
 
-    /* If slice mode, get clipping plane and restore for volume rendering */
+    /* If slice mode, get clipping plane */
     if (state->mode->sliceMode)
     {
         vr_define_clip_planes(state, cp);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     /* Load brick into texture memory */
@@ -391,6 +390,9 @@ void vr_render_brick(
 
         /* Re-enable all clipping planes */
         vr_enable_active_clip_planes(state, -1);
+
+        /* Restore blending for volume rendering */
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 }
 

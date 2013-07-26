@@ -16,8 +16,7 @@ typedef struct {
 
 typedef struct {
     Coord p[3];                /* Vertices */
-    Coord c;                   /* Centroid */
-    Coord n[3];                /* Normal   */
+    Coord n[1];                /* Normal   */
 } Triangle;
 
 /*******************************************************************************
