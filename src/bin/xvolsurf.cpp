@@ -60,7 +60,7 @@ int startup()
     int index = 0;
 
     grid.nx = 100; grid.ny = 75; grid.nz = 50;
-    grid.dx = 0.02; grid.dy = 0.02; grid.dz = 0.02;
+    grid.dx = 0.02; grid.dy = 0.02; grid.dz = 0.04;
     grid.rx = 4; grid.ry = 4; grid.rz = 4;
     grid.data = new uint32_t[grid.nx * grid.ny * grid.nz];
     for (k = 0; k < grid.nz; k++)
@@ -196,8 +196,8 @@ int main(int argc, char *argv[])
     XSizeHints sizeHints = {0};
     int configuration[] = {
         GLX_DOUBLEBUFFER,
-        GLX_DEPTH_SIZE, 16,
         GLX_RGBA,
+        GLX_DEPTH_SIZE, 16,
         GLX_RED_SIZE, 1, GLX_GREEN_SIZE, 1, GLX_BLUE_SIZE,
         1, None
     };
