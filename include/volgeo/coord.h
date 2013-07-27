@@ -155,21 +155,6 @@ typedef float Coord[3];
 }
 
 /*******************************************************************************
- * coord_normal - Calculate normal at point given two other poins on surface
- *
- * RETURNS: N/A
- */
-
-#define coord_normal(c, c1, c2, C3)                                            \
-{                                                                              \
-    Coord __ca, __cb;                                                          \
-                                                                               \
-    coord_sub(c1, c, __ca);                                                    \
-    coord_sub(c2, c, __cb);                                                    \
-    coord_cross_product(__ca, __cb, C3);                                       \
-}
-
-/*******************************************************************************
  * coord_transform - Transform coordinate by matrix
  *
  * RETURNS: N/A

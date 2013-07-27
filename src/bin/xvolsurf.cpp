@@ -37,6 +37,7 @@ Bool doubleBuffer = True;
 float x_angle = 0.0;
 float y_angle = 0.0;
 float curr_level = (MAX_LEVEL - MIN_LEVEL) / 4.0;
+//float curr_level = 7000.0;
 int curr_res = 4;
 int curr_frame = 0;
 Grid grid;
@@ -91,7 +92,7 @@ void configure()
 {
     GLfloat gray[4] = {0.5, 0.5, 0.5, 1.0};
     GLfloat white[4] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat p[4] = {0.0, 0.0, 1.0, 0.0};
+    GLfloat p[4] = {0.0, 0.0, -1.0, 0.0};
 
     glEnable(GL_DEPTH_TEST);
     glViewport(0, 0, window_width, window_height);

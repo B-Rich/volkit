@@ -14,7 +14,7 @@ typedef struct {
 } GridCell;
 
 /*******************************************************************************
- * coord_value_interp -
+ * coord_interp -
  *
  * Get a point between two points in the same ratio as
  * threshold is between valp1 and valp2
@@ -22,37 +22,36 @@ typedef struct {
  * RETURNS: N/A
  */
 
-static void coord_value_interp(
-    float threshold,
-    Coord p1,
-    Coord p2,
-    float valp1,
-    float valp2,
-    Coord p
+static void vertex_interp(
+    GridCell *g,
+    float isolevel,
+    int index1,
+    int index2,
+    Coord p,
+    Coord n
     )
 {
-    float mu;
+    float mu = 0.0;
+    float diffp1 = isolevel - g->val[index1];
+    float diffp2p1 = g->val[index2] - g->val[index1];
 
-    if (fabs(threshold - valp1) < SIGMA)
+    if (fabsf(diffp2p1) > 0.0) 
     {
-        coord_assign(p1, p);
+        mu = diffp1 / diffp2p1;
     }
-    else if (fabs(threshold - valp2) < SIGMA)
-    {
-        coord_assign(p2, p);
-    }
-    else if (fabs(valp1 - valp2) < SIGMA)
-    {
-        coord_assign(p1, p);
-    }
-    else
-    {
-        mu = (threshold - valp1) / (valp2 - valp1);
-        coord_fill(p1[0] + mu * (p2[0] - p1[0]),
-                   p1[1] + mu * (p2[1] - p1[1]),
-                   p1[2] + mu * (p2[2] - p1[2]),
-                   p);
-    }
+
+    /* Caclulate interpolated vertex */
+    p[0] = g->p[index1][0] + mu * (g->p[index2][0] - g->p[index1][0]);
+    p[1] = g->p[index1][1] + mu * (g->p[index2][1] - g->p[index1][1]);
+    p[2] = g->p[index1][2] + mu * (g->p[index2][2] - g->p[index1][2]);
+
+    /* Cacluclate interpolated normal */
+    n[0] = g->n[index1][0] + mu * (g->n[index2][0] - g->n[index1][0]);
+    n[1] = g->n[index1][1] + mu * (g->n[index2][1] - g->n[index1][1]);
+    n[2] = g->n[index1][2] + mu * (g->n[index2][2] - g->n[index1][2]);
+
+    /* Normalize normal */
+    coord_normalize(n, n);
 }
 
 /*******************************************************************************
@@ -76,7 +75,9 @@ static int vs_polygonise_grid_cell(
 {
     int i, ntri = 0;
     int cubeIndex;
+    int a, b, c;
     Coord vertlist[12];
+    Coord normlist[12];
 
     /*
      * int edgeTable[256].  It corresponds to the 2^8 possible combinations of
@@ -483,111 +484,167 @@ static int vs_polygonise_grid_cell(
         /* Find the vertices where the surface intersects the cube */
         if (edgeTable[cubeIndex] & 1)
         {
-            coord_value_interp(isolevel,
-                               g->p[0], g->p[1],
-                               g->val[0], g->val[1],
-                               vertlist[0]);
+            vertex_interp(g, isolevel, 0, 1, vertlist[0], normlist[0]);
         }
 
         if (edgeTable[cubeIndex] & 2)
         {
-            coord_value_interp(isolevel,
-                               g->p[1], g->p[2],
-                               g->val[1], g->val[2],
-                               vertlist[1]);
+            vertex_interp(g, isolevel, 1, 2, vertlist[1], normlist[1]);
         }
 
         if (edgeTable[cubeIndex] & 4)
         {
-            coord_value_interp(isolevel,
-                               g->p[2], g->p[3],
-                               g->val[2], g->val[3],
-                               vertlist[2]);
+            vertex_interp(g, isolevel, 2, 3, vertlist[2], normlist[2]);
         }
 
         if (edgeTable[cubeIndex] & 8)
         {
-            coord_value_interp(isolevel,
-                               g->p[3], g->p[0],
-                               g->val[3], g->val[0],
-                               vertlist[3]);
+            vertex_interp(g, isolevel, 3, 0, vertlist[3], normlist[3]);
         }
 
         if (edgeTable[cubeIndex] & 16)
         {
-            coord_value_interp(isolevel,
-                               g->p[4], g->p[5],
-                               g->val[4], g->val[5],
-                               vertlist[4]);
+            vertex_interp(g, isolevel, 4, 5, vertlist[4], normlist[4]);
         }
 
         if (edgeTable[cubeIndex] & 32)
         {
-            coord_value_interp(isolevel,
-                               g->p[5], g->p[6],
-                               g->val[5], g->val[6],
-                               vertlist[5]);
+            vertex_interp(g, isolevel, 5, 6, vertlist[5], normlist[5]);
         }
 
         if (edgeTable[cubeIndex] & 64)
         {
-            coord_value_interp(isolevel,
-                               g->p[6], g->p[7],
-                               g->val[6], g->val[7],
-                               vertlist[6]);
+            vertex_interp(g, isolevel, 6, 7, vertlist[6], normlist[6]);
         }
 
         if (edgeTable[cubeIndex] & 128)
         {
-            coord_value_interp(isolevel,
-                               g->p[7], g->p[4],
-                               g->val[7], g->val[4],
-                               vertlist[7]);
+            vertex_interp(g, isolevel, 7, 4, vertlist[7], normlist[7]);
         }
 
         if (edgeTable[cubeIndex] & 256)
         {
-            coord_value_interp(isolevel,
-                               g->p[0], g->p[4],
-                               g->val[0], g->val[4],
-                               vertlist[8]);
+            vertex_interp(g, isolevel, 0, 4, vertlist[8], normlist[8]);
         }
 
         if (edgeTable[cubeIndex] & 512)
         {
-            coord_value_interp(isolevel,
-                               g->p[1], g->p[5],
-                               g->val[1], g->val[5],
-                               vertlist[9]);
+            vertex_interp(g, isolevel, 1, 5, vertlist[9], normlist[9]);
         }
 
         if (edgeTable[cubeIndex] & 1024)
         {
-            coord_value_interp(isolevel,
-                               g->p[2], g->p[6],
-                               g->val[2], g->val[6],
-                               vertlist[10]);
+            vertex_interp(g, isolevel, 2, 6, vertlist[10], normlist[10]);
         }
 
         if (edgeTable[cubeIndex] & 2048)
         {
-            coord_value_interp(isolevel,
-                               g->p[3], g->p[7],
-                               g->val[3], g->val[7],
-                               vertlist[11]);
+            vertex_interp(g, isolevel, 3, 7, vertlist[11], normlist[11]);
         }
 
         /* Create the triangles */
         for (i = 0; triTable[cubeIndex][i] != -1; i += 3)
         {
-            coord_assign(vertlist[triTable[cubeIndex][i]], tri[ntri].p[0]);
-            coord_assign(vertlist[triTable[cubeIndex][i + 1]], tri[ntri].p[1]);
-            coord_assign(vertlist[triTable[cubeIndex][i + 2]], tri[ntri].p[2]);
+            /* Get indices into triangle table */
+            a = triTable[cubeIndex][i];
+            b = triTable[cubeIndex][i + 1];
+            c = triTable[cubeIndex][i + 2];
+
+            /* Assign vertices */
+            coord_assign(vertlist[a], tri[ntri].p[0]);
+            coord_assign(vertlist[b], tri[ntri].p[1]);
+            coord_assign(vertlist[c], tri[ntri].p[2]);
+
+            /* Assign vertex normals */
+            coord_assign(normlist[a], tri[ntri].n[0]);
+            coord_assign(normlist[b], tri[ntri].n[1]);
+            coord_assign(normlist[c], tri[ntri].n[2]);
+
             ntri++;
         }
    }
 
    return ntri;
+}
+
+/*******************************************************************************
+ * calc_normal_grid - Estimate the normal for each point on the grid
+ *
+ * RETURNS: N/A
+ */
+
+static void calc_normal_grid(
+    Grid *grid,
+    int i,
+    int j,
+    int k,
+    Coord n
+    )
+{
+    int im1, ip1, jp1, jm1, kp1, km1;
+    int index1, index2, index;
+    long nxny;
+
+    im1 = i - 1;
+    ip1 = i + 1;
+    jm1 = j - 1;
+    jp1 = j + 1;
+    km1 = k - 1;
+    kp1 = k + 1;
+
+    nxny = grid->nx * grid->ny;
+    index = k * nxny + j * grid->ny + i;
+
+    if (im1 > 0 && ip1 < grid->nx)
+    {
+        index1 = index - 1;
+        index2 = index + 1;
+        n[0] = (grid->data[index1] - grid->data[index2]) / 2.0;
+    }
+    else if (im1 > 0)
+    {
+        index1 = index - 1;
+        n[0] = grid->data[index1] - grid->data[index];
+    }
+    else
+    {
+        index2 = index + 1;
+        n[0] = grid->data[index] - grid->data[index2];
+    }
+
+    if (jm1 > 0 && jp1 < grid->ny)
+    {
+        index1 = index - grid->ny;
+        index2 = index + grid->ny;
+        n[1] = (grid->data[index1] - grid->data[index2]) / 2.0;
+    }
+    else if (jm1 > 0)
+    {
+        index1 = index - grid->ny;
+        n[1] = grid->data[index1] - grid->data[index];
+    }
+    else
+    {
+        index2 = index + grid->ny;
+        n[1] = grid->data[index] - grid->data[index2];
+    }
+
+    if (km1 > 0 && kp1 < grid->nz)
+    {
+        index1 = index - nxny;
+        index2 = index + nxny;
+        n[2] = (grid->data[index1] - grid->data[index2]) / 2.0;
+    }
+    else if (km1 > 0)
+    {
+        index1 = index - nxny;
+        n[2] = grid->data[index1] - grid->data[index];
+    }
+    else
+    {
+        index2 = index + nxny;
+        n[2] = grid->data[index] - grid->data[index2];
+    }
 }
 
 /*******************************************************************************
@@ -604,10 +661,9 @@ int vs_polygonise_grid(
     )
 {
     int i, j, k, ii, jj, kk;
-    int t, n, index;
+    int n, index;
     GridCell cell;
     long nxny;
-    Coord normal;
     Triangle *ptri;
     int ntri = 0;
 
@@ -637,48 +693,56 @@ int vs_polygonise_grid(
                 cell.p[0][0] = i  * grid->dx;
                 cell.p[0][1] = j  * grid->dy;
                 cell.p[0][2] = k  * grid->dz;
+                calc_normal_grid(grid, i, j, k, cell.n[0]);
                 index        = k  * nxny + j * grid->nx + i;
                 cell.val[0]  = grid->data[index];
 
                 cell.p[1][0] = ii * grid->dx;
                 cell.p[1][1] = j  * grid->dy;
                 cell.p[1][2] = k  * grid->dz;
+                calc_normal_grid(grid, ii, j, k, cell.n[1]);
                 index        = k  * nxny + j * grid->nx + ii;
                 cell.val[1]  = grid->data[index];
 
                 cell.p[2][0] = ii * grid->dx;
                 cell.p[2][1] = j  * grid->dy;
                 cell.p[2][2] = kk * grid->dz;
+                calc_normal_grid(grid, ii, j, kk, cell.n[2]);
                 index        = kk * nxny + j * grid->nx + ii;
                 cell.val[2]  = grid->data[index];
 
                 cell.p[3][0] = i  * grid->dx;
                 cell.p[3][1] = j  * grid->dy;
                 cell.p[3][2] = kk * grid->dz;
+                calc_normal_grid(grid, i, j, kk, cell.n[3]);
                 index        = kk * nxny + j * grid->nx + i;
                 cell.val[3]  = grid->data[index];
 
                 cell.p[4][0] = i  * grid->dx;
                 cell.p[4][1] = jj * grid->dy;
                 cell.p[4][2] = k  * grid->dz;
+                calc_normal_grid(grid, i, jj, k, cell.n[4]);
                 index        = k  * nxny + jj * grid->nx + i;
                 cell.val[4]  = grid->data[index];
 
                 cell.p[5][0] = ii * grid->dx;
                 cell.p[5][1] = jj * grid->dy;
                 cell.p[5][2] = k  * grid->dz;
+                calc_normal_grid(grid, ii, jj, k, cell.n[5]);
                 index        = k  * nxny + jj * grid->nx + ii;
                 cell.val[5]  = grid->data[index];
 
                 cell.p[6][0] = ii * grid->dx;
                 cell.p[6][1] = jj * grid->dy;
                 cell.p[6][2] = kk * grid->dz;
+                calc_normal_grid(grid, ii, jj, kk, cell.n[6]);
                 index        = kk * nxny + jj * grid->nx + ii;
                 cell.val[6]  = grid->data[index];
 
                 cell.p[7][0] = i  * grid->dx;
                 cell.p[7][1] = jj * grid->dy;
                 cell.p[7][2] = kk * grid->dz;
+                calc_normal_grid(grid, i, jj, kk, cell.n[7]);
                 index        = kk * nxny + jj * grid->nx + i;
                 cell.val[7]  = grid->data[index];
 
@@ -689,15 +753,6 @@ int vs_polygonise_grid(
                     return ntri;
                 }
                 ntri += n;
-                for (t = 0; t < n; t++)
-                {
-                    coord_normal(ptri[t].p[0],
-                                 ptri[t].p[1],
-                                 ptri[t].p[2],
-                                 normal);
-                    coord_normalize(normal, ptri[t].n[0]);
-                }
-
             } /* End for k */
 
         } /* End for j */
