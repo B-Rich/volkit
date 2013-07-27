@@ -4,7 +4,6 @@
  */
 
 #include "volsurf/polygonise.h"
-#include "volsurf/volsurf.h"
 
 #define SIGMA                  (0.00001)
 
@@ -685,7 +684,7 @@ int vs_polygonise_grid(
 
                 ptri = &tri[ntri];
                 n = vs_polygonise_grid_cell(&cell, isolevel, ptri);
-                if ((ntri + n) > maxtri)
+                if ((ntri + n) >= maxtri)
                 {
                     return ntri;
                 }

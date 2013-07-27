@@ -59,8 +59,8 @@ int load_image(const char *fn)
 
 int startup()
 {
-    maxtri = grid.nx * grid.ny * grid.nz * 6;
-    tri = (Triangle *) malloc(sizeof(Triangle) * maxtri);
+    maxtri = grid.nx * grid.ny * grid.nz;
+    tri = (Triangle *) malloc(sizeof(Triangle) * (maxtri + 1));
     if (!tri)
     {
         fprintf(stderr, "Out of memory\n");
@@ -110,6 +110,10 @@ void configure()
 
     set_res();
     ntri = vs_polygonise_grid(&grid, curr_level, maxtri, tri);
+    if (ntri >= (maxtri - 1))
+    {
+        fprintf(stderr, "Maximum number of triangles reached\n");
+    }
 }
 
 void redraw()
